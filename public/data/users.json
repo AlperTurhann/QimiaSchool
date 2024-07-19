@@ -1,0 +1,36 @@
+[
+  {
+    "id": "d1c416c1-9042-4e16-aa12-3e76c499beb6",
+    "name": "Alper Turhan",
+    "email": "alper34_44@hotmail.com",
+    "courses": [],
+    "role": "student",
+    "password": "$2a$10$yG8fQhoQPiUGbZOC0ObUNuRKAjNz/bwMYl.jg.SH049G8JSubb77u"
+  },
+  {
+    "id": "095a4531-38fd-46c2-a2bd-8f8804fc8545",
+    "name": "Rona Cida",
+    "email": "test@gmail.com",
+    "courses": [
+      "b5009bc8-018a-4e85-8673-68ee21a49f7f"
+    ],
+    "role": "instructor",
+    "password": "$2a$10$HCPnWSC6WH05ZBhNQnBgcuRCnghGKBkNv91LPbZJmF.Z9FP8/HGoG"
+  },
+  {
+    "id": "bbe392cc-6ec8-4e75-81bb-ee4c55fad02b",
+    "name": "Muhammed Turhan",
+    "email": "asd@gmail.com",
+    "courses": [],
+    "role": "student",
+    "password": "$2a$10$KJ0lqfNL8zg3HQEv3CVfAOwVCIFrNv6yQFCcJws54zpC.XF.GxYJ."
+  },
+  {
+    "id": "d9373ca8-26de-4532-b1e3-715d7e70954f",
+    "name": "Test User",
+    "email": "a@sd.co",
+    "courses": [],
+    "role": "student",
+    "password": "$2a$10$rtM6cbg9Rb7KtL2KLwpYHu5RcsbURFep3r6JY8Y0aHYCBE0OHXfGa"
+  }
+]
