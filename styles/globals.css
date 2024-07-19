@@ -75,11 +75,3 @@
 .truncateContent {
   @apply truncate text-start;
 }
-
-.enrolledGridCols2 {
-  @apply grid-cols-2;
-}
-
-.enrolledGridCols3 {
-  @apply grid-cols-3;
-}

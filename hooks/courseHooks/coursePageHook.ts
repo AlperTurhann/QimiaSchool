@@ -59,7 +59,7 @@ const useCoursePageHook = (courseID: string) => {
     fetchData();
   }, [fetchData]);
 
-  return { course, instructor, enrolledUsers, loading };
+  return { course, instructor, enrolledUsers, setEnrolledUsers, loading };
 };
 
 export default useCoursePageHook;

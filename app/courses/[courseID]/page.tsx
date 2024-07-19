@@ -15,10 +15,10 @@ const CoursePage = () => {
   const { courseID } = useParams<{ courseID: string }>();
   const navigate = useRouter();
 
-  const { course, instructor, enrolledUsers, loading } =
+  const { course, instructor, enrolledUsers, setEnrolledUsers, loading } =
     useCoursePageHook(courseID);
-  const { handleLeaveCourse } = useLeaveCourseHook();
-  const { handleEnrollCourse } = useEnrollCourseHook();
+  const { handleLeaveCourse } = useLeaveCourseHook(setEnrolledUsers);
+  const { handleEnrollCourse } = useEnrollCourseHook(setEnrolledUsers);
   const { handleDeleteCourse } = useDeleteCourseHook();
 
   if (!course) return <p>Course not found!</p>;

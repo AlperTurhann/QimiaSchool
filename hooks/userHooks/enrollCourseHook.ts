@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
-import { CourseProps } from "@/types/CourseTypes";
+import { UserProps } from "@/types/UserTypes";
 import { useUserContext } from "@/context/UserContext";
 import { useAlertContext } from "@/context/AlertContext";
 
 const useEnrollCourseHook = (
-  setCourses?: Dispatch<SetStateAction<CourseProps[]>>
+  setEnrolledUsers: Dispatch<SetStateAction<UserProps[]>>
 ) => {
   const { showAlert } = useAlertContext();
   const { enrollCourse } = useUserContext();
@@ -19,11 +19,10 @@ const useEnrollCourseHook = (
           const isSuccesfull = await enrollCourse(state.user.id, courseID);
           if ("data" in isSuccesfull) {
             if (isSuccesfull.data) {
-              if (setCourses) {
-                setCourses((prevCourses) =>
-                  prevCourses.filter((course) => course.id !== courseID)
-                );
-              }
+              setEnrolledUsers((prevUsers) => [
+                ...prevUsers,
+                state.user as UserProps,
+              ]);
               dispatch({ type: "ENROLL_COURSE", payload: courseID });
               showAlert("Success", isSuccesfull.message);
             } else {

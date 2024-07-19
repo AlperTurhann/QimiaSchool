@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
-import { CourseProps } from "@/types/CourseTypes";
+import { UserProps } from "@/types/UserTypes";
 import { useUserContext } from "@/context/UserContext";
 import { useAlertContext } from "@/context/AlertContext";
 
 const useLeaveCourseHook = (
-  setCourses?: Dispatch<SetStateAction<CourseProps[]>>
+  setEnrolledUsers: Dispatch<SetStateAction<UserProps[]>>
 ) => {
   const { showAlert } = useAlertContext();
   const { leaveCourse } = useUserContext();
@@ -19,11 +19,9 @@ const useLeaveCourseHook = (
           const isSuccesfull = await leaveCourse(state.user.id, courseID);
           if ("data" in isSuccesfull) {
             if (isSuccesfull.data) {
-              if (setCourses) {
-                setCourses((prevCourses) =>
-                  prevCourses.filter((course) => course.id !== courseID)
-                );
-              }
+              setEnrolledUsers((prevUsers) =>
+                prevUsers.filter((user) => user.id !== state.user?.id)
+              );
               dispatch({ type: "LEAVE_COURSE", payload: courseID });
               showAlert("Success", isSuccesfull.message);
             } else {
