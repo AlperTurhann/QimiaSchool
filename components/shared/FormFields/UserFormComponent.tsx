@@ -3,7 +3,9 @@ import React, { cloneElement, ReactElement, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginProps, RegisterProps } from "@/types/UserTypes";
+import useLoginHook from "@/hooks/userHooks/loginHook";
+import useSignupHook from "@/hooks/userHooks/signupHook";
+import { LoginProps, SignupProps } from "@/types/UserTypes";
 import { LoginData, LoginSchema } from "@/utils/validations/LoginSchema";
 import {
   RegisterData,
@@ -12,6 +14,7 @@ import {
 import { useUserContext } from "@/context/UserContext";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
+import Loading from "@/components/shared/Loading";
 
 interface Props {
   formType: "login" | "register";
@@ -30,34 +33,28 @@ export const UserFormComponent = <T extends LoginData | RegisterData>({
   const { handleSubmit, control } = form;
 
   const navigate = useRouter();
-  const { dispatch, login, signup } = useUserContext();
+  const { state } = useUserContext();
+  const { login, loading: loginLoading } = useLoginHook();
+  const { signup, loading: signupLoading } = useSignupHook();
   const onSubmit = async (data: FieldValues) => {
-    if (formType === "login") {
-      const currentUser = await login(data as LoginProps);
-      if (currentUser) {
-        dispatch({ type: "SET_USER", payload: currentUser });
-        navigate.push(`/users/${currentUser.id}`);
-      }
-    } else {
-      const registerData: RegisterProps = {
+    if (formType === "login") login(data as LoginProps);
+    else {
+      const signupData: SignupProps = {
         name: data.name,
         email: data.email,
         role: data.role,
         password: data.password,
       };
 
-      const currentUser = await signup(registerData);
-      if (currentUser) {
-        dispatch({ type: "SET_USER", payload: currentUser });
-        navigate.push(`/users/${currentUser.id}`);
-      }
+      signup(signupData);
     }
   };
   const handleOtherWay = () => {
-    if (formType === "login") navigate.push("/register");
+    if (formType === "login") navigate.push("/signup");
     else navigate.push("login");
   };
 
+  if (loginLoading || signupLoading) return <Loading />;
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
       <Form {...form}>

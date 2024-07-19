@@ -2,8 +2,8 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Pencil, Trash2 } from "lucide-react";
-import deleteCourseHook from "@/hooks/courseHooks/deleteCourseHook";
-import getUserCoursesHook from "@/hooks/userHooks/getUserCoursesHook";
+import useDeleteCourseHook from "@/hooks/courseHooks/deleteCourseHook";
+import useGetUserCoursesHook from "@/hooks/userHooks/getUserCoursesHook";
 import CourseCard from "@/modules/Course";
 import { useUserContext } from "@/context/UserContext";
 import MustLogin from "@/components/shared/MustLogin";
@@ -17,8 +17,8 @@ const ManageCoursePage = () => {
   const { state } = useUserContext();
   if (!state.user) return <MustLogin />;
 
-  const { courses, setCourses, loading } = getUserCoursesHook(state.user);
-  const { handleDeleteCourse } = deleteCourseHook(setCourses);
+  const { courses, setCourses, loading } = useGetUserCoursesHook(state.user);
+  const { handleDeleteCourse } = useDeleteCourseHook(setCourses);
 
   if (!state.user) return <MustLogin />;
   else if (state.user.role !== "instructor") return <OnlyInstructor />;

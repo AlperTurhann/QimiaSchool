@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { UserProps } from "@/types/UserTypes";
+import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
 import usersUtils from "@/utils/fileUtils/usersFileUtils";
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request
+): Promise<NextResponse<SuccessResponse<UserProps> | ErrorResponse>> {
   try {
     const { email, password } = await request.json();
 
@@ -11,6 +14,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message: "Missing required fields!",
+          error: "Email and password are required",
         },
         { status: 400 }
       );
@@ -23,6 +27,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message: "No user found with this email address!",
+          error: "No user found with this email address",
         },
         { status: 404 }
       );
@@ -34,6 +39,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message: "The password you entered is incorrect!",
+          error: "The password you entered is incorrect",
         },
         { status: 400 }
       );
@@ -42,15 +48,15 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message: "You are logged in!",
-        user,
+        data: user,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Login error: ", error);
     return NextResponse.json(
       {
         message: "Internal server error!",
+        error: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
     );

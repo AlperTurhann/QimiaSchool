@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { CourseProps } from "@/types/CourseTypes";
 import { UserProps } from "@/types/UserTypes";
+import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
 import coursesUtils from "@/utils/fileUtils/coursesFileUtils";
 import usersUtils from "@/utils/fileUtils/usersFileUtils";
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request
+): Promise<NextResponse<SuccessResponse<CourseProps> | ErrorResponse>> {
   try {
     const courseID = await request.json();
 
@@ -12,6 +15,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message: "Missing required fields!",
+          error: "CourseID is required",
         },
         { status: 400 }
       );
@@ -24,6 +28,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message: "No course found with this ID!",
+          error: "Course not found",
         },
         { status: 404 }
       );
@@ -32,30 +37,32 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message: "Course found!",
-        course,
+        data: course,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Get course error:", error);
     return NextResponse.json(
       {
         message: "Internal server error!",
+        error: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
     );
   }
 }
 
-export async function PUT(request: Request) {
+export async function PUT(
+  request: Request
+): Promise<NextResponse<SuccessResponse<CourseProps> | ErrorResponse>> {
   try {
     const { id, ...updatedCourseData } = await request.json();
-    console.log(updatedCourseData.enrolledStudents);
 
     if (!id || Object.keys(updatedCourseData).length === 0) {
       return NextResponse.json(
         {
           message: "Missing required fields!",
+          error: "ID and updated data are required",
         },
         { status: 400 }
       );
@@ -68,6 +75,7 @@ export async function PUT(request: Request) {
       return NextResponse.json(
         {
           message: "No course found with this ID!",
+          error: "No course found with this ID",
         },
         { status: 404 }
       );
@@ -80,6 +88,8 @@ export async function PUT(request: Request) {
         {
           message:
             "New capacity cannot be less than the number of enrolled students!",
+          error:
+            "New capacity cannot be less than the number of enrolled students",
         },
         { status: 400 }
       );
@@ -104,23 +114,25 @@ export async function PUT(request: Request) {
 
     return NextResponse.json(
       {
-        message: "Course found!",
-        course: courses[courseIndex],
+        message: "Course updated successfully!",
+        data: courses[courseIndex],
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Get course error:", error);
     return NextResponse.json(
       {
         message: "Internal server error!",
+        error: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
     );
   }
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(
+  request: Request
+): Promise<NextResponse<SuccessResponse<boolean> | ErrorResponse>> {
   try {
     const courseID = await request.json();
 
@@ -128,6 +140,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json(
         {
           message: "Missing required fields!",
+          error: "CourseID is required",
         },
         { status: 400 }
       );
@@ -140,6 +153,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json(
         {
           message: "No course found with this ID!",
+          error: "No course found with this ID",
         },
         { status: 404 }
       );
@@ -160,14 +174,15 @@ export async function DELETE(request: Request) {
     return NextResponse.json(
       {
         message: "Course deleted succesfully!",
+        data: true,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Delete course error:", error);
     return NextResponse.json(
       {
         message: "Internal server error!",
+        error: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
     );

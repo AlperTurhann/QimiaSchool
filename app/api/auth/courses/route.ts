@@ -2,31 +2,36 @@ import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import { CourseProps } from "@/types/CourseTypes";
 import { UserProps } from "@/types/UserTypes";
+import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
 import coursesUtils from "@/utils/fileUtils/coursesFileUtils";
 import usersUtils from "@/utils/fileUtils/usersFileUtils";
 
-export async function GET() {
+export async function GET(): Promise<
+  NextResponse<SuccessResponse<CourseProps[]> | ErrorResponse>
+> {
   try {
     const courses = coursesUtils.readData();
     return NextResponse.json(
       {
         message: "Courses found!",
-        courses,
+        data: courses,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error handling request:", error);
     return NextResponse.json(
       {
         message: "Internal server error!",
+        error: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
     );
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request
+): Promise<NextResponse<SuccessResponse<string> | ErrorResponse>> {
   try {
     const { name, description, instructor, capacity } = await request.json();
 
@@ -34,6 +39,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message: "Missing required fields!",
+          error: "Name, descriptipn, instructor and capacity are required",
         },
         { status: 400 }
       );
@@ -42,6 +48,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message: "Capacity must be a positive number!",
+          error: "Capacity must be a positive number",
         },
         { status: 400 }
       );
@@ -73,15 +80,15 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message: "Course created succesfully!",
-        courseID: newCourse.id,
+        data: newCourse.id,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Create course error:", error);
     return NextResponse.json(
       {
         message: "Internal server error!",
+        error: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
     );

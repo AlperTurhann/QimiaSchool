@@ -3,14 +3,14 @@ interface LoginProps {
   password: string;
 }
 
-interface RegisterProps extends LoginProps {
+interface SignupProps extends LoginProps {
   name: string;
   role: "student" | "instructor";
 }
 
-interface UserProps extends RegisterProps {
+interface UserProps extends SignupProps {
   id: string;
   courses: string[];
 }
 
-export type { LoginProps, RegisterProps, UserProps };
+export type { LoginProps, SignupProps, UserProps };

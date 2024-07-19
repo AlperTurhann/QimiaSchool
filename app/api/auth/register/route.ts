@@ -3,8 +3,11 @@ import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcryptjs";
 import { UserProps } from "@/types/UserTypes";
 import usersUtils from "@/utils/fileUtils/usersFileUtils";
+import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request
+): Promise<NextResponse<SuccessResponse<UserProps> | ErrorResponse>> {
   try {
     const { name, email, password, role } = await request.json();
 
@@ -12,6 +15,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message: "Missing required fields!",
+          error: "Name, email, password and role are required",
         },
         { status: 400 }
       );
@@ -22,6 +26,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message: "An account is already registered with this email address!",
+          error: "An account is already registered with this email address",
         },
         { status: 400 }
       );
@@ -44,7 +49,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message: "You registered succesfully!",
-        user: newUser,
+        data: newUser,
       },
       { status: 200 }
     );
@@ -53,6 +58,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message: "Internal server error!",
+        error: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
     );

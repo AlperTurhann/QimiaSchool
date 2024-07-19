@@ -2,10 +2,12 @@ import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { CourseProps } from "@/types/CourseTypes";
 import { useCourseContext } from "@/context/CourseContext";
 import { useUserContext } from "@/context/UserContext";
+import { useAlertContext } from "@/context/AlertContext";
 
 const useDeleteCourseHook = (
   setCourses?: Dispatch<SetStateAction<CourseProps[]>>
 ) => {
+  const { showAlert } = useAlertContext();
   const { deleteCourse } = useCourseContext();
   const { dispatch, getUser } = useUserContext();
   const [loading, setLoading] = useState<boolean>(false);
@@ -15,16 +17,26 @@ const useDeleteCourseHook = (
       try {
         setLoading(true);
         const isSuccesfull = await deleteCourse(courseID);
-        if (isSuccesfull) {
-          if (setCourses) {
-            setCourses((prevCourses) =>
-              prevCourses.filter((course) => course.id !== courseID)
-            );
+        if ("data" in isSuccesfull) {
+          if (isSuccesfull.data) {
+            if (setCourses) {
+              setCourses((prevCourses) =>
+                prevCourses.filter((course) => course.id !== courseID)
+              );
+            }
+            dispatch({ type: "LEAVE_COURSE", payload: courseID });
+            showAlert("Success", isSuccesfull.message);
+          } else {
+            showAlert("Error", isSuccesfull.message);
           }
-          dispatch({ type: "LEAVE_COURSE", payload: courseID });
+        } else {
+          showAlert("Error", isSuccesfull.error);
         }
       } catch (error) {
-        console.error(error);
+        showAlert(
+          "Error",
+          error instanceof Error ? error.message : String(error)
+        );
       } finally {
         setLoading(false);
       }

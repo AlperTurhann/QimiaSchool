@@ -1,100 +1,90 @@
 import { CourseProps, CreateCourseProps } from "@/types/CourseTypes";
+import { SuccessResponse, ErrorResponse } from "@/types/ResponseTypes";
 import { parseJSON } from "@/utils/fileUtils/IFileUtils";
 
-const getCourses = async (): Promise<CourseProps[]> => {
+const getCourses = async (): Promise<
+  SuccessResponse<CourseProps[]> | ErrorResponse
+> => {
   try {
     const response = await fetch("/api/auth/courses");
-    const getCoursesData = await parseJSON(response);
-    if (response.ok) {
-      console.log(getCoursesData.message);
-      return getCoursesData.courses;
-    }
-    console.error(getCoursesData.message);
-    return [];
+    return await parseJSON<CourseProps[]>(response);
   } catch (error) {
-    console.error("An error occurred during getting courses: ", error);
-    return [];
+    return {
+      message: "An error occurred during getting courses",
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 };
-const getCourse = async (courseID: string): Promise<CourseProps | null> => {
+
+const getCourse = async (
+  courseID: string
+): Promise<SuccessResponse<CourseProps> | ErrorResponse> => {
   try {
     const response = await fetch(`/api/auth/courses/${courseID}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(courseID),
     });
-
-    const getCourseData = await parseJSON(response);
-    if (response.ok) {
-      console.log(getCourseData.message);
-      return getCourseData.course;
-    }
-    console.error(getCourseData.message);
-    return null;
+    return await parseJSON<CourseProps>(response);
   } catch (error) {
-    console.error("An error occurred during getting course: ", error);
-    return null;
+    return {
+      message: "An error occurred during getting course",
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 };
 
 const createCourse = async (
   data: CreateCourseProps
-): Promise<string | null> => {
+): Promise<SuccessResponse<string> | ErrorResponse> => {
   try {
     const response = await fetch("/api/auth/courses", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-
-    const createCourseData = await parseJSON(response);
-    if (response.ok) {
-      console.log(createCourseData.message);
-      return createCourseData.courseID;
-    }
-    console.error(createCourseData.message);
-    return null;
+    return await parseJSON<string>(response);
   } catch (error) {
-    console.error("An error occurred during creating course: ", error);
-    return null;
+    return {
+      message: "An error occurred during creating course",
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 };
 
-const updateCourse = async (data: CourseProps) => {
+const updateCourse = async (
+  data: CourseProps
+): Promise<SuccessResponse<boolean> | ErrorResponse> => {
   try {
     const response = await fetch(`/api/auth/courses/${data.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...data }),
     });
-
-    const updateCourseData = await parseJSON(response);
-    if (response.ok) {
-      console.log(updateCourseData.message);
-    } else console.error(updateCourseData.message);
+    return await parseJSON<boolean>(response);
   } catch (error) {
-    console.error("An error occurred during updating course: ", error);
+    return {
+      message: "An error occurred during updating course",
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 };
 
-const deleteCourse = async (courseID: string): Promise<boolean> => {
+const deleteCourse = async (
+  courseID: string
+): Promise<SuccessResponse<boolean> | ErrorResponse> => {
   try {
     const response = await fetch(`/api/auth/courses/${courseID}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(courseID),
     });
-
-    const deleteCourseData = await response.json();
-    if (response.ok) {
-      console.log(deleteCourseData.message);
-      return true;
-    }
-    console.error(deleteCourseData.message);
-    return false;
+    return await parseJSON<boolean>(response);
   } catch (error) {
-    console.error("An error occurred during deleting course: ", error);
-    return false;
+    return {
+      message: "An error occurred during deleting course",
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 };
 

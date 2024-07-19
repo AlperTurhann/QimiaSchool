@@ -1,62 +1,54 @@
-import { LoginProps, RegisterProps, UserProps } from "@/types/UserTypes";
+import { LoginProps, SignupProps, UserProps } from "@/types/UserTypes";
+import { SuccessResponse, ErrorResponse } from "@/types/ResponseTypes";
 import { parseJSON } from "@/utils/fileUtils/IFileUtils";
 
-const getUsers = async (): Promise<UserProps[]> => {
+const getUsers = async (): Promise<
+  SuccessResponse<UserProps[]> | ErrorResponse
+> => {
   try {
     const response = await fetch("/api/auth/users");
-
-    const getUsersData = await parseJSON(response);
-    if (response.ok) {
-      console.log(getUsersData.message);
-      return getUsersData.users;
-    }
-    console.error(getUsersData.message);
-    return [];
+    return await parseJSON<UserProps[]>(response);
   } catch (error) {
-    console.error("An error occurred during getting users: ", error);
-    return [];
+    return {
+      message: "An error occurred during getting users",
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 };
 
-const getUser = async (userID: string): Promise<UserProps | null> => {
+const getUser = async (
+  userID: string
+): Promise<SuccessResponse<UserProps> | ErrorResponse> => {
   try {
     const response = await fetch(`/api/auth/users/${userID}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userID),
     });
-
-    const getUserData = await parseJSON(response);
-    if (response.ok) {
-      console.log(getUserData.message);
-      return getUserData.user;
-    }
-    console.error(getUserData.message);
-    return null;
+    return await parseJSON<UserProps>(response);
   } catch (error) {
-    console.error("An error occurred during getting user: ", error);
-    return null;
+    return {
+      message: "An error occurred during getting user",
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 };
 
-const login = async (data: LoginProps): Promise<UserProps | null> => {
+const login = async (
+  data: LoginProps
+): Promise<SuccessResponse<UserProps> | ErrorResponse> => {
   try {
     const response = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-
-    const registerData = await parseJSON(response);
-    if (response.ok) {
-      console.log(registerData.message);
-      return registerData.user;
-    }
-    console.error(registerData.message);
-    return null;
+    return await parseJSON<UserProps>(response);
   } catch (error) {
-    console.error("An error occurred during login: ", error);
-    return null;
+    return {
+      message: "An error occurred during login",
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 };
 
@@ -64,70 +56,59 @@ const logout = (): void => {
   console.log("You are logged out!");
 };
 
-const signup = async (data: RegisterProps): Promise<UserProps | null> => {
+const signup = async (
+  data: SignupProps
+): Promise<SuccessResponse<UserProps> | ErrorResponse> => {
   try {
     const response = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-
-    const registerData = await response.json();
-    if (response.ok) {
-      console.log(registerData.message);
-      return registerData.user;
-    }
-    console.error(registerData.message);
-    return null;
+    return await parseJSON<UserProps>(response);
   } catch (error) {
-    console.error("An error occurred during signup: ", error);
-    return null;
+    return {
+      message: "An error occurred during signup",
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 };
 
 const leaveCourse = async (
   userID: string,
   courseID: string
-): Promise<boolean> => {
+): Promise<SuccessResponse<boolean> | ErrorResponse> => {
   try {
     const response = await fetch(`/api/auth/users/${userID}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userID, courseID, isEnroll: false }),
     });
-    const leaveData = await response.json();
-    if (response.ok) {
-      console.log(leaveData.message);
-      return true;
-    }
-    console.error(leaveData.message);
-    return false;
+    return await parseJSON<boolean>(response);
   } catch (error) {
-    console.error("An error occurred during leave course: ", error);
-    return false;
+    return {
+      message: "An error occurred during leave course",
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 };
 
 const enrollCourse = async (
   userID: string,
   courseID: string
-): Promise<boolean> => {
+): Promise<SuccessResponse<boolean> | ErrorResponse> => {
   try {
     const response = await fetch(`/api/auth/users/${userID}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userID, courseID, isEnroll: true }),
     });
-    const enrollData = await response.json();
-    if (response.ok) {
-      console.log(enrollData.message);
-      return true;
-    }
-    console.error(enrollData.message);
-    return false;
+    return await parseJSON<boolean>(response);
   } catch (error) {
-    console.error("An error occurred during leave course: ", error);
-    return false;
+    return {
+      message: "An error occurred during enroll course",
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 };
 

@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { CourseProps } from "@/types/CourseTypes";
-import { useCourseContext } from "@/context/CourseContext";
 import { UserProps } from "@/types/UserTypes";
+import { useCourseContext } from "@/context/CourseContext";
+import { useAlertContext } from "@/context/AlertContext";
 
 const useGetUserCoursesHook = (user: UserProps) => {
+  const { showAlert } = useAlertContext();
   const { getCourse } = useCourseContext();
   const [courses, setCourses] = useState<CourseProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -12,9 +14,10 @@ const useGetUserCoursesHook = (user: UserProps) => {
     try {
       setLoading(true);
       const fetchedUserCourses = await Promise.all(
-        user.courses.map(
-          async (createdCourseID) => await getCourse(createdCourseID)
-        )
+        user.courses.map(async (createdCourseID) => {
+          const response = await getCourse(createdCourseID);
+          return "data" in response ? response.data : null;
+        })
       );
 
       const validCourses = fetchedUserCourses.filter(
@@ -22,7 +25,10 @@ const useGetUserCoursesHook = (user: UserProps) => {
       );
       setCourses(validCourses);
     } catch (error) {
-      console.error(error);
+      showAlert(
+        "Error",
+        error instanceof Error ? error.message : String(error)
+      );
     } finally {
       setLoading(false);
     }

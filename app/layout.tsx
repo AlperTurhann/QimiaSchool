@@ -4,8 +4,10 @@ import "@/styles/globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SideBar from "@/components/layout/SideBar";
+import AlertProvider from "@/components/providers/AlertProvider";
 import UserProvider from "@/components/providers/UserProvider";
 import CourseProvider from "@/components/providers/CourseProvider";
+import AlertRB from "@/components/shared/AlertRB";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,17 +25,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`min-h-screen flex flex-col ${inter.className}`}>
-        <UserProvider>
-          <CourseProvider>
-            <Header />
-            <div className="flex">
-              <SideBar />
-              <div className="size-full min-h-[calc(100vh-14rem)] flex flex-col items-center overflow-hidden p-2 gap-5 sm:p-5">
-                {children}
+        <AlertProvider>
+          <UserProvider>
+            <CourseProvider>
+              <Header />
+              <div className="flex">
+                <SideBar />
+                <div className="size-full min-h-[calc(100vh-14rem)] flex flex-col items-center overflow-hidden p-2 gap-5 sm:p-5">
+                  {children}
+                </div>
               </div>
-            </div>
-          </CourseProvider>
-        </UserProvider>
+              <AlertRB />
+            </CourseProvider>
+          </UserProvider>
+        </AlertProvider>
         <Footer />
       </body>
     </html>

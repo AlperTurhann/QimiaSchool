@@ -1,17 +1,17 @@
 "use client";
 import React, { cloneElement, ReactElement, ReactNode } from "react";
-import { useRouter } from "next/navigation";
 import { FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useGetEnrolledUsersHook from "@/hooks/courseHooks/getEnrolledUsersHook";
 import { CourseProps, CreateCourseProps } from "@/types/CourseTypes";
 import { CourseData, CourseSchema } from "@/utils/validations/CourseSchema";
-import { useCourseContext } from "@/context/CourseContext";
 import { useUserContext } from "@/context/UserContext";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import EnrolledStudents from "@/components/shared/EnrolledStudents";
 import Loading from "@/components/shared/Loading";
+import useCreateCourseHook from "@/hooks/courseHooks/createCourseHook";
+import useUpdateCourseHook from "@/hooks/courseHooks/updateCourseHook";
 
 interface Props {
   children: ReactNode;
@@ -33,11 +33,14 @@ const CourseFormComponent = ({ children, course }: Props) => {
   });
   const { handleSubmit, control } = form;
 
-  const { state, dispatch, getUser } = useUserContext();
-  const { createCourse, updateCourse } = useCourseContext();
-  const { enrolledUsers, setEnrolledUsers, loading } =
-    useGetEnrolledUsersHook(course);
-  const navigate = useRouter();
+  const { state } = useUserContext();
+  const {
+    enrolledUsers,
+    setEnrolledUsers,
+    loading: enrolledUsersLoading,
+  } = useGetEnrolledUsersHook(course);
+  const { createCourse, loading: createCourseLoading } = useCreateCourseHook();
+  const { updateCourse, loading: updateCourseLoading } = useUpdateCourseHook();
 
   const handleKickStudent = (studentID: string) => {
     setEnrolledUsers(
@@ -56,12 +59,7 @@ const CourseFormComponent = ({ children, course }: Props) => {
         capacity: data.capacity,
       };
 
-      const newCourseID = await createCourse(createCourseData);
-      if (newCourseID) {
-        const updatedInstructor = await getUser(createCourseData.instructor);
-        dispatch({ type: "SET_USER", payload: updatedInstructor });
-        navigate.push(`/courses/${newCourseID}`);
-      }
+      createCourse(createCourseData);
     } else {
       const updateCourseData: CourseProps = {
         id: course.id,
@@ -72,12 +70,12 @@ const CourseFormComponent = ({ children, course }: Props) => {
         enrolledStudents: enrolledUsers.map((user) => user.id),
       };
 
-      await updateCourse(updateCourseData);
-      navigate.push(`/courses/${course.id}`);
+      updateCourse(updateCourseData);
     }
   };
 
-  if (loading) return <Loading />;
+  if (enrolledUsersLoading || createCourseLoading || updateCourseLoading)
+    return <Loading />;
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
       <Form {...form}>

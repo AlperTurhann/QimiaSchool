@@ -3,7 +3,9 @@
     "id": "d1c416c1-9042-4e16-aa12-3e76c499beb6",
     "name": "Alper Turhan",
     "email": "alper34_44@hotmail.com",
-    "courses": [],
+    "courses": [
+      "b5009bc8-018a-4e85-8673-68ee21a49f7f"
+    ],
     "role": "student",
     "password": "$2a$10$yG8fQhoQPiUGbZOC0ObUNuRKAjNz/bwMYl.jg.SH049G8JSubb77u"
   },

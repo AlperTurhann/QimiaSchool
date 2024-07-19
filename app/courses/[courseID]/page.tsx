@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useParams, useRouter } from "next/navigation";
-import coursePageHook from "@/hooks/courseHooks/coursePageHook";
+import useCoursePageHook from "@/hooks/courseHooks/coursePageHook";
 import useLeaveCourseHook from "@/hooks/userHooks/leaveCourseHook";
 import useEnrollCourseHook from "@/hooks/userHooks/enrollCourseHook";
 import useDeleteCourseHook from "@/hooks/courseHooks/deleteCourseHook";
@@ -16,7 +16,7 @@ const CoursePage = () => {
   const navigate = useRouter();
 
   const { course, instructor, enrolledUsers, loading } =
-    coursePageHook(courseID);
+    useCoursePageHook(courseID);
   const { handleLeaveCourse } = useLeaveCourseHook();
   const { handleEnrollCourse } = useEnrollCourseHook();
   const { handleDeleteCourse } = useDeleteCourseHook();

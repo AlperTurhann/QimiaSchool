@@ -3,8 +3,10 @@ import { CourseProps } from "@/types/CourseTypes";
 import { UserProps } from "@/types/UserTypes";
 import { useCourseContext } from "@/context/CourseContext";
 import { useUserContext } from "@/context/UserContext";
+import { useAlertContext } from "@/context/AlertContext";
 
 const useCoursePageHook = (courseID: string) => {
+  const { showAlert } = useAlertContext();
   const { getCourse } = useCourseContext();
   const { state, getUser } = useUserContext();
   const [course, setCourse] = useState<CourseProps | null>(null);
@@ -16,27 +18,42 @@ const useCoursePageHook = (courseID: string) => {
     try {
       setLoading(true);
       const fetchedCourse = await getCourse(courseID);
-      setCourse(fetchedCourse);
-
-      if (fetchedCourse) {
-        const fetchedInstructor = await getUser(fetchedCourse.instructor);
-        setInstructor(fetchedInstructor);
-
-        if (state.user) {
-          const fetchedEnrolledUsers = await Promise.all(
-            fetchedCourse.enrolledStudents.map(getUser)
+      if ("data" in fetchedCourse) {
+        if (fetchedCourse.data) {
+          setCourse(fetchedCourse.data);
+          const fetchedInstructor = await getUser(
+            fetchedCourse.data.instructor
           );
-          setEnrolledUsers(
-            fetchedEnrolledUsers.filter((user) => user !== null)
-          );
+          if ("data" in fetchedInstructor) {
+            setInstructor(fetchedInstructor.data);
+          } else {
+            showAlert("Error", fetchedInstructor.error);
+          }
+
+          if (state.user) {
+            const fetchedEnrolledUsers = await Promise.all(
+              fetchedCourse.data.enrolledStudents.map(async (studentID) => {
+                const response = await getUser(studentID);
+                return "data" in response ? response.data : null;
+              })
+            );
+            setEnrolledUsers(
+              fetchedEnrolledUsers.filter((user) => user !== null)
+            );
+          }
         }
+      } else {
+        showAlert("Error", fetchedCourse.error);
       }
     } catch (error) {
-      console.error(error);
+      showAlert(
+        "Error",
+        error instanceof Error ? error.message : String(error)
+      );
     } finally {
       setLoading(false);
     }
-  }, [courseID, getCourse, getUser, state.user]);
+  }, [courseID, getCourse, getUser]);
 
   useEffect(() => {
     fetchData();
