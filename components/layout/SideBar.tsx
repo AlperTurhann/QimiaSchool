@@ -49,7 +49,9 @@ const SideBar = () => {
                   ? "Add New Course"
                   : "Available Courses"
               }`}
-              navLink={`${state.user.role === "instructor" ? "new" : ""}`}
+              navLink={`/courses/${
+                state.user.role === "instructor" ? "new" : ""
+              }`}
             />
             <SideBarElement
               text={`${
@@ -57,10 +59,13 @@ const SideBar = () => {
                   ? "Manage Courses"
                   : "My Courses"
               }`}
-              navLink={`${
+              navLink={`/courses/${
                 state.user.role === "instructor" ? "manage" : "enrolled"
               }`}
             />
+            <div className={`${state.user.role !== "instructor" && "hidden"}`}>
+              <SideBarElement text="All Users" navLink={`/users`} />
+            </div>
           </ul>
         </ScrollArea>
       </aside>

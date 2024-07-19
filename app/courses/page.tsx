@@ -1,6 +1,6 @@
 "use client";
 import getCoursesHook from "@/hooks/courseHooks/getCoursesHook";
-import Course from "@/modules/Course";
+import CourseCard from "@/modules/Course";
 import Loading from "@/components/shared/Loading";
 
 const Courses = () => {
@@ -12,7 +12,7 @@ const Courses = () => {
       <h1 className="text-center text-2xl font-bold p-5">Courses</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {courses.map((course) => (
-          <Course key={course.id} course={course} />
+          <CourseCard key={course.id} course={course} />
         ))}
       </div>
     </main>

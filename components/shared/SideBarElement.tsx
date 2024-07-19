@@ -14,8 +14,8 @@ const SideBarElement = ({ text, navLink }: Props) => {
     <li className="p-2">
       <Button
         variant="ghost"
-        onClick={() => navigate.push(`/courses/${navLink}`)}
-        className="p-0 md:p-2"
+        onClick={() => navigate.push(`${navLink}`)}
+        className="size-full p-0 md:p-2"
       >
         <span className="text-xs">{text}</span>
       </Button>
