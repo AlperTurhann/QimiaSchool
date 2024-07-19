@@ -52,8 +52,11 @@ const login = async (
   }
 };
 
-const logout = (): void => {
-  console.log("You are logged out!");
+const logout = (): SuccessResponse<boolean> | ErrorResponse => {
+  return {
+    message: "You are logged out!",
+    data: true,
+  };
 };
 
 const signup = async (

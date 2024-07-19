@@ -3,22 +3,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Book, CircleUserRound, LogOut } from "lucide-react";
+import useLogoutHook from "@/hooks/userHooks/logoutHook";
 import { useUserContext } from "@/context/UserContext";
 import { Button } from "@/components/ui/button";
 
 const NavBar = () => {
-  const { state, dispatch, logout } = useUserContext();
+  const { state } = useUserContext();
+  const { logout } = useLogoutHook();
   const navigate = useRouter();
 
   const handleProfileClick = () => {
     if (state.user) navigate.push(`/users/${state.user.id}`);
     else navigate.push("/login");
-  };
-
-  const handleLogout = () => {
-    logout();
-    dispatch({ type: "CLEAR_USER" });
-    navigate.push("/");
   };
 
   return (
@@ -45,7 +41,7 @@ const NavBar = () => {
         </Button>
         <Button
           variant="ghost"
-          onClick={handleLogout}
+          onClick={logout}
           className={`p-2 ${!state.user && "hidden"}`}
         >
           <LogOut size={25} />
