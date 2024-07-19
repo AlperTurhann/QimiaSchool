@@ -4,7 +4,9 @@ import * as userUtils from "@/utils/usersUtils";
 
 type UserAction =
   | { type: "SET_USER"; payload: UserProps | null }
-  | { type: "CLEAR_USER" };
+  | { type: "CLEAR_USER" }
+  | { type: "ENROLL_COURSE"; payload: string }
+  | { type: "LEAVE_COURSE"; payload: string };
 
 type UserState = {
   user: UserProps | null;

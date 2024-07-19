@@ -13,6 +13,28 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
       return { ...state, user: action.payload };
     case "CLEAR_USER":
       return { ...state, user: null };
+    case "ENROLL_COURSE":
+      return state.user
+        ? {
+            ...state,
+            user: {
+              ...state.user,
+              courses: [...state.user.courses, action.payload],
+            },
+          }
+        : state;
+    case "LEAVE_COURSE":
+      return state.user
+        ? {
+            ...state,
+            user: {
+              ...state.user,
+              courses: state.user.courses.filter(
+                (courseID) => courseID !== action.payload
+              ),
+            },
+          }
+        : state;
     default:
       return state;
   }

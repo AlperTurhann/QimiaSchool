@@ -85,7 +85,10 @@ const signup = async (data: RegisterProps): Promise<UserProps | null> => {
   }
 };
 
-const leaveCourse = async (userID: string, courseID: string) => {
+const leaveCourse = async (
+  userID: string,
+  courseID: string
+): Promise<boolean> => {
   try {
     const response = await fetch(`/api/auth/users/${userID}`, {
       method: "PUT",
@@ -93,14 +96,22 @@ const leaveCourse = async (userID: string, courseID: string) => {
       body: JSON.stringify({ userID, courseID, isEnroll: false }),
     });
     const leaveData = await response.json();
-    if (response.ok) console.log(leaveData.message);
-    else console.error(leaveData.message);
+    if (response.ok) {
+      console.log(leaveData.message);
+      return true;
+    }
+    console.error(leaveData.message);
+    return false;
   } catch (error) {
     console.error("An error occurred during leave course: ", error);
+    return false;
   }
 };
 
-const enrollCourse = async (userID: string, courseID: string) => {
+const enrollCourse = async (
+  userID: string,
+  courseID: string
+): Promise<boolean> => {
   try {
     const response = await fetch(`/api/auth/users/${userID}`, {
       method: "PUT",
@@ -108,10 +119,15 @@ const enrollCourse = async (userID: string, courseID: string) => {
       body: JSON.stringify({ userID, courseID, isEnroll: true }),
     });
     const enrollData = await response.json();
-    if (response.ok) console.log(enrollData.message);
-    else console.error(enrollData.message);
+    if (response.ok) {
+      console.log(enrollData.message);
+      return true;
+    }
+    console.error(enrollData.message);
+    return false;
   } catch (error) {
     console.error("An error occurred during leave course: ", error);
+    return false;
   }
 };
 

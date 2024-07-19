@@ -7,22 +7,21 @@ const useDeleteCourseHook = (
   setCourses?: Dispatch<SetStateAction<CourseProps[]>>
 ) => {
   const { deleteCourse } = useCourseContext();
-  const { state, dispatch, getUser } = useUserContext();
+  const { dispatch, getUser } = useUserContext();
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleDeleteCourse = useCallback(
     async (courseID: string) => {
       try {
         setLoading(true);
-        await deleteCourse(courseID);
-        if (setCourses) {
-          setCourses((prevCourses) =>
-            prevCourses.filter((course) => course.id !== courseID)
-          );
-        }
-        if (state.user) {
-          const updatedInstructor = await getUser(state.user.id);
-          dispatch({ type: "SET_USER", payload: updatedInstructor });
+        const isSuccesfull = await deleteCourse(courseID);
+        if (isSuccesfull) {
+          if (setCourses) {
+            setCourses((prevCourses) =>
+              prevCourses.filter((course) => course.id !== courseID)
+            );
+          }
+          dispatch({ type: "LEAVE_COURSE", payload: courseID });
         }
       } catch (error) {
         console.error(error);
@@ -30,7 +29,7 @@ const useDeleteCourseHook = (
         setLoading(false);
       }
     },
-    [deleteCourse, state.user, getUser]
+    [deleteCourse, getUser]
   );
 
   return { handleDeleteCourse, loading };

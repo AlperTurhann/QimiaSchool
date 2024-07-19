@@ -77,7 +77,7 @@ const updateCourse = async (data: CourseProps) => {
   }
 };
 
-const deleteCourse = async (courseID: string) => {
+const deleteCourse = async (courseID: string): Promise<boolean> => {
   try {
     const response = await fetch(`/api/auth/courses/${courseID}`, {
       method: "DELETE",
@@ -86,10 +86,15 @@ const deleteCourse = async (courseID: string) => {
     });
 
     const deleteCourseData = await response.json();
-    if (response.ok) console.log(deleteCourseData.message);
-    else console.error(deleteCourseData.message);
+    if (response.ok) {
+      console.log(deleteCourseData.message);
+      return true;
+    }
+    console.error(deleteCourseData.message);
+    return false;
   } catch (error) {
     console.error("An error occurred during deleting course: ", error);
+    return false;
   }
 };
 

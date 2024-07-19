@@ -14,14 +14,15 @@ const useLeaveCourseHook = (
       try {
         if (state.user) {
           setLoading(true);
-          await leaveCourse(state.user.id, courseID);
-          if (setCourses) {
-            setCourses((prevCourses) =>
-              prevCourses.filter((course) => course.id !== courseID)
-            );
+          const isSuccesfull = await leaveCourse(state.user.id, courseID);
+          if (isSuccesfull) {
+            if (setCourses) {
+              setCourses((prevCourses) =>
+                prevCourses.filter((course) => course.id !== courseID)
+              );
+            }
+            dispatch({ type: "LEAVE_COURSE", payload: courseID });
           }
-          const updatedUser = await getUser(state.user.id);
-          dispatch({ type: "SET_USER", payload: updatedUser });
         }
       } catch (error) {
         console.error(error);

@@ -14,14 +14,15 @@ const useEnrollCourseHook = (
       try {
         if (state.user) {
           setLoading(true);
-          await enrollCourse(state.user.id, courseID);
-          if (setCourses) {
-            setCourses((prevCourses) =>
-              prevCourses.filter((course) => course.id !== courseID)
-            );
+          const isSuccesfull = await enrollCourse(state.user.id, courseID);
+          if (isSuccesfull) {
+            if (setCourses) {
+              setCourses((prevCourses) =>
+                prevCourses.filter((course) => course.id !== courseID)
+              );
+            }
+            dispatch({ type: "ENROLL_COURSE", payload: courseID });
           }
-          const updatedUser = await getUser(state.user.id);
-          dispatch({ type: "SET_USER", payload: updatedUser });
         }
       } catch (error) {
         console.error(error);
