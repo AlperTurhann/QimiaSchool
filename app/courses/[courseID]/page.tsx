@@ -159,7 +159,7 @@ const CoursePage = () => {
           type="button"
           variant="destructive"
           onClick={handleClickDelete}
-          className={`${state.user?.role !== "instructor" && "hidden"}`}
+          className={`${state.user?.id !== instructor.id && "hidden"}`}
         >
           Delete the course
         </Button>
