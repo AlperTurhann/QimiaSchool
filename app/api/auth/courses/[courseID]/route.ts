@@ -163,9 +163,10 @@ export async function DELETE(
 
     courses.splice(courseIndex, 1);
     users.forEach((user) => {
-      if (user.courses.includes(courseID)) {
-        user.courses = user.courses.filter((course) => course !== courseID);
-      }
+      user.courses = user.courses.filter((course) => course !== courseID);
+      user.courseInvitations = user.courseInvitations.filter(
+        (invitation) => invitation.invitedCourseID !== courseID
+      );
     });
 
     coursesUtils.writeData(courses);

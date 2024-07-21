@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Book, CircleUserRound, LogOut } from "lucide-react";
+import { Bell, Book, CircleUserRound, LogOut } from "lucide-react";
 import useLogoutHook from "@/hooks/userHooks/logoutHook";
 import { useUserContext } from "@/context/UserContext";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,18 @@ const NavBar = () => {
         />
       </Link>
       <div className="flex items-center gap-0 sm:gap-2 md:gap-3">
+        <Button
+          variant="ghost"
+          onClick={() => navigate.push("/invitations")}
+          className={`relative p-2 ${!state.user && "hidden"}`}
+        >
+          <Bell size={25} />
+          <span
+            className={`size-2 top-0.5 right-0.5 block absolute rounded-full bg-red-500 ${
+              state.user?.courseInvitations.length === 0 && "hidden"
+            }`}
+          />
+        </Button>
         <Button
           variant="ghost"
           onClick={() => navigate.push("/courses")}

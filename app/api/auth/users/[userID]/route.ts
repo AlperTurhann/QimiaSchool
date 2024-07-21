@@ -10,6 +10,17 @@ export async function POST(
 ): Promise<NextResponse<SuccessResponse<UserProps> | ErrorResponse>> {
   try {
     const userID = await request.json();
+
+    if (!userID) {
+      return NextResponse.json(
+        {
+          message: "Missing required fields!",
+          error: "UserID is required",
+        },
+        { status: 400 }
+      );
+    }
+
     const users = usersUtils.readData();
 
     const user = users.find((userData) => userData.id === userID);
@@ -18,7 +29,7 @@ export async function POST(
       return NextResponse.json(
         {
           message: "No user found with this ID!",
-          error: "UserID is required",
+          error: "No user found with this ID",
         },
         { status: 404 }
       );

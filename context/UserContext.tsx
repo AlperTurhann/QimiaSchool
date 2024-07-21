@@ -1,12 +1,15 @@
 import { createContext, useContext, Dispatch } from "react";
 import { UserProps } from "@/types/UserTypes";
+import { InvitationProps } from "@/types/InvitationTypes";
 import * as userUtils from "@/utils/usersUtils";
 
 type UserAction =
   | { type: "SET_USER"; payload: UserProps | null }
   | { type: "CLEAR_USER" }
   | { type: "ENROLL_COURSE"; payload: string }
-  | { type: "LEAVE_COURSE"; payload: string };
+  | { type: "LEAVE_COURSE"; payload: string }
+  | { type: "ACCEPT_COURSE_INVITATION"; payload: InvitationProps }
+  | { type: "DECLINE_COURSE_INVITATION"; payload: string };
 
 type UserState = {
   user: UserProps | null;

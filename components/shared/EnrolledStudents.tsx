@@ -36,7 +36,7 @@ const EnrolledStudents = ({
       </CardHeader>
       <CardContent className="p-0">
         <span
-          className={`text-center text-gray-500 ${
+          className={`text-center text-gray-500 p-6 ${
             enrolledUsers.length === 0 && state.user ? "block" : "hidden "
           }`}
         >
@@ -45,7 +45,11 @@ const EnrolledStudents = ({
         <div className={`${state.user && "hidden"}`}>
           <MustLogin />
         </div>
-        <div className={`${!state.user && "hidden"}`}>
+        <div
+          className={`${
+            !state.user || (enrolledUsers.length === 0 && "hidden")
+          }`}
+        >
           <div
             className={`flex flex-col p-5 gap-3 ${type === "view" && "hidden"}`}
           >

@@ -1,29 +1,32 @@
-import { Dispatch, SetStateAction, useCallback, useState } from "react";
-import { UserProps } from "@/types/UserTypes";
+import { useCallback, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
 import { useAlertContext } from "@/context/AlertContext";
+import { useInvitationContext } from "@/context/InviteContext";
 
-const useEnrollCourseHook = (
-  setEnrolledUsers: Dispatch<SetStateAction<UserProps[]>>
-) => {
+const useInviteCourseHook = () => {
   const { showAlert } = useAlertContext();
-  const { state, dispatch, getUser, enrollCourse } = useUserContext();
+  const { inviteCourse } = useInvitationContext();
+  const { state } = useUserContext();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleEnrollCourse = useCallback(
-    async (courseID: string) => {
+  const handleInviteCourse = useCallback(
+    async (
+      invitedUserID: string,
+      invitedCourseID: string
+    ): Promise<boolean> => {
+      let result: boolean = false;
       try {
         if (state.user) {
           setLoading(true);
-          const isSuccesfull = await enrollCourse(state.user.id, courseID);
+          const isSuccesfull = await inviteCourse(
+            state.user.id,
+            invitedUserID,
+            invitedCourseID
+          );
           if ("data" in isSuccesfull) {
             if (isSuccesfull.data) {
-              setEnrolledUsers((prevUsers) => [
-                ...prevUsers,
-                state.user as UserProps,
-              ]);
-              dispatch({ type: "ENROLL_COURSE", payload: courseID });
               showAlert("Success", isSuccesfull.message);
+              result = isSuccesfull.data;
             } else {
               showAlert("Error", isSuccesfull.message);
             }
@@ -39,11 +42,13 @@ const useEnrollCourseHook = (
       } finally {
         setLoading(false);
       }
+
+      return result;
     },
-    [enrollCourse, state.user, getUser]
+    [inviteCourse, state.user]
   );
 
-  return { handleEnrollCourse, loading };
+  return { handleInviteCourse, loading };
 };
 
-export default useEnrollCourseHook;
+export default useInviteCourseHook;

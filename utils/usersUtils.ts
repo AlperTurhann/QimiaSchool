@@ -90,7 +90,7 @@ const leaveCourse = async (
     return await parseJSON<boolean>(response);
   } catch (error) {
     return {
-      message: "An error occurred during leave course",
+      message: "An error occurred while leaving the course",
       error: error instanceof Error ? error.message : String(error),
     };
   }

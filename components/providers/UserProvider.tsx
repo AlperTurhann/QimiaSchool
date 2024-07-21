@@ -35,6 +35,32 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
             },
           }
         : state;
+    case "ACCEPT_COURSE_INVITATION":
+      return state.user
+        ? {
+            ...state,
+            user: {
+              ...state.user,
+              courses: [...state.user.courses, action.payload.invitedCourseID],
+              courseInvitations: state.user.courseInvitations.filter(
+                (invitation) =>
+                  invitation.invitationID !== action.payload.invitationID
+              ),
+            },
+          }
+        : state;
+    case "DECLINE_COURSE_INVITATION":
+      return state.user
+        ? {
+            ...state,
+            user: {
+              ...state.user,
+              courseInvitations: state.user.courseInvitations.filter(
+                (invitation) => invitation.invitationID !== action.payload
+              ),
+            },
+          }
+        : state;
     default:
       return state;
   }

@@ -41,6 +41,7 @@ export async function POST(
       courses: [],
       role,
       password: hashedPassword,
+      courseInvitations: [],
     };
 
     users.push(newUser);
