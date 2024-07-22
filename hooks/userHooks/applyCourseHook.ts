@@ -1,27 +1,25 @@
-import { Dispatch, SetStateAction, useCallback, useState } from "react";
-import { UserProps } from "@/types/UserTypes";
+import { useCallback, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
 import { useAlertContext } from "@/context/AlertContext";
 
-const useLeaveCourseHook = (
-  setEnrolledUsers: Dispatch<SetStateAction<UserProps[]>>
-) => {
+const useApplyCourseHook = () => {
   const { showAlert } = useAlertContext();
-  const { state, dispatch, getUser, leaveCourse } = useUserContext();
+  const { state, dispatch, getUser, applyCourse } = useUserContext();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleLeaveCourse = useCallback(
-    async (courseID: string) => {
+  const handleApplyCourse = useCallback(
+    async (instructorID: string, courseID: string) => {
       try {
         if (state.user) {
           setLoading(true);
-          const isSuccesfull = await leaveCourse(state.user.id, courseID);
+          const isSuccesfull = await applyCourse(
+            state.user.id,
+            instructorID,
+            courseID
+          );
           if ("data" in isSuccesfull) {
             if (isSuccesfull.data) {
-              setEnrolledUsers((prevUsers) =>
-                prevUsers.filter((user) => user.id !== state.user?.id)
-              );
-              dispatch({ type: "LEAVE_COURSE", payload: courseID });
+              dispatch({ type: "APPLY_COURSE", payload: courseID });
               showAlert("Success", isSuccesfull.message);
             } else {
               showAlert("Error", isSuccesfull.message);
@@ -39,10 +37,10 @@ const useLeaveCourseHook = (
         setLoading(false);
       }
     },
-    [leaveCourse, state.user, getUser]
+    [applyCourse, state.user, getUser]
   );
 
-  return { handleLeaveCourse, loading };
+  return { handleApplyCourse, loading };
 };
 
-export default useLeaveCourseHook;
+export default useApplyCourseHook;

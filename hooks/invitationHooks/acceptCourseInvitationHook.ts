@@ -6,16 +6,16 @@ import { useUserContext } from "@/context/UserContext";
 import { useAlertContext } from "@/context/AlertContext";
 import { useInvitationContext } from "@/context/InviteContext";
 
-const useAcceptInvitationHook = (
+const useAcceptCourseInvitationHook = (
   setInvitations?: Dispatch<SetStateAction<InvitationProps[]>>,
   setEnrolledUsers?: Dispatch<SetStateAction<UserProps[]>>
 ) => {
   const { showAlert } = useAlertContext();
   const { state, dispatch } = useUserContext();
-  const { acceptInvitation } = useInvitationContext();
+  const { acceptCourseInvitation } = useInvitationContext();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleAcceptInvitationResult = (
+  const handleAcceptCourseInvitationResult = (
     result: SuccessResponse<boolean> | ErrorResponse,
     invitation: InvitationProps
   ) => {
@@ -56,18 +56,14 @@ const useAcceptInvitationHook = (
     }
   };
 
-  const handleAcceptInvitation = useCallback(
+  const handleAcceptCourseInvitation = useCallback(
     async (invitation: InvitationProps) => {
       if (!state.user) return;
 
       setLoading(true);
       try {
-        const result = await acceptInvitation(
-          state.user.id,
-          invitation.invitationID,
-          invitation.invitedCourseID
-        );
-        handleAcceptInvitationResult(result, invitation);
+        const result = await acceptCourseInvitation(state.user.id, invitation);
+        handleAcceptCourseInvitationResult(result, invitation);
       } catch (error) {
         showAlert(
           "Error",
@@ -77,10 +73,10 @@ const useAcceptInvitationHook = (
         setLoading(false);
       }
     },
-    [acceptInvitation, state.user]
+    [acceptCourseInvitation, state.user]
   );
 
-  return { handleAcceptInvitation, loading };
+  return { handleAcceptCourseInvitation, loading };
 };
 
-export default useAcceptInvitationHook;
+export default useAcceptCourseInvitationHook;

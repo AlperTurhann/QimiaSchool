@@ -8,6 +8,7 @@ import FormInput from "@/components/shared/FormFields/FormInput";
 import MustLogin from "@/components/shared/MustLogin";
 import OnlyInstructor from "@/components/shared/OnlyInstructor";
 import Loading from "@/components/shared/Loading";
+import Selector from "@/components/shared/FormFields/Selector";
 
 const EditCoursePage = () => {
   const { state } = useUserContext();
@@ -28,6 +29,7 @@ const EditCoursePage = () => {
           textarea={true}
         />
         <FormInput name="capacity" label="Course Capacity" />
+        <Selector name="accessLevel" placeholder="Select an access level" />
       </CourseFormComponent>
     </main>
   );

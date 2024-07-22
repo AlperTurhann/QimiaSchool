@@ -12,6 +12,9 @@ import EnrolledStudents from "@/components/shared/EnrolledStudents";
 import Loading from "@/components/shared/Loading";
 import useCreateCourseHook from "@/hooks/courseHooks/createCourseHook";
 import useUpdateCourseHook from "@/hooks/courseHooks/updateCourseHook";
+import useGetAppliedUsersHook from "@/hooks/courseHooks/getAppliedUsersHook";
+import { UserProps } from "@/types/UserTypes";
+import AppliedStudents from "../AppliedStudents";
 
 interface Props {
   children: ReactNode;
@@ -28,6 +31,7 @@ const CourseFormComponent = ({ children, course }: Props) => {
           name: course.name,
           description: course.description,
           capacity: course.capacity,
+          accessLevel: course.accessLevel,
         }
       : undefined,
   });
@@ -39,6 +43,11 @@ const CourseFormComponent = ({ children, course }: Props) => {
     setEnrolledUsers,
     loading: enrolledUsersLoading,
   } = useGetEnrolledUsersHook(course);
+  const {
+    appliedUsers,
+    setAppliedUsers,
+    loading: appliedUsersLoading,
+  } = useGetAppliedUsersHook(course);
   const { createCourse, loading: createCourseLoading } = useCreateCourseHook();
   const { updateCourse, loading: updateCourseLoading } = useUpdateCourseHook();
 
@@ -50,6 +59,19 @@ const CourseFormComponent = ({ children, course }: Props) => {
     );
   };
 
+  const handleAcceptStudent = (student: UserProps) => {
+    setEnrolledUsers((prevEnrolledUsers) => [...prevEnrolledUsers, student]);
+    setAppliedUsers(
+      appliedUsers.filter((appliedStudent) => appliedStudent.id !== student.id)
+    );
+  };
+
+  const handleDeclineStudent = (studentID: string) => {
+    setAppliedUsers(
+      appliedUsers.filter((appliedStudent) => appliedStudent.id !== studentID)
+    );
+  };
+
   const onSubmit = async (data: FieldValues) => {
     if (!course) {
       const createCourseData: CreateCourseProps = {
@@ -57,6 +79,7 @@ const CourseFormComponent = ({ children, course }: Props) => {
         description: data.description,
         instructor: state.user?.id ?? "",
         capacity: data.capacity,
+        accessLevel: data.accessLevel,
       };
 
       createCourse(createCourseData);
@@ -67,14 +90,21 @@ const CourseFormComponent = ({ children, course }: Props) => {
         description: data.description,
         instructor: course.instructor,
         capacity: data.capacity,
+        accessLevel: data.accessLevel,
         enrolledStudents: enrolledUsers.map((user) => user.id),
+        appliedStudents: appliedUsers.map((user) => user.id),
       };
 
       updateCourse(updateCourseData);
     }
   };
 
-  if (enrolledUsersLoading || createCourseLoading || updateCourseLoading)
+  if (
+    enrolledUsersLoading ||
+    appliedUsersLoading ||
+    createCourseLoading ||
+    updateCourseLoading
+  )
     return <Loading />;
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
@@ -92,11 +122,18 @@ const CourseFormComponent = ({ children, course }: Props) => {
             )}
           </div>
           {course && (
-            <EnrolledStudents
-              type="edit"
-              enrolledUsers={enrolledUsers}
-              handleKickStudent={handleKickStudent}
-            />
+            <div className="flex flex-col gap-5">
+              <EnrolledStudents
+                type="edit"
+                enrolledUsers={enrolledUsers}
+                handleKickStudent={handleKickStudent}
+              />
+              <AppliedStudents
+                appliedUsers={appliedUsers}
+                handleAcceptStudent={handleAcceptStudent}
+                handleDeclineStudent={handleDeclineStudent}
+              />
+            </div>
           )}
           <Button
             type="submit"

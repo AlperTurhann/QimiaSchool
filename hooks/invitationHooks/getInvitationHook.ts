@@ -10,37 +10,37 @@ const useGetInvitationHook = (invitation: InvitationProps) => {
   const { showAlert } = useAlertContext();
   const { state, getUser } = useUserContext();
   const { getCourse } = useCourseContext();
-  const [inviter, setInviter] = useState<UserProps | null>(null);
-  const [invitedCourse, setInvitedCourse] = useState<CourseProps | null>(null);
+  const [user, setUser] = useState<UserProps | null>(null);
+  const [course, setCourse] = useState<CourseProps | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const fetchInviter = useCallback(
-    async (inviterID: string) => {
-      const fetchedInviter = await getUser(inviterID);
-      if ("data" in fetchedInviter) {
-        if (fetchedInviter.data) {
-          setInviter(fetchedInviter.data);
+  const fetchUser = useCallback(
+    async (userID: string) => {
+      const fetchedUser = await getUser(userID);
+      if ("data" in fetchedUser) {
+        if (fetchedUser.data) {
+          setUser(fetchedUser.data);
         } else {
-          showAlert("Error", fetchedInviter.message);
+          showAlert("Error", fetchedUser.message);
         }
       } else {
-        showAlert("Error", fetchedInviter.error);
+        showAlert("Error", fetchedUser.error);
       }
     },
     [getUser]
   );
 
-  const fetchInvitedCourse = useCallback(
-    async (invitedCourseID: string) => {
-      const fetchedInvitedCourse = await getCourse(invitedCourseID);
-      if ("data" in fetchedInvitedCourse) {
-        if (fetchedInvitedCourse.data) {
-          setInvitedCourse(fetchedInvitedCourse.data);
+  const fetchCourse = useCallback(
+    async (courseID: string) => {
+      const fetchedCourse = await getCourse(courseID);
+      if ("data" in fetchedCourse) {
+        if (fetchedCourse.data) {
+          setCourse(fetchedCourse.data);
         } else {
-          showAlert("Error", fetchedInvitedCourse.message);
+          showAlert("Error", fetchedCourse.message);
         }
       } else {
-        showAlert("Error", fetchedInvitedCourse.error);
+        showAlert("Error", fetchedCourse.error);
       }
     },
     [getCourse]
@@ -49,8 +49,8 @@ const useGetInvitationHook = (invitation: InvitationProps) => {
   const fetchInvitation = useCallback(async () => {
     try {
       if (state.user) {
-        await fetchInviter(invitation.invitingUserID);
-        await fetchInvitedCourse(invitation.invitedCourseID);
+        await fetchUser(invitation.userID);
+        await fetchCourse(invitation.courseID);
       }
     } catch (error) {
       showAlert(
@@ -60,13 +60,13 @@ const useGetInvitationHook = (invitation: InvitationProps) => {
     } finally {
       setLoading(false);
     }
-  }, [fetchInviter, fetchInvitedCourse]);
+  }, [fetchUser, fetchCourse]);
 
   useEffect(() => {
     if (state.user) fetchInvitation();
   }, [invitation, fetchInvitation]);
 
-  return { inviter, invitedCourse, loading };
+  return { user, course, loading };
 };
 
 export default useGetInvitationHook;

@@ -5,13 +5,15 @@ import useCoursePageHook from "@/hooks/courseHooks/coursePageHook";
 import useLeaveCourseHook from "@/hooks/userHooks/leaveCourseHook";
 import useEnrollCourseHook from "@/hooks/userHooks/enrollCourseHook";
 import useDeleteCourseHook from "@/hooks/courseHooks/deleteCourseHook";
-import useAcceptInvitationHook from "@/hooks/invitationHooks/acceptInvitationHook";
-import useDeclineInvitationHook from "@/hooks/invitationHooks/declineInvitationHook";
+import useAcceptCourseInvitationHook from "@/hooks/invitationHooks/acceptCourseInvitationHook";
+import useDeclineCourseInvitationHook from "@/hooks/invitationHooks/declineCourseInvitationHook";
 import { useUserContext } from "@/context/UserContext";
 import { Button } from "@/components/ui/button";
 import EnrolledStudents from "@/components/shared/EnrolledStudents";
 import Loading from "@/components/shared/Loading";
 import { InvitationProps } from "@/types/InvitationTypes";
+import useApplyCourseHook from "@/hooks/userHooks/applyCourseHook";
+import useWithdrawCourseHook from "@/hooks/userHooks/withdrawCourseHook";
 
 const CoursePage = () => {
   const { state } = useUserContext();
@@ -19,6 +21,7 @@ const CoursePage = () => {
   const [invitation, setInvitation] = useState<InvitationProps | null>(null);
   const [isInvited, setIsInvited] = useState<boolean>(false);
   const [isEnrolled, setIsEnrolled] = useState<boolean>(false);
+  const [isApplied, setIsApplied] = useState<boolean>(false);
   const [isEnrollable, setIsEnrollable] = useState<boolean>(false);
   const navigate = useRouter();
 
@@ -29,50 +32,57 @@ const CoursePage = () => {
     setEnrolledUsers,
     loading: coursePageLoading,
   } = useCoursePageHook(courseID);
-  const { handleLeaveCourse, loading: leaveLoading } =
-    useLeaveCourseHook(setEnrolledUsers);
   const { handleEnrollCourse, loading: enrollLoading } =
     useEnrollCourseHook(setEnrolledUsers);
+  const { handleLeaveCourse, loading: leaveLoading } =
+    useLeaveCourseHook(setEnrolledUsers);
+  const { handleApplyCourse, loading: applyLoading } = useApplyCourseHook();
+  const { handleWithdrawCourse, loading: withdrawLoading } =
+    useWithdrawCourseHook();
   const { handleDeleteCourse } = useDeleteCourseHook();
-  const { handleAcceptInvitation, loading: acceptLoading } =
-    useAcceptInvitationHook(undefined, setEnrolledUsers);
-  const { handleDeclineInvitation, loading: declineLoading } =
-    useDeclineInvitationHook();
+  const { handleAcceptCourseInvitation, loading: acceptCourseLoading } =
+    useAcceptCourseInvitationHook(undefined, setEnrolledUsers);
+  const { handleDeclineCourseInvitation, loading: declineCourseLoading } =
+    useDeclineCourseInvitationHook();
 
   useEffect(() => {
     let invited: boolean = false;
     let enrolled: boolean = false;
+    let applied: boolean = false;
     let enrollable: boolean = false;
 
-    if (state.user) {
-      state.user.courseInvitations.some((invitation) => {
-        if (invitation.invitedCourseID === courseID) {
+    if (state.user && course) {
+      state.user.invitations.some((invitation) => {
+        if (invitation.courseID === courseID) {
           setInvitation(invitation);
           invited = true;
         }
       });
       if (!invited) {
-        setInvitation(null);
+        applied = state.user.appliedCourses.includes(courseID);
         enrolled = state.user.courses.includes(courseID);
-        if (
-          course &&
+        enrollable =
+          !applied &&
           !enrolled &&
-          course.capacity > course.enrolledStudents.length
-        )
-          enrollable = true;
+          course.capacity > course.enrolledStudents.length;
       }
     }
 
     setIsInvited(invited);
     setIsEnrolled(enrolled);
+    setIsApplied(applied);
     setIsEnrollable(enrollable);
   }, [state.user, course]);
 
   const handleClickEnroll = async () => {
-    if (isEnrolled) {
-      await handleLeaveCourse(courseID);
-    } else {
-      await handleEnrollCourse(courseID);
+    if (isEnrolled) await handleLeaveCourse(courseID);
+    else await handleEnrollCourse(courseID);
+  };
+
+  const handleClickApply = async () => {
+    if (instructor) {
+      if (isApplied) await handleWithdrawCourse(instructor.id, courseID);
+      else await handleApplyCourse(instructor.id, courseID);
     }
   };
 
@@ -83,13 +93,13 @@ const CoursePage = () => {
 
   const handleClickAccept = async () => {
     if (invitation) {
-      await handleAcceptInvitation(invitation);
+      await handleAcceptCourseInvitation(invitation);
     }
   };
 
   const handleClickDecline = async () => {
     if (invitation) {
-      await handleDeclineInvitation(invitation.invitationID);
+      await handleDeclineCourseInvitation(invitation);
     }
   };
 
@@ -97,10 +107,12 @@ const CoursePage = () => {
   else if (!instructor) return null;
   else if (
     coursePageLoading ||
-    leaveLoading ||
     enrollLoading ||
-    acceptLoading ||
-    declineLoading
+    leaveLoading ||
+    applyLoading ||
+    withdrawLoading ||
+    acceptCourseLoading ||
+    declineCourseLoading
   )
     return <Loading />;
   return (
@@ -122,13 +134,15 @@ const CoursePage = () => {
       <div className={`${!state.user && "hidden"}`}>
         <div className={`${state.user?.role !== "student" && "hidden"}`}>
           <div className={`${isInvited && "hidden"}`}>
-            <Button
-              type="button"
-              onClick={handleClickEnroll}
-              className={`${!isEnrollable && "hidden"}`}
-            >
-              Enroll in the course
-            </Button>
+            <div className={`${course.accessLevel !== "everyone" && "hidden"}`}>
+              <Button
+                type="button"
+                onClick={handleClickEnroll}
+                className={`${!isEnrollable && "hidden"}`}
+              >
+                Enroll in the course
+              </Button>
+            </div>
             <Button
               type="button"
               variant="destructive"
@@ -137,6 +151,27 @@ const CoursePage = () => {
             >
               De-enroll from the course
             </Button>
+            <div
+              className={`${
+                course.accessLevel !== "accepted only" && "hidden"
+              }`}
+            >
+              <Button
+                type="button"
+                onClick={handleClickApply}
+                className={`${!isEnrollable && "hidden"}`}
+              >
+                Apply to the course
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleClickApply}
+                className={`${!isApplied && "hidden"}`}
+              >
+                Withdraw from the course
+              </Button>
+            </div>
           </div>
           <div
             className={`grid grid-cols-1 gap-5 sm:grid-cols-2 ${

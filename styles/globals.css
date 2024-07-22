@@ -75,3 +75,7 @@
 .truncateContent {
   @apply truncate text-start;
 }
+
+.rightStudent {
+  @apply right-[6.5rem];
+}

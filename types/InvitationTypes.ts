@@ -1,7 +1,7 @@
 interface InvitationProps {
   invitationID: string;
-  invitingUserID: string;
-  invitedCourseID: string;
+  userID: string;
+  courseID: string;
 }
 
 export type { InvitationProps };

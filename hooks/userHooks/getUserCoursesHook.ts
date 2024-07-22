@@ -4,7 +4,7 @@ import { UserProps } from "@/types/UserTypes";
 import { useCourseContext } from "@/context/CourseContext";
 import { useAlertContext } from "@/context/AlertContext";
 
-const useGetUserCoursesHook = (user: UserProps) => {
+const useGetUserCoursesHook = (user: UserProps | null) => {
   const { showAlert } = useAlertContext();
   const { getCourse } = useCourseContext();
   const [courses, setCourses] = useState<CourseProps[]>([]);
@@ -12,18 +12,20 @@ const useGetUserCoursesHook = (user: UserProps) => {
 
   const fetchUserCourses = useCallback(async () => {
     try {
-      setLoading(true);
-      const fetchedUserCourses = await Promise.all(
-        user.courses.map(async (createdCourseID) => {
-          const response = await getCourse(createdCourseID);
-          return "data" in response ? response.data : null;
-        })
-      );
+      if (user) {
+        setLoading(true);
+        const fetchedUserCourses = await Promise.all(
+          user.courses.map(async (createdCourseID) => {
+            const response = await getCourse(createdCourseID);
+            return "data" in response ? response.data : null;
+          })
+        );
 
-      const validCourses = fetchedUserCourses.filter(
-        (course) => course !== null
-      );
-      setCourses(validCourses);
+        const validCourses = fetchedUserCourses.filter(
+          (course) => course !== null
+        );
+        setCourses(validCourses);
+      }
     } catch (error) {
       showAlert(
         "Error",

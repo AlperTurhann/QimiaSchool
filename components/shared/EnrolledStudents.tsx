@@ -56,6 +56,7 @@ const EnrolledStudents = ({
             {enrolledUsers.map((student) => (
               <StudentCard
                 key={student.id}
+                type="enrolled"
                 student={student}
                 handleKickStudent={() => handleKickStudent(student.id)}
               />

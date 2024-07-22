@@ -53,13 +53,14 @@ const createCourse = async (
 };
 
 const updateCourse = async (
+  currentUserID: string,
   data: CourseProps
 ): Promise<SuccessResponse<boolean> | ErrorResponse> => {
   try {
     const response = await fetch(`/api/auth/courses/${data.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...data }),
+      body: JSON.stringify({ currentUserID, ...data }),
     });
     return await parseJSON<boolean>(response);
   } catch (error) {

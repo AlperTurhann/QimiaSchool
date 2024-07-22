@@ -37,7 +37,7 @@ export async function POST(
     return NextResponse.json(
       {
         message: "Invitations found!",
-        data: user.courseInvitations,
+        data: user.invitations,
       },
       { status: 200 }
     );
@@ -114,10 +114,10 @@ export async function PUT(
       );
     }
 
-    users[invitedUserIndex].courseInvitations.push({
+    users[invitedUserIndex].invitations.push({
       invitationID: uuidv4(),
-      invitingUserID: invitingUserID,
-      invitedCourseID: invitedCourseID,
+      userID: invitingUserID,
+      courseID: invitedCourseID,
     });
 
     usersUtils.writeData(users);

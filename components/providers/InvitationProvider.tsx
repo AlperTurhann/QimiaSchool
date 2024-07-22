@@ -14,23 +14,41 @@ const InvitationProvider = ({ children }: Props) => {
   const getInvitations = useCallback(invitationUtils.getInvitations, []);
   const getInvitation = useCallback(invitationUtils.getInvitation, []);
   const inviteCourse = useCallback(invitationUtils.inviteCourse, []);
-  const acceptInvitation = useCallback(invitationUtils.acceptInvitation, []);
-  const declineInvitation = useCallback(invitationUtils.declineInvitation, []);
+  const acceptCourseInvitation = useCallback(
+    invitationUtils.acceptCourseInvitation,
+    []
+  );
+  const declineCourseInvitation = useCallback(
+    invitationUtils.declineCourseInvitation,
+    []
+  );
+  const acceptJoinInvitation = useCallback(
+    invitationUtils.acceptJoinInvitation,
+    []
+  );
+  const declineJoinInvitation = useCallback(
+    invitationUtils.declineJoinInvitation,
+    []
+  );
 
   const value = useMemo<InvitationContextType>(
     () => ({
       getInvitations,
       getInvitation,
       inviteCourse,
-      acceptInvitation,
-      declineInvitation,
+      acceptCourseInvitation,
+      declineCourseInvitation,
+      acceptJoinInvitation,
+      declineJoinInvitation,
     }),
     [
       getInvitations,
       getInvitation,
       inviteCourse,
-      acceptInvitation,
-      declineInvitation,
+      acceptCourseInvitation,
+      declineCourseInvitation,
+      acceptJoinInvitation,
+      declineJoinInvitation,
     ]
   );
 

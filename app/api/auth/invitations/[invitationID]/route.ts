@@ -33,7 +33,7 @@ export async function POST(
       );
     }
 
-    const invitation = user.courseInvitations.find(
+    const invitation = user.invitations.find(
       (inv) => inv.invitationID === invitationID
     );
 
@@ -69,39 +69,40 @@ export async function PUT(
   request: Request
 ): Promise<NextResponse<SuccessResponse<boolean> | ErrorResponse>> {
   try {
-    const { userID, invitationID, courseID, isAccepted } = await request.json();
+    const { currentUserID, invitation, isAccepted, isJoin } =
+      await request.json();
 
-    if (isAccepted === null) {
+    if (
+      !currentUserID ||
+      !invitation ||
+      isAccepted === null ||
+      isJoin === null
+    ) {
       return NextResponse.json(
         {
           message: "Missing required fields!",
-          error: "IsAccepted is required",
-        },
-        { status: 400 }
-      );
-    } else if (isAccepted) {
-      if (!userID || !invitationID || !courseID) {
-        return NextResponse.json(
-          {
-            message: "Missing required fields!",
-            error: "UserID, invitationID and courseID are required",
-          },
-          { status: 400 }
-        );
-      }
-    } else if (!userID || !invitationID) {
-      return NextResponse.json(
-        {
-          message: "Missing required fields!",
-          error: "UserID and invitationID are required",
+          error:
+            "CurrentUserID, invitation, isAccepted and isJoin are required",
         },
         { status: 400 }
       );
     }
 
     const users = usersUtils.readData();
-    const userIndex = users.findIndex((user) => user.id === userID);
+    const currentUserIndex = users.findIndex(
+      (user) => user.id === currentUserID
+    );
+    if (currentUserIndex === -1) {
+      return NextResponse.json(
+        {
+          message: "No user found with this ID! (currentUser)",
+          error: "No user found with this ID (currentUser)",
+        },
+        { status: 404 }
+      );
+    }
 
+    const userIndex = users.findIndex((user) => user.id === invitation.userID);
     if (userIndex === -1) {
       return NextResponse.json(
         {
@@ -111,11 +112,9 @@ export async function PUT(
         { status: 404 }
       );
     }
-
-    const invitationIndex = users[userIndex].courseInvitations.findIndex(
-      (invitation) => invitation.invitationID === invitationID
+    const invitationIndex = users[currentUserIndex].invitations.findIndex(
+      (inv) => inv.invitationID === invitation.invitationID
     );
-
     if (invitationIndex === -1) {
       return NextResponse.json(
         {
@@ -126,23 +125,37 @@ export async function PUT(
       );
     }
 
-    users[userIndex].courseInvitations.splice(invitationIndex, 1);
+    const courses = coursesUtils.readData();
+    const courseIndex = courses.findIndex(
+      (course) => course.id === invitation.courseID
+    );
+    if (courseIndex === -1) {
+      return NextResponse.json(
+        {
+          message: "No course found with this ID!",
+          error: "No course found with this ID",
+        },
+        { status: 404 }
+      );
+    }
+
+    users[currentUserIndex].invitations.splice(invitationIndex, 1);
+    if (isJoin) {
+      users[userIndex].appliedCourses = users[userIndex].appliedCourses.filter(
+        (course) => course !== invitation.courseID
+      );
+      courses[courseIndex].appliedStudents = courses[
+        courseIndex
+      ].appliedStudents.filter((studentID) => studentID !== invitation.userID);
+    }
     if (isAccepted) {
-      const courses = coursesUtils.readData();
-      const courseIndex = courses.findIndex((course) => course.id === courseID);
-
-      if (courseIndex === -1) {
-        return NextResponse.json(
-          {
-            message: "No course found with this ID!",
-            error: "No course found with this ID",
-          },
-          { status: 404 }
-        );
+      if (isJoin) {
+        users[userIndex].courses.push(invitation.courseID);
+        courses[courseIndex].enrolledStudents.push(invitation.userID);
+      } else {
+        users[currentUserIndex].courses.push(invitation.courseID);
+        courses[courseIndex].enrolledStudents.push(currentUserID);
       }
-
-      users[userIndex].courses.push(courseID);
-      courses[courseIndex].enrolledStudents.push(userID);
 
       usersUtils.writeData(users);
       coursesUtils.writeData(courses);
@@ -156,6 +169,7 @@ export async function PUT(
       );
     }
     usersUtils.writeData(users);
+    coursesUtils.writeData(courses);
 
     return NextResponse.json(
       {

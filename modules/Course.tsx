@@ -58,8 +58,12 @@ const CourseCard = ({ course, courseInstructor }: Props) => {
         <CardContent className="truncateContent w-full">
           {course.description}
         </CardContent>
-        <CardFooter className="w-full" style={{ textAlign: "end" }}>
-          <span className="w-full">
+        <CardFooter className="w-full grid grid-cols-2 justify-between text-xs">
+          <span className="w-full flex capitalize text-gray-600">
+            <strong>Access Level: </strong>
+            {course?.accessLevel}
+          </span>
+          <span className="w-full flex justify-end">
             <strong>Capacity: </strong>
             {course.enrolledStudents.length}/{course?.capacity}
           </span>

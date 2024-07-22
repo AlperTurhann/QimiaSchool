@@ -35,14 +35,36 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
             },
           }
         : state;
+    case "APPLY_COURSE":
+      return state.user
+        ? {
+            ...state,
+            user: {
+              ...state.user,
+              appliedCourses: [...state.user.appliedCourses, action.payload],
+            },
+          }
+        : state;
+    case "WITHDRAW_COURSE":
+      return state.user
+        ? {
+            ...state,
+            user: {
+              ...state.user,
+              appliedCourses: state.user.appliedCourses.filter(
+                (courseID) => courseID !== action.payload
+              ),
+            },
+          }
+        : state;
     case "ACCEPT_COURSE_INVITATION":
       return state.user
         ? {
             ...state,
             user: {
               ...state.user,
-              courses: [...state.user.courses, action.payload.invitedCourseID],
-              courseInvitations: state.user.courseInvitations.filter(
+              courses: [...state.user.courses, action.payload.courseID],
+              invitations: state.user.invitations.filter(
                 (invitation) =>
                   invitation.invitationID !== action.payload.invitationID
               ),
@@ -50,12 +72,14 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
           }
         : state;
     case "DECLINE_COURSE_INVITATION":
+    case "ACCEPT_JOIN_INVITATION":
+    case "DECLINE_JOIN_INVITATION":
       return state.user
         ? {
             ...state,
             user: {
               ...state.user,
-              courseInvitations: state.user.courseInvitations.filter(
+              invitations: state.user.invitations.filter(
                 (invitation) => invitation.invitationID !== action.payload
               ),
             },
@@ -74,8 +98,10 @@ const UserProvider = ({ children }: Props) => {
   const login = useCallback(userUtils.login, []);
   const logout = useCallback(userUtils.logout, []);
   const signup = useCallback(userUtils.signup, []);
-  const leaveCourse = useCallback(userUtils.leaveCourse, []);
   const enrollCourse = useCallback(userUtils.enrollCourse, []);
+  const leaveCourse = useCallback(userUtils.leaveCourse, []);
+  const applyCourse = useCallback(userUtils.applyCourse, []);
+  const withdrawCourse = useCallback(userUtils.withdrawCourse, []);
 
   const value = useMemo(
     () => ({
@@ -86,10 +112,23 @@ const UserProvider = ({ children }: Props) => {
       login,
       logout,
       signup,
-      leaveCourse,
       enrollCourse,
+      leaveCourse,
+      applyCourse,
+      withdrawCourse,
     }),
-    [state, getUsers, getUser, login, logout, signup, leaveCourse, enrollCourse]
+    [
+      state,
+      getUsers,
+      getUser,
+      login,
+      logout,
+      signup,
+      enrollCourse,
+      leaveCourse,
+      applyCourse,
+      withdrawCourse,
+    ]
   );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

@@ -59,22 +59,24 @@ const inviteCourse = async (
   }
 };
 
-const acceptInvitation = async (
-  userID: string,
-  invitationID: string,
-  courseID: string
+const acceptCourseInvitation = async (
+  currentUserID: string,
+  invitation: InvitationProps
 ): Promise<SuccessResponse<boolean> | ErrorResponse> => {
   try {
-    const response = await fetch(`/api/auth/invitations/${invitationID}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userID,
-        invitationID,
-        courseID,
-        isAccepted: true,
-      }),
-    });
+    const response = await fetch(
+      `/api/auth/invitations/${invitation.invitationID}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentUserID,
+          invitation,
+          isAccepted: true,
+          isJoin: false,
+        }),
+      }
+    );
     return await parseJSON<boolean>(response);
   } catch (error) {
     return {
@@ -84,20 +86,78 @@ const acceptInvitation = async (
   }
 };
 
-const declineInvitation = async (
-  userID: string,
-  invitationID: string
+const declineCourseInvitation = async (
+  currentUserID: string,
+  invitation: InvitationProps
 ): Promise<SuccessResponse<boolean> | ErrorResponse> => {
   try {
-    const response = await fetch(`/api/auth/invitations/${invitationID}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userID,
-        invitationID,
-        isAccepted: false,
-      }),
-    });
+    const response = await fetch(
+      `/api/auth/invitations/${invitation.invitationID}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentUserID,
+          invitation,
+          isAccepted: false,
+          isJoin: false,
+        }),
+      }
+    );
+    return await parseJSON<boolean>(response);
+  } catch (error) {
+    return {
+      message: "An error occurred while declining to the invitation",
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+};
+
+const acceptJoinInvitation = async (
+  currentUserID: string,
+  invitation: InvitationProps
+): Promise<SuccessResponse<boolean> | ErrorResponse> => {
+  try {
+    const response = await fetch(
+      `/api/auth/invitations/${invitation.invitationID}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentUserID,
+          invitation,
+          isAccepted: true,
+          isJoin: true,
+        }),
+      }
+    );
+    return await parseJSON<boolean>(response);
+  } catch (error) {
+    return {
+      message: "An error occurred while accepting to the invitation",
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+};
+
+const declineJoinInvitation = async (
+  currentUserID: string,
+  invitation: InvitationProps
+): Promise<SuccessResponse<boolean> | ErrorResponse> => {
+  try {
+    const response = await fetch(
+      `/api/auth/invitations/${invitation.invitationID}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentUserID,
+          invitation,
+          isAccepted: false,
+          isJoin: true,
+        }),
+      }
+    );
     return await parseJSON<boolean>(response);
   } catch (error) {
     return {
@@ -111,6 +171,8 @@ export {
   getInvitations,
   getInvitation,
   inviteCourse,
-  acceptInvitation,
-  declineInvitation,
+  acceptCourseInvitation,
+  declineCourseInvitation,
+  acceptJoinInvitation,
+  declineJoinInvitation,
 };

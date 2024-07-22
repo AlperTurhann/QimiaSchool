@@ -31,13 +31,13 @@ const NavBar = () => {
       <div className="flex items-center gap-0 sm:gap-2 md:gap-3">
         <Button
           variant="ghost"
-          onClick={() => navigate.push("/invitations")}
+          onClick={() => navigate.push("/notifications")}
           className={`relative p-2 ${!state.user && "hidden"}`}
         >
           <Bell size={25} />
           <span
             className={`size-2 top-0.5 right-0.5 block absolute rounded-full bg-red-500 ${
-              state.user?.courseInvitations.length === 0 && "hidden"
+              state.user?.invitations.length === 0 && "hidden"
             }`}
           />
         </Button>

@@ -15,7 +15,6 @@ const ManageCoursePage = () => {
   const navigate = useRouter();
 
   const { state } = useUserContext();
-  if (!state.user) return <MustLogin />;
 
   const { courses, setCourses, loading } = useGetUserCoursesHook(state.user);
   const { handleDeleteCourse } = useDeleteCourseHook(setCourses);

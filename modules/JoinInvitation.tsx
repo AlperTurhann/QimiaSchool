@@ -1,9 +1,10 @@
 "use client";
+import { Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import { Eye } from "lucide-react";
 import useGetInvitationHook from "@/hooks/invitationHooks/getInvitationHook";
-import useAcceptInvitationHook from "@/hooks/invitationHooks/acceptInvitationHook";
-import useDeclineInvitationHook from "@/hooks/invitationHooks/declineInvitationHook";
+import useAcceptJoinInvitationHook from "@/hooks/invitationHooks/acceptJoinInvitationHook";
+import useDeclineJoinInvitationHook from "@/hooks/invitationHooks/declineJoinInvitationHook";
 import { InvitationProps } from "@/types/InvitationTypes";
 import Loading from "@/components/shared/Loading";
 import { Button } from "@/components/ui/button";
@@ -14,29 +15,28 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Dispatch, SetStateAction } from "react";
 
 interface Props {
   invitation: InvitationProps;
   setInvitations: Dispatch<SetStateAction<InvitationProps[]>>;
 }
 
-const InvitationCard = ({ invitation, setInvitations }: Props) => {
+const JoinInvitationCard = ({ invitation, setInvitations }: Props) => {
   const navigate = useRouter();
 
   const {
-    inviter,
-    invitedCourse,
+    user,
+    course,
     loading: getInvitationLoading,
   } = useGetInvitationHook(invitation);
-  const { handleAcceptInvitation, loading: acceptLoading } =
-    useAcceptInvitationHook(setInvitations);
-  const { handleDeclineInvitation, loading: declineLoading } =
-    useDeclineInvitationHook(setInvitations);
+  const { handleAcceptJoinInvitation, loading: acceptJoinLoading } =
+    useAcceptJoinInvitationHook(setInvitations);
+  const { handleDeclineJoinInvitation, loading: declineJoinLoading } =
+    useDeclineJoinInvitationHook(setInvitations);
 
-  if (getInvitationLoading || acceptLoading || declineLoading)
+  if (getInvitationLoading || acceptJoinLoading || declineJoinLoading)
     return <Loading />;
-  else if (!invitation || !inviter || !invitedCourse) return null;
+  else if (!invitation || !user || !course) return null;
   return (
     <Card
       key={invitation.invitationID}
@@ -47,29 +47,29 @@ const InvitationCard = ({ invitation, setInvitations }: Props) => {
           type="button"
           variant="outline"
           size="icon"
-          onClick={() => navigate.push(`/courses/${invitedCourse.id}`)}
+          onClick={() => navigate.push(`/courses/${course.id}`)}
           className="z-10 absolute top-2 right-2"
         >
           <Eye size={20} />
         </Button>
-        <CardTitle>{invitedCourse.name}</CardTitle>
+        <CardTitle>{course.name}</CardTitle>
         <CardDescription className="capitalize">
           <strong>Inviting: </strong>
-          {inviter.name}
+          {user.name}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex justify-center">
         <div className="w-full grid grid-cols-2 gap-2 md:w-2/3">
           <Button
             type="button"
-            onClick={() => handleAcceptInvitation(invitation)}
+            onClick={() => handleAcceptJoinInvitation(invitation)}
           >
             Accept
           </Button>
           <Button
             type="button"
             variant="destructive"
-            onClick={() => handleDeclineInvitation(invitation.invitationID)}
+            onClick={() => handleDeclineJoinInvitation(invitation)}
           >
             Decline
           </Button>
@@ -79,4 +79,4 @@ const InvitationCard = ({ invitation, setInvitations }: Props) => {
   );
 };
 
-export default InvitationCard;
+export default JoinInvitationCard;

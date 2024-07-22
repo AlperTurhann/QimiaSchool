@@ -13,7 +13,8 @@ interface SignupProps extends LoginProps {
 interface UserProps extends SignupProps {
   id: string;
   courses: string[];
-  courseInvitations: InvitationProps[];
+  appliedCourses: string[];
+  invitations: InvitationProps[];
 }
 
 export type { LoginProps, SignupProps, UserProps };

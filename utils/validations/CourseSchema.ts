@@ -14,6 +14,9 @@ const schema = z.object({
     })
     .int()
     .positive("Capacity must be at least 1"),
+  accessLevel: z.enum(["invited only", "accepted only", "everyone"], {
+    required_error: "Access level is required",
+  }),
 });
 
 export { schema as CourseSchema };

@@ -5,8 +5,10 @@ type InvitationContextType = {
   getInvitations: typeof invitationUtils.getInvitations;
   getInvitation: typeof invitationUtils.getInvitation;
   inviteCourse: typeof invitationUtils.inviteCourse;
-  acceptInvitation: typeof invitationUtils.acceptInvitation;
-  declineInvitation: typeof invitationUtils.declineInvitation;
+  acceptCourseInvitation: typeof invitationUtils.acceptCourseInvitation;
+  declineCourseInvitation: typeof invitationUtils.declineCourseInvitation;
+  acceptJoinInvitation: typeof invitationUtils.acceptJoinInvitation;
+  declineJoinInvitation: typeof invitationUtils.declineJoinInvitation;
 };
 
 const InvitationContext = createContext<InvitationContextType | undefined>(

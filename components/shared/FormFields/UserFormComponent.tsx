@@ -11,7 +11,6 @@ import {
   RegisterData,
   RegisterSchema,
 } from "@/utils/validations/RegisterSchema";
-import { useUserContext } from "@/context/UserContext";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import Loading from "@/components/shared/Loading";
@@ -33,7 +32,6 @@ export const UserFormComponent = <T extends LoginData | RegisterData>({
   const { handleSubmit, control } = form;
 
   const navigate = useRouter();
-  const { state } = useUserContext();
   const { login, loading: loginLoading } = useLoginHook();
   const { signup, loading: signupLoading } = useSignupHook();
   const onSubmit = async (data: FieldValues) => {

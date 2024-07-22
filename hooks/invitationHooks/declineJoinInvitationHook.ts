@@ -3,36 +3,35 @@ import { InvitationProps } from "@/types/InvitationTypes";
 import { useUserContext } from "@/context/UserContext";
 import { useAlertContext } from "@/context/AlertContext";
 import { useInvitationContext } from "@/context/InviteContext";
-const useDeclineInvitationHook = (
-  setInvitations?: Dispatch<SetStateAction<InvitationProps[]>>
+
+const useDeclineJoinInvitationHook = (
+  setInvitations: Dispatch<SetStateAction<InvitationProps[]>>
 ) => {
   const { showAlert } = useAlertContext();
   const { state, dispatch } = useUserContext();
-  const { declineInvitation } = useInvitationContext();
+  const { declineJoinInvitation } = useInvitationContext();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleDeclineInvitation = useCallback(
-    async (invitationID: string) => {
+  const handleDeclineJoinInvitation = useCallback(
+    async (invitation: InvitationProps) => {
       try {
         if (state.user) {
           setLoading(true);
-          const isSuccesfull = await declineInvitation(
+          const isSuccesfull = await declineJoinInvitation(
             state.user.id,
-            invitationID
+            invitation
           );
           if ("data" in isSuccesfull) {
             if (isSuccesfull.data) {
-              if (setInvitations) {
-                setInvitations((prevInvitations) =>
-                  prevInvitations.filter(
-                    (prevInvitation) =>
-                      invitationID !== prevInvitation.invitationID
-                  )
-                );
-              }
+              setInvitations((prevInvitations) =>
+                prevInvitations.filter(
+                  (prevInvitation) =>
+                    invitation.invitationID !== prevInvitation.invitationID
+                )
+              );
               dispatch({
                 type: "DECLINE_COURSE_INVITATION",
-                payload: invitationID,
+                payload: invitation.invitationID,
               });
               showAlert("Success", isSuccesfull.message);
             } else {
@@ -51,10 +50,10 @@ const useDeclineInvitationHook = (
         setLoading(false);
       }
     },
-    [declineInvitation, state.user]
+    [declineJoinInvitation, state.user]
   );
 
-  return { handleDeclineInvitation, loading };
+  return { handleDeclineJoinInvitation, loading };
 };
 
-export default useDeclineInvitationHook;
+export default useDeclineJoinInvitationHook;

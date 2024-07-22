@@ -56,13 +56,13 @@ export async function PUT(
   request: Request
 ): Promise<NextResponse<SuccessResponse<CourseProps> | ErrorResponse>> {
   try {
-    const { id, ...updatedCourseData } = await request.json();
+    const { id, currentUserID, ...updatedCourseData } = await request.json();
 
-    if (!id || Object.keys(updatedCourseData).length === 0) {
+    if (!id || !currentUserID || Object.keys(updatedCourseData).length === 0) {
       return NextResponse.json(
         {
           message: "Missing required fields!",
-          error: "ID and updated data are required",
+          error: "ID, currentUserID and updated data are required",
         },
         { status: 400 }
       );
@@ -95,17 +95,68 @@ export async function PUT(
       );
     }
 
+    const enrolledStudents = updatedCourseData.enrolledStudents.filter(
+      (studentID: string) =>
+        !courses[courseIndex].enrolledStudents.includes(studentID)
+    );
     const removedStudents = courses[courseIndex].enrolledStudents.filter(
       (studentID) => !updatedCourseData.enrolledStudents.includes(studentID)
     );
+    const respondedStudents = courses[courseIndex].appliedStudents.filter(
+      (studentID) => !updatedCourseData.appliedStudents.includes(studentID)
+    );
 
-    if (removedStudents.length > 0) {
-      const users: UserProps[] = usersUtils.readData();
-      users.forEach((user) => {
-        if (removedStudents.includes(user.id)) {
-          user.courses = user.courses.filter((courseID) => courseID !== id);
+    if (
+      enrolledStudents.length +
+        removedStudents.length +
+        respondedStudents.length >
+      0
+    ) {
+      const users = usersUtils.readData();
+
+      if (enrolledStudents.length > 0) {
+        users.forEach((user) => {
+          if (enrolledStudents.includes(user.id)) {
+            user.courses.push(id);
+          }
+        });
+      }
+      if (removedStudents.length > 0) {
+        users.forEach((user) => {
+          if (removedStudents.includes(user.id)) {
+            user.courses = user.courses.filter((courseID) => courseID !== id);
+          }
+        });
+      }
+      if (respondedStudents.length > 0) {
+        const currentUserIndex = users.findIndex(
+          (user) => user.id === currentUserID
+        );
+        if (currentUserIndex === -1) {
+          return NextResponse.json(
+            {
+              message: "No user found with this ID!",
+              error: "No user found with this ID",
+            },
+            { status: 404 }
+          );
         }
-      });
+
+        users.forEach((user) => {
+          if (respondedStudents.includes(user.id)) {
+            user.appliedCourses = user.appliedCourses.filter(
+              (courseID) => courseID !== id
+            );
+
+            users[currentUserIndex].invitations = users[
+              currentUserIndex
+            ].invitations.filter(
+              (inv) => !(inv.userID === user.id && inv.courseID === id)
+            );
+          }
+        });
+      }
+
       usersUtils.writeData(users);
     }
 
@@ -164,8 +215,8 @@ export async function DELETE(
     courses.splice(courseIndex, 1);
     users.forEach((user) => {
       user.courses = user.courses.filter((course) => course !== courseID);
-      user.courseInvitations = user.courseInvitations.filter(
-        (invitation) => invitation.invitedCourseID !== courseID
+      user.invitations = user.invitations.filter(
+        (invitation) => invitation.courseID !== courseID
       );
     });
 

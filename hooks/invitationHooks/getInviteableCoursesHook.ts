@@ -30,8 +30,8 @@ const useGetInviteableCoursesHook = (user: UserProps) => {
             const isCapacityAvailable =
               course.capacity > course.enrolledStudents.length;
             const isUserNotEnrolled = !user.courses.includes(course.id);
-            const isUserNotInvited = !user.courseInvitations.some(
-              (invitation) => invitation.invitedCourseID === course.id
+            const isUserNotInvited = !user.invitations.some(
+              (invitation) => invitation.courseID === course.id
             );
 
             return isCapacityAvailable && isUserNotEnrolled && isUserNotInvited;

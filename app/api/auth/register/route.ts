@@ -38,10 +38,11 @@ export async function POST(
       id: uuidv4(),
       name,
       email,
-      courses: [],
       role,
       password: hashedPassword,
-      courseInvitations: [],
+      courses: [],
+      appliedCourses: [],
+      invitations: [],
     };
 
     users.push(newUser);

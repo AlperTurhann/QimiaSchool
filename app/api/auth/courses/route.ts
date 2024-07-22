@@ -33,13 +33,15 @@ export async function POST(
   request: Request
 ): Promise<NextResponse<SuccessResponse<string> | ErrorResponse>> {
   try {
-    const { name, description, instructor, capacity } = await request.json();
+    const { name, description, instructor, capacity, accessLevel } =
+      await request.json();
 
-    if (!name || !description || !instructor || !capacity) {
+    if (!name || !description || !instructor || !capacity || !accessLevel) {
       return NextResponse.json(
         {
           message: "Missing required fields!",
-          error: "Name, descriptipn, instructor and capacity are required",
+          error:
+            "Name, descriptipn, instructor, capacity and accessLevel are required",
         },
         { status: 400 }
       );
@@ -63,7 +65,9 @@ export async function POST(
       description,
       instructor,
       capacity,
+      accessLevel,
       enrolledStudents: [],
+      appliedStudents: [],
     };
 
     courses.push(newCourse);
