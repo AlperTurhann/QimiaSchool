@@ -1,7 +1,7 @@
 "use client";
 import { Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
-import { Eye } from "lucide-react";
+import { Eye, User } from "lucide-react";
 import useGetInvitationHook from "@/hooks/invitationHooks/getInvitationHook";
 import useAcceptJoinInvitationHook from "@/hooks/invitationHooks/acceptJoinInvitationHook";
 import useDeclineJoinInvitationHook from "@/hooks/invitationHooks/declineJoinInvitationHook";
@@ -12,6 +12,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -43,22 +44,43 @@ const JoinInvitationCard = ({ invitation, setInvitations }: Props) => {
       className="w-[95%] flex flex-col relative overflow-hidden md:w-2/3"
     >
       <CardHeader>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          onClick={() => navigate.push(`/courses/${course.id}`)}
-          className="z-10 absolute top-2 right-2"
-        >
-          <Eye size={20} />
-        </Button>
+        <div>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={() => navigate.push(`/courses/${course.id}`)}
+            className="z-10 absolute top-2 right-14"
+          >
+            <Eye size={20} />
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={() => navigate.push(`/users/${user.id}`)}
+            className="z-10 absolute top-2 right-2"
+          >
+            <User size={20} />
+          </Button>
+        </div>
         <CardTitle>{course.name}</CardTitle>
-        <CardDescription className="capitalize">
-          <strong>Inviting: </strong>
-          {user.name}
+        <CardDescription>
+          <Button
+            variant="link"
+            onClick={() => navigate.push(`/users/${user.id}`)}
+            className="h-full p-0 text-gray-500"
+          >
+            <strong>Requestor: </strong>
+            {user.name}
+          </Button>
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex justify-center">
+      <CardContent className="text-xs text-gray-700 sm:text-sm">
+        <strong>{user.name}</strong> wants to attend the{" "}
+        <strong>{course.name}</strong> course
+      </CardContent>
+      <CardFooter className="flex justify-center">
         <div className="w-full grid grid-cols-2 gap-2 md:w-2/3">
           <Button
             type="button"
@@ -74,7 +96,7 @@ const JoinInvitationCard = ({ invitation, setInvitations }: Props) => {
             Decline
           </Button>
         </div>
-      </CardContent>
+      </CardFooter>
     </Card>
   );
 };

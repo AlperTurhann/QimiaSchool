@@ -17,9 +17,10 @@ import Loading from "@/components/shared/Loading";
 interface Props {
   course: CourseProps;
   courseInstructor?: UserProps | null;
+  isManage?: boolean;
 }
 
-const CourseCard = ({ course, courseInstructor }: Props) => {
+const CourseCard = ({ course, courseInstructor, isManage = false }: Props) => {
   const navigate = useRouter();
   const { user: instructor, loading } = courseInstructor
     ? { user: courseInstructor, loading: false }
@@ -36,21 +37,15 @@ const CourseCard = ({ course, courseInstructor }: Props) => {
       <Button
         variant="ghost"
         onClick={() => navigate.push(`/courses/${course.id}`)}
-        className="w-full h-full flex flex-col items-start p-0"
+        className={`w-full h-full flex flex-col items-start p-0 ${
+          isManage && "marginTopUntilSm"
+        }`}
       >
-        <CardHeader className="w-full" style={{ textAlign: "start" }}>
-          <CardTitle
-            style={{
-              width: "100%",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-            className="w-full"
-          >
+        <CardHeader className="w-full">
+          <CardTitle className="truncateContent w-full">
             {course?.name}
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="truncateContent">
             <strong>Instructor: </strong>
             {instructor.name}
           </CardDescription>

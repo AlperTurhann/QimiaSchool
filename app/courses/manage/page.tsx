@@ -25,10 +25,9 @@ const ManageCoursePage = () => {
   return (
     <main className="w-full h-full flex flex-col items-center">
       <h1 className="text-center text-2xl font-bold p-5">Manage Courses</h1>
-      <div className="w-2/3 flex flex-col gap-5">
+      <div className="w-full flex flex-col gap-5 sm:w-2/3">
         {courses.map((course) => (
           <div key={course.id} className="w-full h-full relative">
-            <CourseCard course={course} courseInstructor={state.user} />
             <Button
               variant="outline"
               size="icon"
@@ -45,6 +44,11 @@ const ManageCoursePage = () => {
             >
               <Trash2 size={20} />
             </Button>
+            <CourseCard
+              course={course}
+              courseInstructor={state.user}
+              isManage={true}
+            />
           </div>
         ))}
       </div>

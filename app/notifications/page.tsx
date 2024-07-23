@@ -16,8 +16,10 @@ const NotificationsPage = () => {
   else if (loading) return <Loading />;
   return (
     <div className="size-full flex flex-col items-center mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Your Notifications</h1>
-      <span className={`${invitations.length !== 0 && "hidden"}`}>
+      <h1 className="text-2xl font-bold mb-4 text-center">
+        Your Notifications
+      </h1>
+      <span className={`text-center ${invitations.length !== 0 && "hidden"}`}>
         You have no notification at the moment
       </span>
       {invitations.map((invitation) => (

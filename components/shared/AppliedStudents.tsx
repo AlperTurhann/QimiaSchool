@@ -24,23 +24,17 @@ const AppliedStudents = ({
       <CardHeader className="text-center border-b">
         <CardTitle>Applied Students</CardTitle>
       </CardHeader>
-      <CardContent className="p-0">
-        <span
-          className={`text-center text-gray-500 p-6 ${
-            appliedUsers.length === 0 && state.user ? "block" : "hidden "
-          }`}
-        >
-          There are no students applied in this course!
-        </span>
+      <CardContent className="text-center p-5">
         <div className={`${state.user && "hidden"}`}>
           <MustLogin />
         </div>
-        <div
-          className={`${
-            !state.user || (appliedUsers.length === 0 && "hidden")
-          }`}
-        >
-          <div className="flex flex-col p-5 gap-3">
+        <div className={`${!state.user && "hidden"}`}>
+          <span
+            className={`text-gray-500 ${appliedUsers.length !== 0 && "hidden"}`}
+          >
+            There are no students applied in this course!
+          </span>
+          <div className="flex flex-col gap-3">
             {appliedUsers.map((student) => (
               <StudentCard
                 key={student.id}

@@ -35,7 +35,7 @@ const StudentCard = ({
         size="icon"
         onClick={() => navigate.push(`/users/${student.id}`)}
         className={`z-10 absolute top-2 ${
-          type === "applied" ? "rightStudent" : "right-14"
+          type === "applied" ? "rightThirdAbsoluteButton" : "right-14"
         }`}
       >
         <User size={20} />
@@ -51,14 +51,12 @@ const StudentCard = ({
           <X size={20} />
         </Button>
       </div>
-      <div>
+      <div className={`${type !== "applied" && "hidden"}`}>
         <Button
           type="button"
           size="icon"
           onClick={handleAcceptStudent}
-          className={`z-10 absolute top-2 right-14 ${
-            type !== "applied" && "hidden"
-          }`}
+          className="z-10 absolute top-2 right-14"
         >
           <Check size={20} />
         </Button>
@@ -72,7 +70,7 @@ const StudentCard = ({
           <X size={20} />
         </Button>
       </div>
-      <div className="studentContentDiv size-full flex flex-col text-sm p-2">
+      <div className="marginTopUntilSm size-full flex flex-col text-sm p-2">
         <span className="truncateContent font-semibold">{student.name}</span>
         <span className="truncateContent">{student.email}</span>
       </div>
