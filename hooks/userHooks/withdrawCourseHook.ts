@@ -37,7 +37,7 @@ const useWithdrawCourseHook = () => {
         setLoading(false);
       }
     },
-    [withdrawCourse, state.user, getUser]
+    [withdrawCourse, getUser, showAlert]
   );
 
   return { handleWithdrawCourse, loading };

@@ -18,25 +18,15 @@ const UserCard = ({ user }: Props) => {
   const navigate = useRouter();
 
   return (
-    <Card key={user.id} className="w-full h-full overflow-hidden">
+    <Card className="size-full overflow-hidden">
       <Button
         variant="ghost"
         onClick={() => navigate.push(`/users/${user.id}`)}
-        className="w-full h-full flex flex-col items-start p-0"
+        className="size-full flex flex-col items-start p-0"
       >
-        <CardHeader className="w-full" style={{ textAlign: "start" }}>
-          <CardTitle
-            style={{
-              width: "100%",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-            className="w-full"
-          >
-            {user.name}
-          </CardTitle>
-          <CardDescription className="capitalize">
+        <CardHeader className="w-full">
+          <CardTitle className="truncateContent w-full">{user.name}</CardTitle>
+          <CardDescription className="truncateContent capitalize">
             <strong>Role: </strong>
             {user.role}
           </CardDescription>

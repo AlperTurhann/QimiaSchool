@@ -33,7 +33,7 @@ const ScrollToTopButton = ({ headerRef }: Props) => {
 
   return (
     <div
-      className={`z-50 fixed right-4 bottom-4 transition-opacity duration-300 ${
+      className={`z-50 bottom-4 right-4 fixed transition-opacity duration-300 ${
         isVisible ? "opacity-100" : "opacity-0"
       }`}
     >
@@ -43,7 +43,7 @@ const ScrollToTopButton = ({ headerRef }: Props) => {
         onClick={scrollToTop}
         className="size-10 md:size-12"
       >
-        <CircleArrowUp className="w-full h-full" />
+        <CircleArrowUp className="size-full" />
       </Button>
     </div>
   );

@@ -39,7 +39,7 @@ const useLeaveCourseHook = (
         setLoading(false);
       }
     },
-    [leaveCourse, state.user, getUser]
+    [leaveCourse, getUser, showAlert]
   );
 
   return { handleLeaveCourse, loading };

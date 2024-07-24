@@ -14,37 +14,52 @@ const useCoursePageHook = (courseID: string) => {
   const [enrolledUsers, setEnrolledUsers] = useState<UserProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const fetchInstructor = useCallback(
+    async (instructorID: string) => {
+      const fetchedInstructor = await getUser(instructorID);
+      if ("data" in fetchedInstructor) {
+        setInstructor(fetchedInstructor.data);
+      } else {
+        showAlert("Error", fetchedInstructor.error);
+      }
+    },
+    [getUser, showAlert]
+  );
+
+  const fetchEnrolledUsers = useCallback(
+    async (studentIDs: string[]) => {
+      if (state.user) {
+        const fetchedEnrolledUsers = await Promise.all(
+          studentIDs.map(async (studentID) => {
+            const response = await getUser(studentID);
+            return "data" in response ? response.data : null;
+          })
+        );
+        setEnrolledUsers(fetchedEnrolledUsers.filter((user) => user !== null));
+      }
+    },
+    [getUser]
+  );
+
+  const fetchCourse = useCallback(async () => {
+    const fetchedCourse = await getCourse(courseID);
+    if ("data" in fetchedCourse) {
+      if (fetchedCourse.data) {
+        setCourse(fetchedCourse.data);
+        await fetchInstructor(fetchedCourse.data.instructor);
+        await fetchEnrolledUsers(fetchedCourse.data.enrolledStudents);
+      } else {
+        showAlert("Error", fetchedCourse.message);
+      }
+    } else {
+      showAlert("Error", fetchedCourse.error);
+    }
+  }, [getCourse, fetchInstructor, fetchEnrolledUsers, showAlert]);
+
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const fetchedCourse = await getCourse(courseID);
-      if ("data" in fetchedCourse) {
-        if (fetchedCourse.data) {
-          setCourse(fetchedCourse.data);
-          const fetchedInstructor = await getUser(
-            fetchedCourse.data.instructor
-          );
-          if ("data" in fetchedInstructor) {
-            setInstructor(fetchedInstructor.data);
-          } else {
-            showAlert("Error", fetchedInstructor.error);
-          }
-
-          if (state.user) {
-            const fetchedEnrolledUsers = await Promise.all(
-              fetchedCourse.data.enrolledStudents.map(async (studentID) => {
-                const response = await getUser(studentID);
-                return "data" in response ? response.data : null;
-              })
-            );
-            setEnrolledUsers(
-              fetchedEnrolledUsers.filter((user) => user !== null)
-            );
-          }
-        }
-      } else {
-        showAlert("Error", fetchedCourse.error);
-      }
+      await fetchCourse();
     } catch (error) {
       showAlert(
         "Error",
@@ -53,11 +68,11 @@ const useCoursePageHook = (courseID: string) => {
     } finally {
       setLoading(false);
     }
-  }, [courseID, getCourse, getUser]);
+  }, [fetchCourse, showAlert]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [state.user, courseID, fetchData]);
 
   return { course, instructor, enrolledUsers, setEnrolledUsers, loading };
 };

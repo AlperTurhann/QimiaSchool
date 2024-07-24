@@ -72,6 +72,10 @@
   @apply mt-10 sm:mt-0;
 }
 
+.marginRight1 {
+  @apply mr-1;
+}
+
 .truncateContent {
   @apply truncate text-start;
 }

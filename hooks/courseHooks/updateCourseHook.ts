@@ -41,7 +41,7 @@ const useUpdateCourseHook = () => {
         setLoading(false);
       }
     },
-    [updateCourse]
+    [updateCourse, showAlert]
   );
 
   return { updateCourse: fetchUpdateCourse, loading };

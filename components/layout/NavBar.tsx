@@ -18,7 +18,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="w-full h-full flex items-center justify-between gap-5">
+    <nav className="size-full flex items-center justify-between gap-5">
       <Link href="/">
         <Image
           src="/images/qimia-logo.svg"

@@ -37,13 +37,10 @@ const CourseInvitationCard = ({ invitation, setInvitations }: Props) => {
 
   if (getInvitationLoading || acceptLoading || declineLoading)
     return <Loading />;
-  else if (!invitation || !user || !course) return null;
+  if (!invitation || !user || !course) return null;
   return (
-    <Card
-      key={invitation.invitationID}
-      className="w-[95%] flex flex-col relative overflow-hidden md:w-2/3"
-    >
-      <CardHeader>
+    <Card className="w-[95%] flex flex-col relative overflow-hidden md:w-2/3">
+      <CardHeader className="marginTopUntilSm">
         <div>
           <Button
             type="button"
@@ -71,7 +68,7 @@ const CourseInvitationCard = ({ invitation, setInvitations }: Props) => {
             onClick={() => navigate.push(`/users/${user.id}`)}
             className="h-full p-0 text-gray-500"
           >
-            <strong>Inviter: </strong>
+            <strong className="marginRight1">Inviter:</strong>
             {user.name}
           </Button>
         </CardDescription>

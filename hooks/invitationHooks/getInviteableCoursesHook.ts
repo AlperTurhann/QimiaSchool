@@ -46,11 +46,11 @@ const useGetInviteableCoursesHook = (user: UserProps) => {
     } finally {
       setLoading(false);
     }
-  }, [getCourse]);
+  }, [getCourse, showAlert]);
 
   useEffect(() => {
     fetchInvitableCourses();
-  }, [fetchInvitableCourses]);
+  }, [state.user, fetchInvitableCourses]);
 
   return { inviteableCourses, setInviteableCourses, loading };
 };

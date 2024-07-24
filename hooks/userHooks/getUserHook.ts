@@ -26,11 +26,11 @@ const useGetUserHook = (userID: string, pass = false) => {
     } finally {
       setLoading(false);
     }
-  }, [getUser]);
+  }, [getUser, showAlert]);
 
   useEffect(() => {
     if (state.user || pass) fetchUser();
-  }, [userID, fetchUser]);
+  }, [state.user, pass, userID, fetchUser]);
 
   return { user, loading };
 };

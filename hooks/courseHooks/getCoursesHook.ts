@@ -24,7 +24,7 @@ const useGetCoursesHook = () => {
     } finally {
       setLoading(false);
     }
-  }, [getCourses]);
+  }, [getCourses, showAlert]);
 
   useEffect(() => {
     fetchCourses();

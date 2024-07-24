@@ -3,18 +3,18 @@ import React, { cloneElement, ReactElement, ReactNode } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useGetEnrolledUsersHook from "@/hooks/courseHooks/getEnrolledUsersHook";
+import useCreateCourseHook from "@/hooks/courseHooks/createCourseHook";
+import useUpdateCourseHook from "@/hooks/courseHooks/updateCourseHook";
+import useGetAppliedUsersHook from "@/hooks/courseHooks/getAppliedUsersHook";
 import { CourseProps, CreateCourseProps } from "@/types/CourseTypes";
+import { UserProps } from "@/types/UserTypes";
 import { CourseData, CourseSchema } from "@/utils/validations/CourseSchema";
 import { useUserContext } from "@/context/UserContext";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import EnrolledStudents from "@/components/shared/EnrolledStudents";
 import Loading from "@/components/shared/Loading";
-import useCreateCourseHook from "@/hooks/courseHooks/createCourseHook";
-import useUpdateCourseHook from "@/hooks/courseHooks/updateCourseHook";
-import useGetAppliedUsersHook from "@/hooks/courseHooks/getAppliedUsersHook";
-import { UserProps } from "@/types/UserTypes";
-import AppliedStudents from "../AppliedStudents";
+import AppliedStudents from "@/components/shared/AppliedStudents";
 
 interface Props {
   children: ReactNode;
@@ -107,7 +107,7 @@ const CourseFormComponent = ({ children, course }: Props) => {
   )
     return <Loading />;
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center">
+    <div className="size-full flex flex-col items-center justify-center">
       <Form {...form}>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -137,7 +137,7 @@ const CourseFormComponent = ({ children, course }: Props) => {
           )}
           <Button
             type="submit"
-            className="w-full text-xs capitalize p-2 sm:w-1/2 md:text-sm md:w-1/3 lg:text-base shadow-xl bg-sky-700 hover:bg-sky-600"
+            className="w-full text-xs capitalize shadow-xl p-2 bg-sky-700 hover:bg-sky-600 sm:w-1/2 md:text-sm md:w-1/3 lg:text-base"
           >
             {course ? "Save Changes" : "Create Course"}
           </Button>

@@ -35,7 +35,7 @@ const useLoginHook = () => {
         setLoading(false);
       }
     },
-    [login]
+    [login, showAlert]
   );
 
   return { login: fetchLogin, loading };

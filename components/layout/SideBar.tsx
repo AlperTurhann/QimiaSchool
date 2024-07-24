@@ -13,26 +13,26 @@ const SideBar = () => {
   const toggleSideBar = () => setIsOpen(!isOpen);
 
   useEffect(() => {
-    if (!state.user) setIsOpen(false);
+    setIsOpen(false);
   }, [state.user]);
 
   if (!state.user) return null;
   return (
-    <div className="h-screen z-50 sticky top-0">
+    <div className="h-screen z-50 top-0 sticky">
       <Button
         variant="outline"
         onClick={toggleSideBar}
-        className={`fixed top-24 left-0 z-10 p-2 ${isOpen && "hidden"}`}
+        className={`z-10 top-24 fixed p-2 ${isOpen && "hidden"}`}
       >
         <PanelLeftOpen className="size-8" />
       </Button>
       <aside
-        className={`h-full absolute top-0 left-0 transition-all duration-300 ease-in-out z-50 ${
+        className={`h-full z-50 absolute transition-all duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } bg-gray-800 text-white overflow-y-auto`}
         style={{ width: "13rem" }}
       >
-        <div className="w-full flex justify-end px-2 sticky top-0 bg-gray-800 z-10">
+        <div className="z-10 w-full flex justify-end px-2 sticky bg-gray-800">
           <Button
             variant="ghost"
             onClick={toggleSideBar}

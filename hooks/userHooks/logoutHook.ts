@@ -32,7 +32,7 @@ const useLogoutHook = () => {
     } finally {
       setLoading(false);
     }
-  }, [logout]);
+  }, [logout, showAlert]);
 
   return { logout: fetchLogout, loading };
 };

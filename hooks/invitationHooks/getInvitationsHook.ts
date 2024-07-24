@@ -34,11 +34,11 @@ const useGetInvitationsHook = () => {
     } finally {
       setLoading(false);
     }
-  }, [getInvitations]);
+  }, [getInvitations, showAlert]);
 
   useEffect(() => {
     if (state.user) fetchInvitations();
-  }, [fetchInvitations]);
+  }, [state.user, fetchInvitations]);
 
   return { invitations, setInvitations, loading };
 };

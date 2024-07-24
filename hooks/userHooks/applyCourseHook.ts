@@ -37,7 +37,7 @@ const useApplyCourseHook = () => {
         setLoading(false);
       }
     },
-    [applyCourse, state.user, getUser]
+    [applyCourse, getUser, showAlert]
   );
 
   return { handleApplyCourse, loading };

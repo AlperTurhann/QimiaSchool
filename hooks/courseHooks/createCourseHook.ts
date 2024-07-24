@@ -12,6 +12,20 @@ const useCreateCourseHook = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useRouter();
 
+  const updateUserAfterCourseCreation = useCallback(
+    async (userID: string) => {
+      const updatedUser = await getUser(userID);
+      if ("data" in updatedUser) {
+        dispatch({ type: "SET_USER", payload: updatedUser.data });
+        return true;
+      } else {
+        showAlert("Error", updatedUser.error);
+        return false;
+      }
+    },
+    [getUser, showAlert]
+  );
+
   const fetchCreateCourse = useCallback(
     async (courseData: CreateCourseProps) => {
       try {
@@ -19,13 +33,9 @@ const useCreateCourseHook = () => {
         const fetchedCreateCourse = await createCourse(courseData);
         if ("data" in fetchedCreateCourse) {
           if (fetchedCreateCourse.data && state.user) {
-            const updatedUser = await getUser(state.user.id);
-            if ("data" in updatedUser) {
-              dispatch({ type: "SET_USER", payload: updatedUser.data });
+            if (await updateUserAfterCourseCreation(state.user.id)) {
               showAlert("Success", fetchedCreateCourse.message);
               navigate.push(`/courses/${fetchedCreateCourse.data}`);
-            } else {
-              showAlert("Error", updatedUser.error);
             }
           } else {
             showAlert("Error", fetchedCreateCourse.message);
@@ -42,7 +52,7 @@ const useCreateCourseHook = () => {
         setLoading(false);
       }
     },
-    [createCourse]
+    [createCourse, showAlert]
   );
 
   return { createCourse: fetchCreateCourse, loading };

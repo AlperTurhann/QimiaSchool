@@ -55,7 +55,7 @@ const useAcceptJoinInvitationHook = (
         setLoading(false);
       }
     },
-    [acceptJoinInvitation, state.user]
+    [acceptJoinInvitation, showAlert]
   );
 
   return { handleAcceptJoinInvitation, loading };

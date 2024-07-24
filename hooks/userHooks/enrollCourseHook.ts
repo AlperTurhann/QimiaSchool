@@ -40,7 +40,7 @@ const useEnrollCourseHook = (
         setLoading(false);
       }
     },
-    [enrollCourse, state.user, getUser]
+    [enrollCourse, getUser, showAlert]
   );
 
   return { handleEnrollCourse, loading };

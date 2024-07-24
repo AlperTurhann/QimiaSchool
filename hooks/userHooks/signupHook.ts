@@ -35,7 +35,7 @@ const useSignupHook = () => {
         setLoading(false);
       }
     },
-    [signup]
+    [signup, showAlert]
   );
 
   return { signup: fetchSignup, loading };

@@ -24,7 +24,7 @@ interface Props {
 const FormInput = ({ control, name, label, textarea = false }: Props) => {
   const getInputType = () => {
     if (name === "password" || name === "confirmPassword") return "password";
-    else if (name === "capacity") return "number";
+    if (name === "capacity") return "number";
     return "text";
   };
 
@@ -52,7 +52,7 @@ const FormInput = ({ control, name, label, textarea = false }: Props) => {
                 />
               )}
             </FormControl>
-            <FormMessage className="w-full h-1/2 absolute text-xs -bottom-[55%] left-0" />
+            <FormMessage className="w-full h-1/2 absolute text-xs -bottom-[55%]" />
           </FormItem>
         </div>
       )}

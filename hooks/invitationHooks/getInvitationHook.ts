@@ -27,7 +27,7 @@ const useGetInvitationHook = (invitation: InvitationProps) => {
         showAlert("Error", fetchedUser.error);
       }
     },
-    [getUser]
+    [getUser, showAlert]
   );
 
   const fetchCourse = useCallback(
@@ -43,7 +43,7 @@ const useGetInvitationHook = (invitation: InvitationProps) => {
         showAlert("Error", fetchedCourse.error);
       }
     },
-    [getCourse]
+    [getCourse, showAlert]
   );
 
   const fetchInvitation = useCallback(async () => {
@@ -60,11 +60,11 @@ const useGetInvitationHook = (invitation: InvitationProps) => {
     } finally {
       setLoading(false);
     }
-  }, [fetchUser, fetchCourse]);
+  }, [fetchUser, fetchCourse, showAlert]);
 
   useEffect(() => {
     if (state.user) fetchInvitation();
-  }, [invitation, fetchInvitation]);
+  }, [state.user, invitation, fetchInvitation]);
 
   return { user, course, loading };
 };

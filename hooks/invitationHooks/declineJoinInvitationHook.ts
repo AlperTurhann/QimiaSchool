@@ -50,7 +50,7 @@ const useDeclineJoinInvitationHook = (
         setLoading(false);
       }
     },
-    [declineJoinInvitation, state.user]
+    [declineJoinInvitation, showAlert]
   );
 
   return { handleDeclineJoinInvitation, loading };

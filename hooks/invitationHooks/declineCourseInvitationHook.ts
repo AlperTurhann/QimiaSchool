@@ -52,7 +52,7 @@ const useDeclineCourseInvitationHook = (
         setLoading(false);
       }
     },
-    [declineCourseInvitation, state.user]
+    [declineCourseInvitation, showAlert]
   );
 
   return { handleDeclineCourseInvitation, loading };

@@ -37,11 +37,11 @@ const UserCourses = ({ user }: Props) => {
           There are no courses!
         </span>
         {courses.map((course) => (
-          <div key={course.id} className="w-full h-full">
+          <div key={course.id} className="size-full">
             <Button
               variant="link"
               onClick={() => navigate.push(`/courses/${course.id}`)}
-              className="w-full h-full"
+              className="size-full"
             >
               {course.name}
             </Button>

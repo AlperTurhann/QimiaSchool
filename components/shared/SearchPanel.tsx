@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import useGetCoursesHook from "@/hooks/courseHooks/getCoursesHook";
 import useGetUsersHook from "@/hooks/userHooks/getUsersHook";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import Loading from "@/components/shared/Loading";
 import { CourseProps } from "@/types/CourseTypes";
 import { UserProps } from "@/types/UserTypes";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import Loading from "@/components/shared/Loading";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 
 interface Props {
   type: "courses" | "users";

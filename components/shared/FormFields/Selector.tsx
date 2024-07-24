@@ -2,6 +2,7 @@
 import React from "react";
 import { Control } from "react-hook-form";
 import { RegisterData } from "@/utils/validations/RegisterSchema";
+import { CourseData } from "@/utils/validations/CourseSchema";
 import {
   FormControl,
   FormField,
@@ -15,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CourseData } from "@/utils/validations/CourseSchema";
 
 interface Props {
   control?: Control<RegisterData | CourseData>;
@@ -31,7 +31,7 @@ const Selector = ({ control, name, placeholder }: Props) => {
       render={({ field: { onChange, value } }) => (
         <div className="relative">
           <FormItem>
-            <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 capitalize cursor-default">
+            <span className="text-sm font-medium capitalize cursor-default leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               {name === "role" ? "Role" : "Access Level"}
             </span>
             <FormControl>
@@ -52,7 +52,7 @@ const Selector = ({ control, name, placeholder }: Props) => {
                 </SelectContent>
               </Select>
             </FormControl>
-            <FormMessage className="w-full h-1/2 absolute text-xs -bottom-[55%] left-0" />
+            <FormMessage className="w-full h-1/2 absolute text-xs -bottom-[55%]" />
           </FormItem>
         </div>
       )}

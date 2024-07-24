@@ -62,11 +62,11 @@ const EnrolledStudents = ({
             }`}
           >
             {enrolledUsers.map((student) => (
-              <div key={student.id} className="w-full h-full">
+              <div key={student.id} className="size-full">
                 <Button
                   variant="link"
                   onClick={() => navigate.push(`/users/${student.id}`)}
-                  className="w-full h-full"
+                  className="size-full"
                 >
                   {student.name}
                 </Button>

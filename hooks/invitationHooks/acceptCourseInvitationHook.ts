@@ -15,6 +15,26 @@ const useAcceptCourseInvitationHook = (
   const { acceptCourseInvitation } = useInvitationContext();
   const [loading, setLoading] = useState<boolean>(false);
 
+  const updateInvitations = (invitation: InvitationProps) => {
+    if (setInvitations) {
+      setInvitations((prevInvitations) =>
+        prevInvitations.filter(
+          (prevInvitation) =>
+            invitation.invitationID !== prevInvitation.invitationID
+        )
+      );
+    }
+  };
+
+  const updateEnrolledUsers = () => {
+    if (setEnrolledUsers && state.user) {
+      setEnrolledUsers((prevEnrolledUsers) => [
+        ...prevEnrolledUsers,
+        state.user as UserProps,
+      ]);
+    }
+  };
+
   const handleAcceptCourseInvitationResult = (
     result: SuccessResponse<boolean> | ErrorResponse,
     invitation: InvitationProps
@@ -36,26 +56,6 @@ const useAcceptCourseInvitationHook = (
     }
   };
 
-  const updateInvitations = (invitation: InvitationProps) => {
-    if (setInvitations) {
-      setInvitations((prevInvitations) =>
-        prevInvitations.filter(
-          (prevInvitation) =>
-            invitation.invitationID !== prevInvitation.invitationID
-        )
-      );
-    }
-  };
-
-  const updateEnrolledUsers = () => {
-    if (setEnrolledUsers && state.user) {
-      setEnrolledUsers((prevEnrolledUsers) => [
-        ...prevEnrolledUsers,
-        state.user as UserProps,
-      ]);
-    }
-  };
-
   const handleAcceptCourseInvitation = useCallback(
     async (invitation: InvitationProps) => {
       if (!state.user) return;
@@ -73,7 +73,7 @@ const useAcceptCourseInvitationHook = (
         setLoading(false);
       }
     },
-    [acceptCourseInvitation, state.user]
+    [acceptCourseInvitation, showAlert]
   );
 
   return { handleAcceptCourseInvitation, loading };

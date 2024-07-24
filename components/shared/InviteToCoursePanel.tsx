@@ -42,14 +42,14 @@ const InviteToCoursePanel = ({ user, onClose }: Props) => {
   };
 
   if (!state.user) return <MustLogin />;
-  else if (state.user.role !== "instructor") return <OnlyInstructor />;
-  else if (loading) return <Loading />;
+  if (state.user.role !== "instructor") return <OnlyInstructor />;
+  if (loading) return <Loading />;
   return (
-    <div className="z-50 fixed flex items-center justify-center bg-opacity-50 inset-0 bg-black">
+    <div className="z-50 inset-0 fixed flex items-center justify-center bg-opacity-50 bg-black">
       <Button
         onClick={onClose}
         variant="link"
-        className="absolute inset-0 w-full h-full bg-black bg-opacity-50 cursor-default"
+        className="size-full inset-0 absolute cursor-default bg-opacity-50 bg-black"
         aria-label="Close invite panel"
       />
       <Card className="w-[95%] max-w-md relative rounded-lg shadow-xl bg-white">
@@ -58,7 +58,7 @@ const InviteToCoursePanel = ({ user, onClose }: Props) => {
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            className="top-2 right-2 absolute text-gray-500 hover:text-gray-700"
           >
             <X size={24} />
           </Button>

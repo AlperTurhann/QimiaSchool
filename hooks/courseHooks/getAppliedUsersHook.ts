@@ -21,7 +21,7 @@ const useGetAppliedUsersHook = (course: CourseProps | null | undefined) => {
       const validUsers = fetchedAppliedUsers.filter((user) => user !== null);
       return validUsers;
     },
-    [course, getUser]
+    [getUser]
   );
 
   const fetchAppliedUsers = useCallback(async () => {
@@ -39,11 +39,11 @@ const useGetAppliedUsersHook = (course: CourseProps | null | undefined) => {
     } finally {
       setLoading(false);
     }
-  }, [course, getUser]);
+  }, [getUser, showAlert]);
 
   useEffect(() => {
     fetchAppliedUsers();
-  }, [fetchAppliedUsers]);
+  }, [course, fetchAppliedUsers]);
 
   return { appliedUsers, setAppliedUsers, loading };
 };

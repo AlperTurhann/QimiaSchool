@@ -24,7 +24,6 @@ const StudentCard = ({
   if (!student) return <p>User not found!</p>;
   return (
     <div
-      key={student.id}
       className={`size-full relative border rounded-lg overflow-hidden ${
         !student && "hidden"
       }`}

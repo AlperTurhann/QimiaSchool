@@ -41,7 +41,7 @@ const useDeleteCourseHook = (
         setLoading(false);
       }
     },
-    [deleteCourse, getUser]
+    [deleteCourse, getUser, showAlert]
   );
 
   return { handleDeleteCourse, loading };

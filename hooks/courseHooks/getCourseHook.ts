@@ -26,11 +26,11 @@ const useGetCourseHook = (courseID: string) => {
     } finally {
       setLoading(false);
     }
-  }, [getCourse]);
+  }, [getCourse, showAlert]);
 
   useEffect(() => {
     fetchCourse();
-  }, [fetchCourse, courseID]);
+  }, [courseID, fetchCourse]);
 
   return { course, loading };
 };

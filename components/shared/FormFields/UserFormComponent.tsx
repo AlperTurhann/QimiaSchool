@@ -54,11 +54,11 @@ export const UserFormComponent = <T extends LoginData | RegisterData>({
 
   if (loginLoading || signupLoading) return <Loading />;
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center">
+    <div className="size-full flex flex-col items-center justify-center">
       <Form {...form}>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-full flex flex-col items-center gap-14 px-5 py-10 shadow-md rounded-xl bg-white md:w-2/3 lg:w-1/2"
+          className="w-full flex flex-col items-center shadow-md rounded-xl gap-14 px-5 py-10 bg-white md:w-2/3 lg:w-1/2"
         >
           <h1 className="font-bold capitalize sm:text-lg md:text-xl lg:text-2xl">
             {formType === "login" ? "Login" : "Register"}
@@ -70,7 +70,7 @@ export const UserFormComponent = <T extends LoginData | RegisterData>({
           </div>
           <Button
             type="submit"
-            className="w-full text-xs capitalize p-2 sm:w-1/2 md:text-sm md:w-1/3 lg:text-base shadow-xl bg-sky-700 hover:bg-sky-600"
+            className="w-full text-xs capitalize shadow-xl p-2 bg-sky-700 hover:bg-sky-600 sm:w-1/2 md:text-sm md:w-1/3 lg:text-base"
           >
             {formType === "login" ? "Login" : "Register"}
           </Button>

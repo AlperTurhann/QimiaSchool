@@ -26,7 +26,7 @@ const useGetUsersHook = () => {
     } finally {
       setLoading(false);
     }
-  }, [getUsers]);
+  }, [getUsers, showAlert]);
 
   useEffect(() => {
     fetchUsers();

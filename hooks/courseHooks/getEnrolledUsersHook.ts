@@ -31,11 +31,11 @@ const useGetEnrolledUsersHook = (course: CourseProps | undefined) => {
     } finally {
       setLoading(false);
     }
-  }, [course, getUser]);
+  }, [getUser, showAlert]);
 
   useEffect(() => {
     fetchEnrolledUsers();
-  }, [fetchEnrolledUsers]);
+  }, [course, fetchEnrolledUsers]);
 
   return { enrolledUsers, setEnrolledUsers, loading };
 };

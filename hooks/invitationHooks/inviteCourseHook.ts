@@ -45,7 +45,7 @@ const useInviteCourseHook = () => {
 
       return result;
     },
-    [inviteCourse, state.user]
+    [inviteCourse, showAlert]
   );
 
   return { handleInviteCourse, loading };

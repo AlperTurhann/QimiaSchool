@@ -34,11 +34,11 @@ const useGetUserCoursesHook = (user: UserProps | null) => {
     } finally {
       setLoading(false);
     }
-  }, [user, getCourse]);
+  }, [getCourse, showAlert]);
 
   useEffect(() => {
     fetchUserCourses();
-  }, [fetchUserCourses]);
+  }, [user, fetchUserCourses]);
 
   return { courses, setCourses, loading };
 };
