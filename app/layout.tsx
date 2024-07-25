@@ -8,6 +8,7 @@ import AlertProvider from "@/components/providers/AlertProvider";
 import UserProvider from "@/components/providers/UserProvider";
 import CourseProvider from "@/components/providers/CourseProvider";
 import InvitationProvider from "@/components/providers/InvitationProvider";
+import SearchProvider from "@/components/providers/SearchProvider";
 import AlertRB from "@/components/shared/AlertRB";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -33,9 +34,11 @@ export default function RootLayout({
                 <Header />
                 <div className="flex">
                   <SideBar />
-                  <div className="size-full min-h-[calc(100vh-14rem)] flex flex-col items-center overflow-hidden p-2 gap-5 sm:p-5">
-                    {children}
-                  </div>
+                  <SearchProvider>
+                    <div className="size-full min-h-[calc(100vh-14rem)] flex flex-col items-center overflow-hidden p-2 gap-5 sm:p-5">
+                      {children}
+                    </div>
+                  </SearchProvider>
                 </div>
                 <AlertRB />
               </InvitationProvider>

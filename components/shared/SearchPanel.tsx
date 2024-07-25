@@ -1,54 +1,35 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
-import useGetCoursesHook from "@/hooks/courseHooks/getCoursesHook";
-import useGetUsersHook from "@/hooks/userHooks/getUsersHook";
 import { CourseProps } from "@/types/CourseTypes";
 import { UserProps } from "@/types/UserTypes";
+import { useSearchContext } from "@/context/SearchContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import Loading from "@/components/shared/Loading";
 import { Button } from "@/components/ui/button";
 
-interface Props {
-  type: "courses" | "users";
-  query: string;
-}
-
-const SearchPanel = ({ type, query }: Props) => {
-  const { courses, loading: getCoursesLoading } = useGetCoursesHook();
-  const { users, loading: getUsersLoading } = useGetUsersHook();
-  const [results, setResults] = useState<CourseProps[] | UserProps[]>([]);
+const SearchPanel = () => {
+  const { state } = useSearchContext();
   const navigate = useRouter();
 
-  const handleSearch = async () => {
-    let result: CourseProps[] | UserProps[] = [];
-    if (type === "courses") {
-      result = courses.filter((course) =>
-        course.name.toLowerCase().includes(query.toLowerCase())
-      );
-    } else {
-      result = users.filter((user) =>
-        user.name.toLowerCase().includes(query.toLowerCase())
-      );
-    }
-    if (query !== "") setResults(result);
-    else setResults([]);
+  const isCourse = (result: CourseProps | UserProps): result is CourseProps => {
+    return "enrolledStudents" in result;
   };
 
-  useEffect(() => {
-    handleSearch();
-  }, [query, courses, users]);
-
-  if (getCoursesLoading || getUsersLoading) return <Loading />;
   return (
-    <ScrollArea className={`z-40 border bg-white ${query === "" && "hidden"}`}>
+    <ScrollArea
+      className={`z-40 border bg-white ${state.query === "" && "hidden"}`}
+    >
       <div className="max-h-64 divide-y-2 lg:max-h-[30rem]">
-        {results.map((result) => (
+        {state.results.map((result) => (
           <Button
             type="button"
             key={result.id}
             variant="ghost"
-            onClick={() => navigate.push(`${type}/${result.id}`)}
+            onClick={() =>
+              navigate.push(
+                `/${isCourse(result) ? "courses" : "users"}/${result.id}`
+              )
+            }
             className="size-full rounded-none"
           >
             {result.name}
@@ -56,7 +37,7 @@ const SearchPanel = ({ type, query }: Props) => {
         ))}
         <span
           className={`text-sm px-2 text-gray-600 ${
-            results.length !== 0 && "hidden"
+            state.results.length !== 0 && "hidden"
           }`}
         >
           No results found
