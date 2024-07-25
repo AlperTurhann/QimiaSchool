@@ -19,7 +19,7 @@ const useLoginHook = () => {
           if (fetchedLogin.data) {
             dispatch({ type: "SET_USER", payload: fetchedLogin.data });
             showAlert("Success", fetchedLogin.message);
-            navigate.push(`/users/${fetchedLogin.data.id}`);
+            navigate.push("/users/profile");
           } else {
             showAlert("Error", fetchedLogin.message);
           }

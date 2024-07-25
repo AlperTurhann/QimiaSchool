@@ -6,17 +6,19 @@ import { Bell, Book, CircleUserRound, LogOut } from "lucide-react";
 import useLogoutHook from "@/hooks/userHooks/logoutHook";
 import { useUserContext } from "@/context/UserContext";
 import { Button } from "@/components/ui/button";
+import Loading from "@/components/shared/Loading";
 
 const NavBar = () => {
   const { state } = useUserContext();
-  const { logout } = useLogoutHook();
+  const { logout, loading } = useLogoutHook();
   const navigate = useRouter();
 
   const handleProfileClick = () => {
-    if (state.user) navigate.push(`/users/${state.user.id}`);
+    if (state.user) navigate.push("/users/profile");
     else navigate.push("/login");
   };
 
+  if (loading) return <Loading />;
   return (
     <nav className="size-full flex items-center justify-between gap-5">
       <Link href="/">

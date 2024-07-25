@@ -7,13 +7,13 @@ import useEnrollCourseHook from "@/hooks/userHooks/enrollCourseHook";
 import useDeleteCourseHook from "@/hooks/courseHooks/deleteCourseHook";
 import useAcceptCourseInvitationHook from "@/hooks/invitationHooks/acceptCourseInvitationHook";
 import useDeclineCourseInvitationHook from "@/hooks/invitationHooks/declineCourseInvitationHook";
+import useApplyCourseHook from "@/hooks/userHooks/applyCourseHook";
+import useWithdrawCourseHook from "@/hooks/userHooks/withdrawCourseHook";
+import { InvitationProps } from "@/types/InvitationTypes";
 import { useUserContext } from "@/context/UserContext";
 import { Button } from "@/components/ui/button";
 import EnrolledStudents from "@/components/shared/EnrolledStudents";
 import Loading from "@/components/shared/Loading";
-import { InvitationProps } from "@/types/InvitationTypes";
-import useApplyCourseHook from "@/hooks/userHooks/applyCourseHook";
-import useWithdrawCourseHook from "@/hooks/userHooks/withdrawCourseHook";
 
 const CoursePage = () => {
   const { state } = useUserContext();

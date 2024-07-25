@@ -15,11 +15,11 @@ const Users = () => {
   const { users, loading } = useGetUsersHook();
 
   if (!userState.user) return <MustLogin />;
-  else if (userState.user.role !== "instructor") return <OnlyInstructor />;
-  else if (loading) return <Loading />;
+  if (userState.user.role !== "instructor") return <OnlyInstructor />;
+  if (loading) return <Loading />;
   return (
     <main className="w-full h-full">
-      <SearchBar type="users" />
+      <SearchBar values={users} />
       <h1 className="marginTopUntilSm text-center text-2xl font-bold p-5">
         Users
       </h1>
@@ -36,10 +36,7 @@ const Users = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {searchState.finalResults
-          .filter(
-            (user): user is UserProps =>
-              "role" in user && user.id !== userState.user?.id
-          )
+          .filter((user): user is UserProps => "role" in user)
           .map((user) => (
             <UserCard key={user.id} user={user} />
           ))}

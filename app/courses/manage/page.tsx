@@ -20,8 +20,8 @@ const ManageCoursePage = () => {
   const { handleDeleteCourse } = useDeleteCourseHook(setCourses);
 
   if (!state.user) return <MustLogin />;
-  else if (state.user.role !== "instructor") return <OnlyInstructor />;
-  else if (loading) return <Loading />;
+  if (state.user.role !== "instructor") return <OnlyInstructor />;
+  if (loading) return <Loading />;
   return (
     <main className="w-full h-full flex flex-col items-center">
       <h1 className="text-center text-2xl font-bold p-5">Manage Courses</h1>

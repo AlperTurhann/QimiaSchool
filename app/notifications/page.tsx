@@ -13,7 +13,7 @@ const NotificationsPage = () => {
   const { invitations, setInvitations, loading } = useGetInvitationsHook();
 
   if (!state.user) return <MustLogin />;
-  else if (loading) return <Loading />;
+  if (loading) return <Loading />;
   return (
     <div className="size-full flex flex-col items-center mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4 text-center">

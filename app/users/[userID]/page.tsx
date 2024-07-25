@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import useGetUserHook from "@/hooks/userHooks/getUserHook";
 import { useUserContext } from "@/context/UserContext";
@@ -16,13 +16,9 @@ const ProfilePage = () => {
 
   const { user, loading } = useGetUserHook(userID);
 
-  const handleClosePanel = useCallback(() => {
-    setShowInvitePanel(false);
-  }, []);
-
   if (!state.user) return <MustLogin />;
-  else if (loading) return <Loading />;
-  else if (!user) return <p>User not found!</p>;
+  if (loading) return <Loading />;
+  if (!user) return <p>User not found!</p>;
 
   const canInvite = (): boolean => {
     return state.user?.id !== user.id && user.role !== "instructor";
@@ -46,7 +42,10 @@ const ProfilePage = () => {
         </Button>
       </div>
       <div className={`${!showInvitePanel && "hidden"}`}>
-        <InviteToCoursePanel user={user} onClose={handleClosePanel} />
+        <InviteToCoursePanel
+          user={user}
+          onClose={() => setShowInvitePanel(false)}
+        />
       </div>
     </main>
   );

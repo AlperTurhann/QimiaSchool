@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
-import UserCourses from "@/components/shared/UserCourses";
 import { useUserContext } from "@/context/UserContext";
 import MustLogin from "@/components/shared/MustLogin";
+import UserCourses from "@/components/shared/UserCourses";
 
 const EnrolledPage = () => {
   const { state } = useUserContext();

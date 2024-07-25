@@ -19,7 +19,7 @@ const useSignupHook = () => {
           if (fetchedSignup.data) {
             dispatch({ type: "SET_USER", payload: fetchedSignup.data });
             showAlert("Success", fetchedSignup.message);
-            navigate.push(`/users/${fetchedSignup.data.id}`);
+            navigate.push("/users/profile");
           } else {
             showAlert("Error", fetchedSignup.message);
           }

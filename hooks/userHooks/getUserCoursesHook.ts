@@ -15,8 +15,8 @@ const useGetUserCoursesHook = (user: UserProps | null) => {
       if (user) {
         setLoading(true);
         const fetchedUserCourses = await Promise.all(
-          user.courses.map(async (createdCourseID) => {
-            const response = await getCourse(createdCourseID);
+          user.courses.map(async (courseID) => {
+            const response = await getCourse(courseID);
             return "data" in response ? response.data : null;
           })
         );

@@ -16,9 +16,9 @@ const EditCoursePage = () => {
   const { course, loading } = getCourseHook(courseID);
 
   if (!state.user) return <MustLogin />;
-  else if (state.user.role !== "instructor") return <OnlyInstructor />;
-  else if (loading) return <Loading />;
-  else if (!course) return <p>Course not found!</p>;
+  if (state.user.role !== "instructor") return <OnlyInstructor />;
+  if (loading) return <Loading />;
+  if (!course) return <p>Course not found!</p>;
   return (
     <main className="w-full h-full flex flex-col items-center">
       <CourseFormComponent course={course}>

@@ -11,7 +11,7 @@ const CreateCoursePage = () => {
   const { state } = useUserContext();
 
   if (!state.user) return <MustLogin />;
-  else if (state.user.role !== "instructor") return <OnlyInstructor />;
+  if (state.user.role !== "instructor") return <OnlyInstructor />;
   return (
     <main className="w-full h-full flex flex-col items-center">
       <CourseFormComponent>

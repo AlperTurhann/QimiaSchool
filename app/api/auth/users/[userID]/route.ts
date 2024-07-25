@@ -3,9 +3,9 @@ import { v4 as uuidv4 } from "uuid";
 import { CourseProps } from "@/types/CourseTypes";
 import { UserProps } from "@/types/UserTypes";
 import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
+import { InvitationProps } from "@/types/InvitationTypes";
 import coursesUtils from "@/utils/fileUtils/coursesFileUtils";
 import usersUtils from "@/utils/fileUtils/usersFileUtils";
-import { InvitationProps } from "@/types/InvitationTypes";
 
 const checkPutParams = (
   userID: string,

@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcryptjs";
+import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
 import { UserProps } from "@/types/UserTypes";
 import usersUtils from "@/utils/fileUtils/usersFileUtils";
-import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
 
 export async function POST(
   request: Request

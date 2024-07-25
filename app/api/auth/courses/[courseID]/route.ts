@@ -5,6 +5,59 @@ import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
 import coursesUtils from "@/utils/fileUtils/coursesFileUtils";
 import usersUtils from "@/utils/fileUtils/usersFileUtils";
 
+const getStudentChanges = (
+  originalCourse: CourseProps,
+  updatedCourseData: CourseProps
+) => {
+  const enrolledStudents = updatedCourseData.enrolledStudents.filter(
+    (studentID: string) => !originalCourse.enrolledStudents.includes(studentID)
+  );
+  const removedStudents = originalCourse.enrolledStudents.filter(
+    (studentID) => !updatedCourseData.enrolledStudents.includes(studentID)
+  );
+  const respondedStudents = originalCourse.appliedStudents.filter(
+    (studentID) => !updatedCourseData.appliedStudents.includes(studentID)
+  );
+
+  return { enrolledStudents, removedStudents, respondedStudents };
+};
+
+const updateUserData = (
+  courseID: string,
+  currentUserID: string,
+  enrolledStudents: string[],
+  removedStudents: string[],
+  respondedStudents: string[]
+): UserProps[] | ErrorResponse => {
+  const users = usersUtils.readData();
+  const currentUserIndex = users.findIndex((user) => user.id === currentUserID);
+  if (currentUserIndex === -1) {
+    return {
+      message: "No course found with this ID!",
+      error: "No course found with this ID",
+    };
+  }
+
+  users.forEach((user) => {
+    if (enrolledStudents.includes(user.id)) {
+      user.courses.push(courseID);
+    }
+    if (removedStudents.includes(user.id)) {
+      user.courses = user.courses.filter((id) => id !== courseID);
+    }
+    if (respondedStudents.includes(user.id)) {
+      user.appliedCourses = user.appliedCourses.filter((id) => id !== courseID);
+      users[currentUserIndex].invitations = users[
+        currentUserIndex
+      ].invitations.filter(
+        (inv) => !(inv.userID === user.id && inv.courseID === courseID)
+      );
+    }
+  });
+
+  return users;
+};
+
 export async function POST(
   request: Request
 ): Promise<NextResponse<SuccessResponse<CourseProps> | ErrorResponse>> {
@@ -95,16 +148,8 @@ export async function PUT(
       );
     }
 
-    const enrolledStudents = updatedCourseData.enrolledStudents.filter(
-      (studentID: string) =>
-        !courses[courseIndex].enrolledStudents.includes(studentID)
-    );
-    const removedStudents = courses[courseIndex].enrolledStudents.filter(
-      (studentID) => !updatedCourseData.enrolledStudents.includes(studentID)
-    );
-    const respondedStudents = courses[courseIndex].appliedStudents.filter(
-      (studentID) => !updatedCourseData.appliedStudents.includes(studentID)
-    );
+    const { enrolledStudents, removedStudents, respondedStudents } =
+      getStudentChanges(courses[courseIndex], updatedCourseData);
 
     if (
       enrolledStudents.length +
@@ -112,52 +157,15 @@ export async function PUT(
         respondedStudents.length >
       0
     ) {
-      const users = usersUtils.readData();
-
-      if (enrolledStudents.length > 0) {
-        users.forEach((user) => {
-          if (enrolledStudents.includes(user.id)) {
-            user.courses.push(id);
-          }
-        });
-      }
-      if (removedStudents.length > 0) {
-        users.forEach((user) => {
-          if (removedStudents.includes(user.id)) {
-            user.courses = user.courses.filter((courseID) => courseID !== id);
-          }
-        });
-      }
-      if (respondedStudents.length > 0) {
-        const currentUserIndex = users.findIndex(
-          (user) => user.id === currentUserID
-        );
-        if (currentUserIndex === -1) {
-          return NextResponse.json(
-            {
-              message: "No user found with this ID!",
-              error: "No user found with this ID",
-            },
-            { status: 404 }
-          );
-        }
-
-        users.forEach((user) => {
-          if (respondedStudents.includes(user.id)) {
-            user.appliedCourses = user.appliedCourses.filter(
-              (courseID) => courseID !== id
-            );
-
-            users[currentUserIndex].invitations = users[
-              currentUserIndex
-            ].invitations.filter(
-              (inv) => !(inv.userID === user.id && inv.courseID === id)
-            );
-          }
-        });
-      }
-
-      usersUtils.writeData(users);
+      const updatedUsers = updateUserData(
+        id,
+        currentUserID,
+        enrolledStudents,
+        removedStudents,
+        respondedStudents
+      );
+      if ("error" in updatedUsers) return NextResponse.json(updatedUsers);
+      usersUtils.writeData(updatedUsers);
     }
 
     courses[courseIndex] = { ...courses[courseIndex], ...updatedCourseData };
