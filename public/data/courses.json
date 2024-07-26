@@ -1,12 +1,1 @@
-[
-  {
-    "id": "02c9e517-970f-40d9-a214-91082a9fbfb5",
-    "name": "Frontend Development",
-    "description": "This is a test course",
-    "instructor": "7552dfff-4e68-4603-a694-6e2675d30337",
-    "capacity": 2,
-    "accessLevel": "accepted only",
-    "enrolledStudents": [],
-    "appliedStudents": []
-  }
-]
+[]
