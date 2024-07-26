@@ -1,3 +1,10 @@
+interface CourseState {
+  isInvited: boolean;
+  isEnrolled: boolean;
+  isApplied: boolean;
+  isEnrollable: boolean;
+}
+
 interface CreateCourseProps {
   name: string;
   description: string;
@@ -12,4 +19,4 @@ interface CourseProps extends CreateCourseProps {
   appliedStudents: string[];
 }
 
-export type { CreateCourseProps, CourseProps };
+export type { CourseState, CreateCourseProps, CourseProps };
