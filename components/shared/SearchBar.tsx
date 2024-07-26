@@ -1,64 +1,90 @@
-import React, { FormEvent, useEffect } from "react";
+import React, { FormEvent, useEffect, useState, useCallback } from "react";
 import { Search } from "lucide-react";
 import { CourseProps } from "@/types/CourseTypes";
 import { UserProps } from "@/types/UserTypes";
 import { useSearchContext } from "@/context/SearchContext";
+import { useUserContext } from "@/context/UserContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import SearchPanel from "@/components/shared/SearchPanel";
 
+type SearchableItem = CourseProps | UserProps;
+
 interface Props {
-  values: CourseProps[] | UserProps[];
+  items: SearchableItem[];
 }
 
-const SearchBar = ({ values }: Props) => {
-  const { state, dispatch } = useSearchContext();
+const SearchBar = ({ items }: Props) => {
+  const { state: searchState, dispatch } = useSearchContext();
+  const { state: userState } = useUserContext();
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+
+  const filterItems = useCallback(
+    (query: string) => {
+      return items.filter((item) =>
+        "role" in item
+          ? item.name.toLowerCase().includes(query.toLowerCase()) &&
+            item.id !== userState.user?.id
+          : item.name.toLowerCase().includes(query.toLowerCase())
+      );
+    },
+    [items, userState.user?.id]
+  );
 
   const handleSearch = (event: FormEvent) => {
     event.preventDefault();
     dispatch({ type: "SEARCH" });
   };
 
-  const handleInputChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    event.preventDefault();
-    dispatch({ type: "SET_QUERY", payload: event.target.value });
-    if (event.target.value === "") dispatch({ type: "CLEAR_RESULTS" });
-    else {
-      const result = values.filter((value) =>
-        value.name.toLowerCase().includes(event.target.value.toLowerCase())
-      );
-      dispatch({
-        type: "SET_RESULTS",
-        payload: result as CourseProps[] | UserProps[],
-      });
-    }
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const query = event.target.value;
+    dispatch({ type: "SET_QUERY", payload: query });
+    setDebouncedQuery(query);
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (debouncedQuery === "") {
+        dispatch({ type: "CLEAR_RESULTS" });
+      } else {
+        const result = filterItems(debouncedQuery);
+        dispatch({
+          type: "SET_RESULTS",
+          payload: result as CourseProps[] | UserProps[],
+        });
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [debouncedQuery, dispatch, filterItems]);
 
   useEffect(() => {
     dispatch({ type: "SET_QUERY", payload: "" });
     dispatch({ type: "CLEAR_RESULTS" });
-    dispatch({ type: "SEARCH" });
-  }, values);
+  }, [items, dispatch]);
 
   return (
     <div className="w-full flex justify-center">
-      <form className="w-[95%] absolute sm:w-1/3 sm:right-5 sm:top-32">
-        <Input type="text" value={state.query} onChange={handleInputChange} />
-        <div className="absolute inset-y-0 right-0 text-gray-500">
-          <Button
-            type="submit"
-            variant="link"
-            size="icon"
-            onClick={handleSearch}
-          >
-            <Search size={20} />
-          </Button>
-        </div>
-        <div className="w-full absolute">
-          <SearchPanel />
-        </div>
+      <form
+        onSubmit={handleSearch}
+        className="w-[95%] absolute sm:w-1/3 sm:right-5 sm:top-32"
+      >
+        <Input
+          type="text"
+          value={searchState.query}
+          onChange={handleInputChange}
+          placeholder="Search..."
+          className="pr-10"
+        />
+        <Button
+          type="submit"
+          variant="link"
+          size="icon"
+          className="absolute inset-y-0 right-0 text-gray-500"
+        >
+          <Search size={20} />
+        </Button>
+        <SearchPanel />
       </form>
     </div>
   );

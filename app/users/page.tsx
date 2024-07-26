@@ -19,7 +19,7 @@ const Users = () => {
   if (loading) return <Loading />;
   return (
     <main className="w-full h-full">
-      <SearchBar values={users} />
+      <SearchBar items={users} />
       <h1 className="marginTopUntilSm text-center text-2xl font-bold p-5">
         Users
       </h1>

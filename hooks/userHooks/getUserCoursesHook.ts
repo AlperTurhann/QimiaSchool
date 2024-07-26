@@ -38,7 +38,7 @@ const useGetUserCoursesHook = (user: UserProps | null) => {
 
   useEffect(() => {
     fetchUserCourses();
-  }, [user, fetchUserCourses]);
+  }, [fetchUserCourses]);
 
   return { courses, setCourses, loading };
 };

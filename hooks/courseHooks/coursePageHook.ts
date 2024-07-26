@@ -72,7 +72,7 @@ const useCoursePageHook = (courseID: string) => {
 
   useEffect(() => {
     fetchData();
-  }, [state.user, courseID, fetchData]);
+  }, [courseID, fetchData]);
 
   return { course, instructor, enrolledUsers, setEnrolledUsers, loading };
 };

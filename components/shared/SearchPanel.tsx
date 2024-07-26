@@ -20,28 +20,25 @@ const SearchPanel = () => {
       className={`z-40 border bg-white ${state.query === "" && "hidden"}`}
     >
       <div className="max-h-64 divide-y-2 lg:max-h-[30rem]">
-        {state.results.map((result) => (
-          <Button
-            type="button"
-            key={result.id}
-            variant="ghost"
-            onClick={() =>
-              navigate.push(
-                `/${isCourse(result) ? "courses" : "users"}/${result.id}`
-              )
-            }
-            className="size-full rounded-none"
-          >
-            {result.name}
-          </Button>
-        ))}
-        <span
-          className={`text-sm px-2 text-gray-600 ${
-            state.results.length !== 0 && "hidden"
-          }`}
-        >
-          No results found
-        </span>
+        {state.results.length !== 0 ? (
+          state.results.map((result) => (
+            <Button
+              type="button"
+              key={result.id}
+              variant="ghost"
+              onClick={() =>
+                navigate.push(
+                  `/${isCourse(result) ? "courses" : "users"}/${result.id}`
+                )
+              }
+              className="size-full rounded-none"
+            >
+              {result.name}
+            </Button>
+          ))
+        ) : (
+          <span className="text-sm px-2 text-gray-600">No results found</span>
+        )}
       </div>
     </ScrollArea>
   );

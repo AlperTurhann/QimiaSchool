@@ -13,7 +13,7 @@ const Courses = () => {
   if (loading) return <Loading />;
   return (
     <main className="w-full h-full">
-      <SearchBar values={courses} />
+      <SearchBar items={courses} />
       <h1 className="marginTopUntilSm text-center text-2xl font-bold p-5">
         Courses
       </h1>

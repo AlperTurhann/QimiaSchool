@@ -104,8 +104,8 @@ const CoursePage = () => {
   };
 
   if (!course) return <p>Course not found!</p>;
-  else if (!instructor) return null;
-  else if (
+  if (!instructor) return null;
+  if (
     coursePageLoading ||
     enrollLoading ||
     leaveLoading ||
