@@ -36,17 +36,19 @@ const ProfilePage = () => {
         {user.email}
       </p>
       <UserCourses user={user} />
-      <div className={`${!canInvite() && "hidden"}`}>
-        <Button onClick={() => setShowInvitePanel(true)}>
-          Invite to a course
-        </Button>
-      </div>
-      <div className={`${!showInvitePanel && "hidden"}`}>
-        <InviteToCoursePanel
-          user={user}
-          onClose={() => setShowInvitePanel(false)}
-        />
-      </div>
+      {canInvite() && (
+        <>
+          <Button onClick={() => setShowInvitePanel(true)}>
+            Invite to a course
+          </Button>
+          <div className={`${!showInvitePanel && "hidden"}`}>
+            <InviteToCoursePanel
+              user={user}
+              onClose={() => setShowInvitePanel(false)}
+            />
+          </div>
+        </>
+      )}
     </main>
   );
 };

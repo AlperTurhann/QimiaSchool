@@ -20,7 +20,7 @@ const SearchPanel = () => {
       className={`z-40 border bg-white ${state.query === "" && "hidden"}`}
     >
       <div className="max-h-64 divide-y-2 lg:max-h-[30rem]">
-        {state.results.length !== 0 ? (
+        {state.results.length > 0 ? (
           state.results.map((result) => (
             <Button
               type="button"

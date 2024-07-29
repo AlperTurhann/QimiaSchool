@@ -19,34 +19,40 @@ const AppliedStudents = ({
 }: Props) => {
   const { state } = useUserContext();
 
+  const renderContent = () => {
+    if (!state.user) {
+      return <MustLogin />;
+    }
+
+    if (appliedUsers.length === 0) {
+      return (
+        <span className="text-gray-500">
+          There are no students applied in this course!
+        </span>
+      );
+    }
+
+    return (
+      <div className="flex flex-col gap-3">
+        {appliedUsers.map((student) => (
+          <StudentCard
+            key={student.id}
+            type="applied"
+            student={student}
+            handleAcceptStudent={() => handleAcceptStudent(student)}
+            handleDeclineStudent={() => handleDeclineStudent(student.id)}
+          />
+        ))}
+      </div>
+    );
+  };
+
   return (
     <Card className="w-full shadow-md">
       <CardHeader className="text-center border-b">
         <CardTitle>Applied Students</CardTitle>
       </CardHeader>
-      <CardContent className="text-center p-5">
-        <div className={`${state.user && "hidden"}`}>
-          <MustLogin />
-        </div>
-        <div className={`${!state.user && "hidden"}`}>
-          <span
-            className={`text-gray-500 ${appliedUsers.length !== 0 && "hidden"}`}
-          >
-            There are no students applied in this course!
-          </span>
-          <div className="flex flex-col gap-3">
-            {appliedUsers.map((student) => (
-              <StudentCard
-                key={student.id}
-                type="applied"
-                student={student}
-                handleAcceptStudent={() => handleAcceptStudent(student)}
-                handleDeclineStudent={() => handleDeclineStudent(student.id)}
-              />
-            ))}
-          </div>
-        </div>
-      </CardContent>
+      <CardContent className="text-center p-5">{renderContent()}</CardContent>
     </Card>
   );
 };

@@ -19,36 +19,41 @@ const NotificationsPage = () => {
       <h1 className="text-2xl font-bold mb-4 text-center">
         Your Notifications
       </h1>
-      <span className={`text-center ${invitations.length !== 0 && "hidden"}`}>
-        You have no notification at the moment
-      </span>
-      {invitations.map((invitation) => (
-        <div
-          key={invitation.invitationID}
-          className="size-full flex flex-col items-center gap-10"
-        >
-          <div
-            className={`w-full flex flex-col items-center gap-5 ${
-              state.user?.role === "instructor" && "hidden"
-            }`}
-          >
-            <CourseInvitationCard
-              invitation={invitation}
-              setInvitations={setInvitations}
-            />
-          </div>
-          <div
-            className={`w-full flex flex-col items-center gap-5 ${
-              state.user?.role === "student" && "hidden"
-            }`}
-          >
-            <JoinInvitationCard
-              invitation={invitation}
-              setInvitations={setInvitations}
-            />
-          </div>
-        </div>
-      ))}
+      {invitations.length > 0 ? (
+        <>
+          {invitations.map((invitation) => (
+            <div
+              key={invitation.invitationID}
+              className="size-full flex flex-col items-center gap-10"
+            >
+              <div
+                className={`w-full flex flex-col items-center gap-5 ${
+                  state.user?.role === "instructor" && "hidden"
+                }`}
+              >
+                <CourseInvitationCard
+                  invitation={invitation}
+                  setInvitations={setInvitations}
+                />
+              </div>
+              <div
+                className={`w-full flex flex-col items-center gap-5 ${
+                  state.user?.role === "student" && "hidden"
+                }`}
+              >
+                <JoinInvitationCard
+                  invitation={invitation}
+                  setInvitations={setInvitations}
+                />
+              </div>
+            </div>
+          ))}
+        </>
+      ) : (
+        <span className={`text-center ${invitations.length !== 0 && "hidden"}`}>
+          You have no notification at the moment
+        </span>
+      )}
     </div>
   );
 };

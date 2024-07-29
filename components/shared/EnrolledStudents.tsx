@@ -29,52 +29,59 @@ const EnrolledStudents = ({
     return "grid-cols-3";
   };
 
+  const renderContent = () => {
+    if (!state.user) {
+      return <MustLogin />;
+    }
+
+    if (enrolledUsers.length === 0) {
+      return (
+        <span className="text-gray-500">
+          There are no students enrolled in this course!
+        </span>
+      );
+    }
+
+    if (type === "view") {
+      return (
+        <div className={`grid gap-3 ${getGridClass()}`}>
+          {enrolledUsers.map((student) => (
+            <div key={student.id} className="size-full">
+              <Button
+                variant="link"
+                onClick={() => navigate.push(`/users/${student.id}`)}
+                className="size-full"
+              >
+                {student.name}
+              </Button>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (type === "edit") {
+      return (
+        <div className="flex flex-col gap-3">
+          {enrolledUsers.map((student) => (
+            <StudentCard
+              key={student.id}
+              type="enrolled"
+              student={student}
+              handleKickStudent={() => handleKickStudent(student.id)}
+            />
+          ))}
+        </div>
+      );
+    }
+  };
+
   return (
     <Card className={`shadow-md ${type === "edit" ? "w-full" : "w-2/3"}`}>
       <CardHeader className="text-center border-b">
         <CardTitle>Enrolled Students</CardTitle>
       </CardHeader>
-      <CardContent className="text-center p-5">
-        <div className={`${state.user && "hidden"}`}>
-          <MustLogin />
-        </div>
-        <div className={`${!state.user && "hidden"}`}>
-          <span
-            className={`text-gray-500 ${
-              enrolledUsers.length !== 0 && "hidden"
-            }`}
-          >
-            There are no students enrolled in this course!
-          </span>
-          <div className={`flex flex-col gap-3 ${type === "view" && "hidden"}`}>
-            {enrolledUsers.map((student) => (
-              <StudentCard
-                key={student.id}
-                type="enrolled"
-                student={student}
-                handleKickStudent={() => handleKickStudent(student.id)}
-              />
-            ))}
-          </div>
-          <div
-            className={`grid gap-3 ${getGridClass()} ${
-              type === "edit" && "hidden"
-            }`}
-          >
-            {enrolledUsers.map((student) => (
-              <div key={student.id} className="size-full">
-                <Button
-                  variant="link"
-                  onClick={() => navigate.push(`/users/${student.id}`)}
-                  className="size-full"
-                >
-                  {student.name}
-                </Button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </CardContent>
+      <CardContent className="text-center p-5">{renderContent()}</CardContent>
     </Card>
   );
 };

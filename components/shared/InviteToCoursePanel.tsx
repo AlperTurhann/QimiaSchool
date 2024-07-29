@@ -65,26 +65,27 @@ const InviteToCoursePanel = ({ user, onClose }: Props) => {
           <CardTitle>Invite to Course</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className={`${inviteableCourses.length !== 0 && "hidden"}`}>
-            No available courses to invite
-          </p>
-          <ul className="max-h-60 overflow-y-auto">
-            {inviteableCourses.map((course) => (
-              <li key={course.id} className="mb-2">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="course"
-                    value={course.id}
-                    checked={selectedCourse === course.id}
-                    onChange={() => setSelectedCourse(course.id)}
-                    className="mr-2"
-                  />
-                  {course.name}
-                </label>
-              </li>
-            ))}
-          </ul>
+          {inviteableCourses.length > 0 ? (
+            <ul className="max-h-60 overflow-y-auto">
+              {inviteableCourses.map((course) => (
+                <li key={course.id} className="mb-2">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="course"
+                      value={course.id}
+                      checked={selectedCourse === course.id}
+                      onChange={() => setSelectedCourse(course.id)}
+                      className="mr-2"
+                    />
+                    {course.name}
+                  </label>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No available courses to invite</p>
+          )}
         </CardContent>
         <CardFooter className="justify-end gap-2">
           <Button onClick={onClose} variant="outline">

@@ -23,23 +23,24 @@ const Users = () => {
       <h1 className="marginTopUntilSm text-center text-2xl font-bold p-5">
         Users
       </h1>
-      <div
-        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${
-          searchState.finalResults.length > 0 && "hidden"
-        }`}
-      >
-        {users
-          .filter((user) => user.id !== userState.user?.id)
-          .map((user) => (
-            <UserCard key={user.id} user={user} />
-          ))}
-      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {searchState.finalResults
-          .filter((user): user is UserProps => "role" in user)
-          .map((user) => (
-            <UserCard key={user.id} user={user} />
-          ))}
+        {searchState.finalResults.length > 0 ? (
+          <>
+            {searchState.finalResults
+              .filter((user): user is UserProps => "role" in user)
+              .map((user) => (
+                <UserCard key={user.id} user={user} />
+              ))}
+          </>
+        ) : (
+          <>
+            {users
+              .filter((user) => user.id !== userState.user?.id)
+              .map((user) => (
+                <UserCard key={user.id} user={user} />
+              ))}
+          </>
+        )}
       </div>
     </main>
   );

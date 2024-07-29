@@ -26,10 +26,10 @@ const CourseCard = ({ course, courseInstructor, isManage = false }: Props) => {
     ? { user: courseInstructor, loading: false }
     : useGetUserHook(course.instructor, true);
 
-  if (!course || !instructor) return null;
+  if (!instructor) return null;
   if (loading) return <Loading />;
   return (
-    <Card className={`size-full overflow-hidden ${!course && "hidden"}`}>
+    <Card className="size-full overflow-hidden">
       <Button
         variant="ghost"
         onClick={() => navigate.push(`/courses/${course.id}`)}
@@ -39,7 +39,7 @@ const CourseCard = ({ course, courseInstructor, isManage = false }: Props) => {
       >
         <CardHeader className="w-full">
           <CardTitle className="truncateContent w-full">
-            {course?.name}
+            {course.name}
           </CardTitle>
           <CardDescription className="truncateContent">
             <strong>Instructor: </strong>
@@ -52,11 +52,11 @@ const CourseCard = ({ course, courseInstructor, isManage = false }: Props) => {
         <CardFooter className="w-full grid grid-cols-2 justify-between text-xs">
           <span className="w-full flex capitalize text-gray-600">
             <strong className="marginRight1">Access Level:</strong>
-            {course?.accessLevel}
+            {course.accessLevel}
           </span>
           <span className="w-full flex justify-end">
             <strong className="marginRight1">Capacity:</strong>
-            {course.enrolledStudents.length}/{course?.capacity}
+            {course.enrolledStudents.length}/{course.capacity}
           </span>
         </CardFooter>
       </Button>

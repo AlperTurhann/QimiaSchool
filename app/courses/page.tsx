@@ -17,23 +17,24 @@ const Courses = () => {
       <h1 className="marginTopUntilSm text-center text-2xl font-bold p-5">
         Courses
       </h1>
-      <div
-        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${
-          state.finalResults.length > 0 && "hidden"
-        }`}
-      >
-        {courses.map((course) => (
-          <CourseCard key={course.id} course={course} />
-        ))}
-      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {state.finalResults
-          .filter(
-            (result): result is CourseProps => "enrolledStudents" in result
-          )
-          .map((course) => (
-            <CourseCard key={course.id} course={course} />
-          ))}
+        {state.finalResults.length > 0 ? (
+          <>
+            {state.finalResults
+              .filter(
+                (result): result is CourseProps => "enrolledStudents" in result
+              )
+              .map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
+          </>
+        ) : (
+          <>
+            {courses.map((course) => (
+              <CourseCard key={course.id} course={course} />
+            ))}
+          </>
+        )}
       </div>
     </main>
   );
