@@ -7,6 +7,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -31,9 +32,7 @@ const Selector = ({ control, name, placeholder }: Props) => {
       render={({ field: { onChange, value } }) => (
         <div className="relative">
           <FormItem>
-            <span className="text-sm font-medium capitalize cursor-default leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              {name === "role" ? "Role" : "Access Level"}
-            </span>
+            <FormLabel>{name === "role" ? "Role" : "Access Level"}</FormLabel>
             <FormControl>
               <Select name={name} onValueChange={onChange} value={value ?? ""}>
                 <SelectTrigger className="w-full">
