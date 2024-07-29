@@ -35,12 +35,20 @@ const FormInput = ({ control, name, label, textarea = false }: Props) => {
       render={({ field }) => (
         <div className="relative">
           <FormItem>
-            <FormLabel className="capitalize">{label}</FormLabel>
+            <FormLabel htmlFor={name} className="capitalize">
+              {label}
+            </FormLabel>
             <FormControl>
               {textarea ? (
-                <Textarea {...field} value={field.value ?? ""} />
+                <Textarea
+                  id={name}
+                  {...field}
+                  value={field.value ?? ""}
+                  autoComplete="on"
+                />
               ) : (
                 <Input
+                  id={name}
                   type={getInputType()}
                   {...field}
                   value={field.value ?? ""}
@@ -49,6 +57,7 @@ const FormInput = ({ control, name, label, textarea = false }: Props) => {
                       field.onChange(Number(event.target.value));
                     else field.onChange(event.target.value);
                   }}
+                  autoComplete="on"
                 />
               )}
             </FormControl>

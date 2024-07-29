@@ -32,10 +32,17 @@ const Selector = ({ control, name, placeholder }: Props) => {
       render={({ field: { onChange, value } }) => (
         <div className="relative">
           <FormItem>
-            <FormLabel>{name === "role" ? "Role" : "Access Level"}</FormLabel>
+            <FormLabel htmlFor={name}>
+              {name === "role" ? "Role" : "Access Level"}
+            </FormLabel>
             <FormControl>
-              <Select name={name} onValueChange={onChange} value={value ?? ""}>
-                <SelectTrigger className="w-full">
+              <Select
+                name={name}
+                onValueChange={onChange}
+                value={value ?? ""}
+                autoComplete="on"
+              >
+                <SelectTrigger id={name} className="w-full">
                   <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
                 <SelectContent>
