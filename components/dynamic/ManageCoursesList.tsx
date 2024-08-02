@@ -1,50 +1,51 @@
 "use client";
 import React from "react";
-import { useRouter } from "next/navigation";
-import { Pencil, Trash2 } from "lucide-react";
-import useDeleteCourseHook from "@/hooks/courseHooks/deleteCourseHook";
 import useGetUserCoursesHook from "@/hooks/userHooks/getUserCoursesHook";
-import CourseCard from "@/modules/Course";
+import { CourseProps } from "@/types/CourseTypes";
+import ManageCourse from "@/modules/ManageCourse";
 import { useUserContext } from "@/context/UserContext";
-import { Button } from "@/components/ui/button";
+import { useSearchContext } from "@/context/SearchContext";
 import Loading from "@/components/shared/Loading";
+import SearchBar from "@/components/shared/SearchBar";
 
 const ManageCoursesList = () => {
   const { state } = useUserContext();
-  const navigate = useRouter();
+  const { state: searchState } = useSearchContext();
 
   const { courses, setCourses, loading } = useGetUserCoursesHook(state.user);
-  const { handleDeleteCourse } = useDeleteCourseHook(setCourses);
 
   if (loading) return <Loading />;
   return (
-    <div className="w-full flex flex-col gap-5 sm:w-2/3">
-      {courses.map((course) => (
-        <div key={course.id} className="w-full h-full relative">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => navigate.push(`/courses/manage/${course.id}`)}
-            className="z-10 absolute top-2 right-14"
-          >
-            <Pencil size={20} />
-          </Button>
-          <Button
-            variant="destructive"
-            size="icon"
-            onClick={() => handleDeleteCourse(course.id)}
-            className="z-10 absolute top-2 right-2"
-          >
-            <Trash2 size={20} />
-          </Button>
-          <CourseCard
-            course={course}
-            courseInstructor={state.user}
-            isManage={true}
-          />
-        </div>
-      ))}
-    </div>
+    <>
+      <SearchBar items={courses} />
+      <div className="marginTopUntilSm w-full flex flex-col gap-5 sm:w-2/3">
+        {searchState.finalResults.length > 0 ? (
+          <>
+            {searchState.finalResults
+              .filter(
+                (course): course is CourseProps => "enrolledStudents" in course
+              )
+              .map((course) => (
+                <ManageCourse
+                  key={course.id}
+                  course={course}
+                  setCourses={setCourses}
+                />
+              ))}
+          </>
+        ) : (
+          <>
+            {courses.map((course) => (
+              <ManageCourse
+                key={course.id}
+                course={course}
+                setCourses={setCourses}
+              />
+            ))}
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

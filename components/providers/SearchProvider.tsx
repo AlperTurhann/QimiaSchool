@@ -21,7 +21,7 @@ const searchReducer = (
     case "SET_RESULTS":
       return { ...state, results: action.payload };
     case "CLEAR_RESULTS":
-      return { ...state, query: "", results: [] };
+      return { ...state, query: "", results: [], finalResults: [] };
     case "SEARCH":
       return { ...state, finalResults: state.results };
   }

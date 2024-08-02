@@ -62,9 +62,8 @@ const SearchBar = ({ items }: Props) => {
   }, [debouncedQuery, dispatch, filterItems]);
 
   useEffect(() => {
-    dispatch({ type: "SET_QUERY", payload: "" });
     dispatch({ type: "CLEAR_RESULTS" });
-  }, [items, dispatch]);
+  }, [items]);
 
   return (
     <div className="w-full flex justify-center">
