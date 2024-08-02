@@ -1,9 +1,10 @@
+"use client";
 import { useCallback, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
 import { useAlertContext } from "@/context/AlertContext";
 
 const useApplyCourseHook = () => {
-  const { showAlert } = useAlertContext();
+  const { showAlert, showErrorAlert } = useAlertContext();
   const { state, dispatch, getUser, applyCourse } = useUserContext();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -17,27 +18,24 @@ const useApplyCourseHook = () => {
             instructorID,
             courseID
           );
-          if ("data" in isSuccesfull) {
+          if (typeof isSuccesfull !== "string") {
             if (isSuccesfull.data) {
               dispatch({ type: "APPLY_COURSE", payload: courseID });
-              showAlert("Success", isSuccesfull.message);
+              showAlert(isSuccesfull.message);
             } else {
-              showAlert("Error", isSuccesfull.message);
+              showAlert(isSuccesfull.message);
             }
           } else {
-            showAlert("Error", isSuccesfull.error);
+            showErrorAlert(isSuccesfull);
           }
         }
       } catch (error) {
-        showAlert(
-          "Error",
-          error instanceof Error ? error.message : String(error)
-        );
+        showErrorAlert("transactionError");
       } finally {
         setLoading(false);
       }
     },
-    [applyCourse, getUser, showAlert]
+    [applyCourse, getUser, showAlert, showErrorAlert]
   );
 
   return { handleApplyCourse, loading };

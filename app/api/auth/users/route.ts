@@ -1,27 +1,22 @@
 import { NextResponse } from "next/server";
 import { UserProps } from "@/types/UserTypes";
-import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
+import { SuccessResponse } from "@/types/ResponseTypes";
 import usersUtils from "@/utils/fileUtils/usersFileUtils";
+import { internalResponse } from "@/components/shared/apiErrorResponses";
 
 export async function GET(): Promise<
-  NextResponse<SuccessResponse<UserProps[]> | ErrorResponse>
+  NextResponse<SuccessResponse<UserProps[]> | APIErrorsKeys>
 > {
   try {
     const users = usersUtils.readData();
     return NextResponse.json(
       {
-        message: "Users found!",
+        message: "contentFound",
         data: users,
       },
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json(
-      {
-        message: "Internal server error!",
-        error: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 }
-    );
+    return internalResponse;
   }
 }

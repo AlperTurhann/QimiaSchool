@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useUserContext } from "@/context/UserContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,6 +10,7 @@ import { Button } from "@/components/ui/button";
 const SideBar = () => {
   const { state } = useUserContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const t = useTranslations("components.sideBar");
 
   const toggleSideBar = () => setIsOpen(!isOpen);
 
@@ -46,8 +48,8 @@ const SideBar = () => {
             <SideBarElement
               text={`${
                 state.user.role === "instructor"
-                  ? "Add New Course"
-                  : "Available Courses"
+                  ? t("newCourse")
+                  : t("availableCourses")
               }`}
               navLink={`/courses/${
                 state.user.role === "instructor" ? "new" : ""
@@ -56,15 +58,15 @@ const SideBar = () => {
             <SideBarElement
               text={`${
                 state.user.role === "instructor"
-                  ? "Manage Courses"
-                  : "My Courses"
+                  ? t("manageCourses")
+                  : t("myCourses")
               }`}
               navLink={`/courses/${
                 state.user.role === "instructor" ? "manage" : "enrolled"
               }`}
             />
             <div className={`${state.user.role !== "instructor" && "hidden"}`}>
-              <SideBarElement text="All Users" navLink={`/users`} />
+              <SideBarElement text={t("allUsers")} navLink={`/users`} />
             </div>
           </ul>
         </ScrollArea>

@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useTranslations } from "next-intl";
 import { UserProps } from "@/types/UserTypes";
 import { useUserContext } from "@/context/UserContext";
 import StudentCard from "@/modules/Student";
@@ -18,6 +19,7 @@ const AppliedStudents = ({
   handleDeclineStudent,
 }: Props) => {
   const { state } = useUserContext();
+  const t = useTranslations("components.appliedStudents");
 
   const renderContent = () => {
     if (!state.user) {
@@ -25,11 +27,7 @@ const AppliedStudents = ({
     }
 
     if (appliedUsers.length === 0) {
-      return (
-        <span className="text-gray-500">
-          There are no students applied in this course!
-        </span>
-      );
+      return <span className="text-gray-500">{t("noFound")}</span>;
     }
 
     return (
@@ -50,7 +48,7 @@ const AppliedStudents = ({
   return (
     <Card className="w-full shadow-md">
       <CardHeader className="text-center border-b">
-        <CardTitle>Applied Students</CardTitle>
+        <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent className="text-center p-5">{renderContent()}</CardContent>
     </Card>

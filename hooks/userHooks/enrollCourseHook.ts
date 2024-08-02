@@ -1,3 +1,4 @@
+"use client";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { UserProps } from "@/types/UserTypes";
 import { useUserContext } from "@/context/UserContext";
@@ -6,7 +7,7 @@ import { useAlertContext } from "@/context/AlertContext";
 const useEnrollCourseHook = (
   setEnrolledUsers: Dispatch<SetStateAction<UserProps[]>>
 ) => {
-  const { showAlert } = useAlertContext();
+  const { showAlert, showErrorAlert } = useAlertContext();
   const { state, dispatch, getUser, enrollCourse } = useUserContext();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -16,31 +17,28 @@ const useEnrollCourseHook = (
         if (state.user) {
           setLoading(true);
           const isSuccesfull = await enrollCourse(state.user.id, courseID);
-          if ("data" in isSuccesfull) {
+          if (typeof isSuccesfull !== "string") {
             if (isSuccesfull.data) {
               setEnrolledUsers((prevUsers) => [
                 ...prevUsers,
                 state.user as UserProps,
               ]);
               dispatch({ type: "ENROLL_COURSE", payload: courseID });
-              showAlert("Success", isSuccesfull.message);
+              showAlert(isSuccesfull.message);
             } else {
-              showAlert("Error", isSuccesfull.message);
+              showAlert(isSuccesfull.message);
             }
           } else {
-            showAlert("Error", isSuccesfull.error);
+            showErrorAlert(isSuccesfull);
           }
         }
       } catch (error) {
-        showAlert(
-          "Error",
-          error instanceof Error ? error.message : String(error)
-        );
+        showErrorAlert("transactionError");
       } finally {
         setLoading(false);
       }
     },
-    [enrollCourse, getUser, showAlert]
+    [enrollCourse, getUser, showAlert, showErrorAlert]
   );
 
   return { handleEnrollCourse, loading };

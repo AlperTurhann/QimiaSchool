@@ -1,10 +1,10 @@
 import { InvitationProps } from "@/types/InvitationTypes";
-import { SuccessResponse, ErrorResponse } from "@/types/ResponseTypes";
+import { SuccessResponse } from "@/types/ResponseTypes";
 import { parseJSON } from "@/utils/fileUtils/IFileUtils";
 
 const getInvitations = async (
   userID: string
-): Promise<SuccessResponse<InvitationProps[]> | ErrorResponse> => {
+): Promise<SuccessResponse<InvitationProps[]> | APIErrorsKeys> => {
   try {
     const response = await fetch("/api/auth/invitations", {
       method: "POST",
@@ -13,17 +13,14 @@ const getInvitations = async (
     });
     return await parseJSON<InvitationProps[]>(response);
   } catch (error) {
-    return {
-      message: "An error occurred during getting invitations",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
 const getInvitation = async (
   userID: string,
   invitationID: string
-): Promise<SuccessResponse<InvitationProps> | ErrorResponse> => {
+): Promise<SuccessResponse<InvitationProps> | APIErrorsKeys> => {
   try {
     const response = await fetch(`/api/auth/invitations/${invitationID}`, {
       method: "POST",
@@ -32,10 +29,7 @@ const getInvitation = async (
     });
     return await parseJSON<InvitationProps>(response);
   } catch (error) {
-    return {
-      message: "An error occurred during getting invitation",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
@@ -43,7 +37,7 @@ const inviteCourse = async (
   invitingUserID: string,
   invitedUserID: string,
   invitedCourseID: string
-): Promise<SuccessResponse<boolean> | ErrorResponse> => {
+): Promise<SuccessResponse<boolean> | APIErrorsKeys> => {
   try {
     const response = await fetch("/api/auth/invitations", {
       method: "PUT",
@@ -52,17 +46,14 @@ const inviteCourse = async (
     });
     return await parseJSON<boolean>(response);
   } catch (error) {
-    return {
-      message: "An error occurred while inviting to the course",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
 const acceptCourseInvitation = async (
   currentUserID: string,
   invitation: InvitationProps
-): Promise<SuccessResponse<boolean> | ErrorResponse> => {
+): Promise<SuccessResponse<boolean> | APIErrorsKeys> => {
   try {
     const response = await fetch(
       `/api/auth/invitations/${invitation.invitationID}`,
@@ -79,17 +70,14 @@ const acceptCourseInvitation = async (
     );
     return await parseJSON<boolean>(response);
   } catch (error) {
-    return {
-      message: "An error occurred while accepting to the invitation",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
 const declineCourseInvitation = async (
   currentUserID: string,
   invitation: InvitationProps
-): Promise<SuccessResponse<boolean> | ErrorResponse> => {
+): Promise<SuccessResponse<boolean> | APIErrorsKeys> => {
   try {
     const response = await fetch(
       `/api/auth/invitations/${invitation.invitationID}`,
@@ -106,17 +94,14 @@ const declineCourseInvitation = async (
     );
     return await parseJSON<boolean>(response);
   } catch (error) {
-    return {
-      message: "An error occurred while declining to the invitation",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
 const acceptJoinInvitation = async (
   currentUserID: string,
   invitation: InvitationProps
-): Promise<SuccessResponse<boolean> | ErrorResponse> => {
+): Promise<SuccessResponse<boolean> | APIErrorsKeys> => {
   try {
     const response = await fetch(
       `/api/auth/invitations/${invitation.invitationID}`,
@@ -133,17 +118,14 @@ const acceptJoinInvitation = async (
     );
     return await parseJSON<boolean>(response);
   } catch (error) {
-    return {
-      message: "An error occurred while accepting to the invitation",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
 const declineJoinInvitation = async (
   currentUserID: string,
   invitation: InvitationProps
-): Promise<SuccessResponse<boolean> | ErrorResponse> => {
+): Promise<SuccessResponse<boolean> | APIErrorsKeys> => {
   try {
     const response = await fetch(
       `/api/auth/invitations/${invitation.invitationID}`,
@@ -160,10 +142,7 @@ const declineJoinInvitation = async (
     );
     return await parseJSON<boolean>(response);
   } catch (error) {
-    return {
-      message: "An error occurred while declining to the invitation",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 

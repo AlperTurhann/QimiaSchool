@@ -1,6 +1,7 @@
+"use client";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { InvitationProps } from "@/types/InvitationTypes";
-import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
+import { SuccessResponse } from "@/types/ResponseTypes";
 import { useUserContext } from "@/context/UserContext";
 import { useAlertContext } from "@/context/AlertContext";
 import { useInvitationContext } from "@/context/InviteContext";
@@ -8,16 +9,16 @@ import { useInvitationContext } from "@/context/InviteContext";
 const useAcceptJoinInvitationHook = (
   setInvitations: Dispatch<SetStateAction<InvitationProps[]>>
 ) => {
-  const { showAlert } = useAlertContext();
+  const { showAlert, showErrorAlert } = useAlertContext();
   const { state, dispatch } = useUserContext();
   const { acceptJoinInvitation } = useInvitationContext();
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleAcceptJoinInvitationResult = (
-    result: SuccessResponse<boolean> | ErrorResponse,
+    result: SuccessResponse<boolean> | APIErrorsKeys,
     invitation: InvitationProps
   ) => {
-    if ("data" in result) {
+    if (typeof result !== "string") {
       if (result.data) {
         setInvitations((prevInvitations) =>
           prevInvitations.filter(
@@ -29,12 +30,12 @@ const useAcceptJoinInvitationHook = (
           type: "ACCEPT_JOIN_INVITATION",
           payload: invitation.invitationID,
         });
-        showAlert("Success", result.message);
+        showAlert(result.message);
       } else {
-        showAlert("Error", result.message);
+        showAlert(result.message);
       }
     } else {
-      showAlert("Error", result.error);
+      showErrorAlert(result);
     }
   };
 
@@ -47,15 +48,12 @@ const useAcceptJoinInvitationHook = (
         const result = await acceptJoinInvitation(state.user.id, invitation);
         handleAcceptJoinInvitationResult(result, invitation);
       } catch (error) {
-        showAlert(
-          "Error",
-          error instanceof Error ? error.message : String(error)
-        );
+        showErrorAlert("transactionError");
       } finally {
         setLoading(false);
       }
     },
-    [acceptJoinInvitation, showAlert]
+    [acceptJoinInvitation, showErrorAlert]
   );
 
   return { handleAcceptJoinInvitation, loading };

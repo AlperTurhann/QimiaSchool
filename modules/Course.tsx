@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import useGetUserHook from "@/hooks/userHooks/getUserHook";
 import { CourseProps } from "@/types/CourseTypes";
 import { UserProps } from "@/types/UserTypes";
@@ -21,7 +22,10 @@ interface Props {
 }
 
 const CourseCard = ({ course, courseInstructor, isManage = false }: Props) => {
+  const t = useTranslations("models.course");
+  const accessLevelsT = useTranslations("options.accessLevels");
   const navigate = useRouter();
+
   const { user: instructor, loading } = courseInstructor
     ? { user: courseInstructor, loading: false }
     : useGetUserHook(course.instructor, true);
@@ -42,7 +46,7 @@ const CourseCard = ({ course, courseInstructor, isManage = false }: Props) => {
             {course.name}
           </CardTitle>
           <CardDescription className="truncateContent">
-            <strong>Instructor: </strong>
+            <strong>{t("instructor")}: </strong>
             {instructor.name}
           </CardDescription>
         </CardHeader>
@@ -51,11 +55,11 @@ const CourseCard = ({ course, courseInstructor, isManage = false }: Props) => {
         </CardContent>
         <CardFooter className="w-full grid grid-cols-2 justify-between text-xs">
           <span className="w-full flex capitalize text-gray-600">
-            <strong className="marginRight1">Access Level:</strong>
-            {course.accessLevel}
+            <strong className="marginRight1">{t("accessLevel")}:</strong>
+            {accessLevelsT(course.accessLevel)}
           </span>
           <span className="w-full flex justify-end">
-            <strong className="marginRight1">Capacity:</strong>
+            <strong className="marginRight1">{t("capacity")}:</strong>
             {course.enrolledStudents.length}/{course.capacity}
           </span>
         </CardFooter>

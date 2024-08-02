@@ -1,35 +1,27 @@
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcryptjs";
-import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
+import { SuccessResponse } from "@/types/ResponseTypes";
 import { UserProps } from "@/types/UserTypes";
 import usersUtils from "@/utils/fileUtils/usersFileUtils";
+import {
+  internalResponse,
+  missingFieldsResponse,
+} from "@/components/shared/apiErrorResponses";
 
 export async function POST(
   request: Request
-): Promise<NextResponse<SuccessResponse<UserProps> | ErrorResponse>> {
+): Promise<NextResponse<SuccessResponse<UserProps> | APIErrorsKeys>> {
   try {
     const { name, email, password, role } = await request.json();
 
-    if (!name || !email || !password || !role) {
-      return NextResponse.json(
-        {
-          message: "Missing required fields!",
-          error: "Name, email, password and role are required",
-        },
-        { status: 400 }
-      );
+    if (!name || !email || !password || role === null) {
+      return missingFieldsResponse;
     }
 
     const users: UserProps[] = usersUtils.readData();
     if (users.find((user) => user.email === email)) {
-      return NextResponse.json(
-        {
-          message: "An account is already registered with this email address!",
-          error: "An account is already registered with this email address",
-        },
-        { status: 400 }
-      );
+      return NextResponse.json("alreadyUsedEmail", { status: 400 });
     }
 
     const hashedPassword = bcrypt.hashSync(password, 10);
@@ -50,19 +42,12 @@ export async function POST(
 
     return NextResponse.json(
       {
-        message: "You registered succesfully!",
+        message: "signup",
         data: newUser,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Register error:", error);
-    return NextResponse.json(
-      {
-        message: "Internal server error!",
-        error: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 }
-    );
+    return internalResponse;
   }
 }

@@ -1,3 +1,4 @@
+"use client";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { InvitationProps } from "@/types/InvitationTypes";
 import { useUserContext } from "@/context/UserContext";
@@ -7,7 +8,7 @@ import { useInvitationContext } from "@/context/InviteContext";
 const useDeclineCourseInvitationHook = (
   setInvitations?: Dispatch<SetStateAction<InvitationProps[]>>
 ) => {
-  const { showAlert } = useAlertContext();
+  const { showAlert, showErrorAlert } = useAlertContext();
   const { state, dispatch } = useUserContext();
   const { declineCourseInvitation } = useInvitationContext();
   const [loading, setLoading] = useState<boolean>(false);
@@ -21,7 +22,7 @@ const useDeclineCourseInvitationHook = (
             state.user.id,
             invitation
           );
-          if ("data" in isSuccesfull) {
+          if (typeof isSuccesfull !== "string") {
             if (isSuccesfull.data) {
               if (setInvitations) {
                 setInvitations((prevInvitations) =>
@@ -35,24 +36,21 @@ const useDeclineCourseInvitationHook = (
                 type: "DECLINE_COURSE_INVITATION",
                 payload: invitation.invitationID,
               });
-              showAlert("Success", isSuccesfull.message);
+              showAlert(isSuccesfull.message);
             } else {
-              showAlert("Error", isSuccesfull.message);
+              showAlert(isSuccesfull.message);
             }
           } else {
-            showAlert("Error", isSuccesfull.error);
+            showErrorAlert(isSuccesfull);
           }
         }
       } catch (error) {
-        showAlert(
-          "Error",
-          error instanceof Error ? error.message : String(error)
-        );
+        showErrorAlert("transactionError");
       } finally {
         setLoading(false);
       }
     },
-    [declineCourseInvitation, showAlert]
+    [declineCourseInvitation, showAlert, showErrorAlert]
   );
 
   return { handleDeclineCourseInvitation, loading };

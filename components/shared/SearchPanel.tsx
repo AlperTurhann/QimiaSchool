@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { CourseProps } from "@/types/CourseTypes";
 import { UserProps } from "@/types/UserTypes";
 import { useSearchContext } from "@/context/SearchContext";
@@ -9,6 +10,7 @@ import { Button } from "@/components/ui/button";
 
 const SearchPanel = () => {
   const { state } = useSearchContext();
+  const t = useTranslations("components.searchPanel");
   const navigate = useRouter();
 
   const isCourse = (result: CourseProps | UserProps): result is CourseProps => {
@@ -37,7 +39,7 @@ const SearchPanel = () => {
             </Button>
           ))
         ) : (
-          <span className="text-sm px-2 text-gray-600">No results found</span>
+          <span className="text-sm px-2 text-gray-600">{t("noFound")}</span>
         )}
       </div>
     </ScrollArea>

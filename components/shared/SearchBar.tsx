@@ -1,4 +1,6 @@
+"use client";
 import React, { FormEvent, useEffect, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 import { CourseProps } from "@/types/CourseTypes";
 import { UserProps } from "@/types/UserTypes";
@@ -18,6 +20,7 @@ const SearchBar = ({ items }: Props) => {
   const { state: searchState, dispatch } = useSearchContext();
   const { state: userState } = useUserContext();
   const [debouncedQuery, setDebouncedQuery] = useState("");
+  const t = useTranslations("components.searchBar");
 
   const filterItems = useCallback(
     (query: string) => {
@@ -73,7 +76,7 @@ const SearchBar = ({ items }: Props) => {
           type="text"
           value={searchState.query}
           onChange={handleInputChange}
-          placeholder="Search..."
+          placeholder={t("placeholder")}
           className="pr-10"
         />
         <Button

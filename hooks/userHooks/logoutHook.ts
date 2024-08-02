@@ -1,10 +1,11 @@
+"use client";
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useUserContext } from "@/context/UserContext";
 import { useAlertContext } from "@/context/AlertContext";
 
 const useLogoutHook = () => {
-  const { showAlert } = useAlertContext();
+  const { showAlert, showErrorAlert } = useAlertContext();
   const { dispatch, logout } = useUserContext();
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useRouter();
@@ -13,26 +14,23 @@ const useLogoutHook = () => {
     try {
       setLoading(true);
       const fetchedLogout = logout();
-      if ("data" in fetchedLogout) {
+      if (typeof fetchedLogout !== "string") {
         if (fetchedLogout.data) {
           dispatch({ type: "CLEAR_USER" });
-          showAlert("Success", fetchedLogout.message);
+          showAlert(fetchedLogout.message);
           navigate.push("/");
         } else {
-          showAlert("Error", fetchedLogout.message);
+          showAlert(fetchedLogout.message);
         }
       } else {
-        showAlert("Error", fetchedLogout.error);
+        showErrorAlert(fetchedLogout);
       }
     } catch (error) {
-      showAlert(
-        "Error",
-        error instanceof Error ? error.message : String(error)
-      );
+      showErrorAlert("transactionError");
     } finally {
       setLoading(false);
     }
-  }, [logout, showAlert]);
+  }, [logout, showAlert, showErrorAlert]);
 
   return { logout: fetchLogout, loading };
 };

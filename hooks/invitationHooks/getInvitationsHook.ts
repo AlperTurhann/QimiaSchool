@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, useCallback } from "react";
 import { InvitationProps } from "@/types/InvitationTypes";
 import { useUserContext } from "@/context/UserContext";
@@ -5,7 +6,7 @@ import { useAlertContext } from "@/context/AlertContext";
 import { useInvitationContext } from "@/context/InviteContext";
 
 const useGetInvitationsHook = () => {
-  const { showAlert } = useAlertContext();
+  const { showAlert, showErrorAlert } = useAlertContext();
   const { state } = useUserContext();
   const { getInvitations } = useInvitationContext();
   const [invitations, setInvitations] = useState<InvitationProps[]>([]);
@@ -16,25 +17,22 @@ const useGetInvitationsHook = () => {
       if (state.user) {
         setLoading(true);
         const fetchedInvitations = await getInvitations(state.user.id);
-        if ("data" in fetchedInvitations) {
+        if (typeof fetchedInvitations !== "string") {
           if (fetchedInvitations.data) {
             setInvitations(fetchedInvitations.data);
           } else {
-            showAlert("Error", fetchedInvitations.message);
+            showAlert(fetchedInvitations.message);
           }
         } else {
-          showAlert("Error", fetchedInvitations.error);
+          showErrorAlert(fetchedInvitations);
         }
       }
     } catch (error) {
-      showAlert(
-        "Error",
-        error instanceof Error ? error.message : String(error)
-      );
+      showErrorAlert("transactionError");
     } finally {
       setLoading(false);
     }
-  }, [getInvitations, showAlert]);
+  }, [getInvitations, showAlert, showErrorAlert]);
 
   useEffect(() => {
     if (state.user) fetchInvitations();

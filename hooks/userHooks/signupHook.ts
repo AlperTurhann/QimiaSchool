@@ -1,3 +1,4 @@
+"use client";
 import { useState, useCallback } from "react";
 import { SignupProps } from "@/types/UserTypes";
 import { useUserContext } from "@/context/UserContext";
@@ -5,7 +6,7 @@ import { useAlertContext } from "@/context/AlertContext";
 import { useRouter } from "next/navigation";
 
 const useSignupHook = () => {
-  const { showAlert } = useAlertContext();
+  const { showAlert, showErrorAlert } = useAlertContext();
   const { dispatch, signup } = useUserContext();
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useRouter();
@@ -15,27 +16,24 @@ const useSignupHook = () => {
       try {
         setLoading(true);
         const fetchedSignup = await signup(signupData);
-        if ("data" in fetchedSignup) {
+        if (typeof fetchedSignup !== "string") {
           if (fetchedSignup.data) {
             dispatch({ type: "SET_USER", payload: fetchedSignup.data });
-            showAlert("Success", fetchedSignup.message);
+            showAlert(fetchedSignup.message);
             navigate.push("/users/profile");
           } else {
-            showAlert("Error", fetchedSignup.message);
+            showAlert(fetchedSignup.message);
           }
         } else {
-          showAlert("Error", fetchedSignup.error);
+          showErrorAlert(fetchedSignup);
         }
       } catch (error) {
-        showAlert(
-          "Error",
-          error instanceof Error ? error.message : String(error)
-        );
+        showErrorAlert("transactionError");
       } finally {
         setLoading(false);
       }
     },
-    [signup, showAlert]
+    [signup, showAlert, showErrorAlert]
   );
 
   return { signup: fetchSignup, loading };

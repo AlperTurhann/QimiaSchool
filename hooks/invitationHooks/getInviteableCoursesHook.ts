@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, useCallback } from "react";
 import { UserProps } from "@/types/UserTypes";
 import { CourseProps } from "@/types/CourseTypes";
@@ -6,7 +7,7 @@ import { useAlertContext } from "@/context/AlertContext";
 import { useUserContext } from "@/context/UserContext";
 
 const useGetInviteableCoursesHook = (user: UserProps) => {
-  const { showAlert } = useAlertContext();
+  const { showAlert, showErrorAlert } = useAlertContext();
   const { getCourse } = useCourseContext();
   const { state } = useUserContext();
   const [inviteableCourses, setInviteableCourses] = useState<CourseProps[]>([]);
@@ -19,7 +20,7 @@ const useGetInviteableCoursesHook = (user: UserProps) => {
         const fetchedCourses = await Promise.all(
           state.user.courses.map(async (courseID) => {
             const response = await getCourse(courseID);
-            return "data" in response ? response.data : null;
+            return typeof response !== "string" ? response.data : null;
           })
         );
 
@@ -45,14 +46,11 @@ const useGetInviteableCoursesHook = (user: UserProps) => {
         );
       }
     } catch (error) {
-      showAlert(
-        "Error",
-        error instanceof Error ? error.message : String(error)
-      );
+      showErrorAlert("transactionError");
     } finally {
       setLoading(false);
     }
-  }, [getCourse, showAlert]);
+  }, [getCourse, showAlert, showErrorAlert]);
 
   useEffect(() => {
     fetchInvitableCourses();

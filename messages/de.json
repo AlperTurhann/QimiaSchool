@@ -1,0 +1,212 @@
+{
+  "pages": {
+    "home": {
+      "title": "Startseite",
+      "content": "Dies ist die Hauptseite unserer Anwendung."
+    },
+    "courses": {
+      "title": "Kurse"
+    },
+    "manageCourses": {
+      "title": "Kurse verwalten"
+    },
+    "users": {
+      "title": "Benutzer"
+    },
+    "notifications": {
+      "title": "Ihre Benachrichtigungen",
+      "noFound": "Sie haben momentan keine Benachrichtigungen"
+    }
+  },
+  "models": {
+    "course": {
+      "instructor": "Lehrer",
+      "accessLevel": "Zugriffsstufe",
+      "capacity": "Kapazität",
+      "noFound": "Kurs nicht gefunden!"
+    },
+    "user": {
+      "role": "Rolle",
+      "email": "E-Mail",
+      "inviteCourse": "Zum Kurs einladen",
+      "noFound": "Benutzer nicht gefunden!"
+    },
+    "courseInvitation": {
+      "inviter": "Einladender",
+      "inviteText1": "lädt Sie ein, dem",
+      "inviteText2": "Kurs beizutreten",
+      "accept": "Annehmen",
+      "decline": "Ablehnen"
+    },
+    "joinInvitation": {
+      "requestor": "Antragsteller",
+      "inviteText1": "möchte den",
+      "inviteText2": "Kurs besuchen",
+      "accept": "Annehmen",
+      "decline": "Ablehnen"
+    }
+  },
+  "components": {
+    "userCourses": {
+      "studentTitle": "Eingeschriebene Kurse",
+      "instructorTitle": "Erstellte Kurse",
+      "noCourses": "Es gibt keine Kurse!"
+    },
+    "manageCourse": {
+      "noFound": "Kurs nicht gefunden!"
+    },
+    "enrolledStudents": {
+      "title": "Eingeschriebene Studenten",
+      "noFound": "Es sind keine Studenten in diesem Kurs eingeschrieben!"
+    },
+    "appliedStudents": {
+      "title": "Beworbene Studenten",
+      "noFound": "Es haben sich keine Studenten für diesen Kurs beworben!"
+    },
+    "sideBar": {
+      "newCourse": "Neuen Kurs hinzufügen",
+      "availableCourses": "Verfügbare Kurse",
+      "manageCourses": "Kurse verwalten",
+      "myCourses": "Meine Kurse",
+      "allUsers": "Alle Benutzer"
+    },
+    "inviteCoursePanel": {
+      "title": "Zum Kurs einladen",
+      "noFound": "Keine verfügbaren Kurse zum Einladen",
+      "invite": "Einladen",
+      "cancel": "Abbrechen"
+    },
+    "searchBar": {
+      "placeholder": "Suchen..."
+    },
+    "searchPanel": {
+      "noFound": "Keine Ergebnisse gefunden"
+    },
+    "alert": {
+      "errorTitle": "Fehler",
+      "successTitle": "Erfolg"
+    }
+  },
+  "forms": {
+    "login": {
+      "title": "Anmelden",
+      "otherWay": "Noch kein Konto?",
+      "otherWayButton": "Registrieren",
+      "email": "E-Mail",
+      "password": "Passwort"
+    },
+    "signup": {
+      "title": "Registrieren",
+      "otherWay": "Bereits ein Konto?",
+      "otherWayButton": "Anmelden",
+      "name": "Name",
+      "email": "E-Mail",
+      "role": "Rolle",
+      "rolePlaceholder": "Wählen Sie eine Rolle",
+      "password": "Passwort",
+      "confirmPassword": "Passwort bestätigen"
+    },
+    "course": {
+      "createCourse": "Kurs erstellen",
+      "editCourse": "Kurs bearbeiten",
+      "name": "Kursname",
+      "description": "Kursbeschreibung",
+      "capacity": "Kurskapazität",
+      "accessLevel": "Zugriffsstufe",
+      "accessLevelPlaceholder": "Wählen Sie eine Zugriffsstufe"
+    }
+  },
+  "options": {
+    "roles": {
+      "student": "Student",
+      "instructor": "Lehrer"
+    },
+    "accessLevels": {
+      "invitedOnly": "Nur Eingeladene",
+      "acceptedOnly": "Nur Akzeptierte",
+      "everyone": "Alle"
+    }
+  },
+  "schemas": {
+    "login": {
+      "emailRequired": "E-Mail ist erforderlich",
+      "emailInvalid": "Ungültige E-Mail",
+      "passwordRequired": "Passwort ist erforderlich",
+      "passwordMin": "Passwort muss mindestens 8 Zeichen lang sein"
+    },
+    "signup": {
+      "nameRequired": "Name ist erforderlich",
+      "emailRequired": "E-Mail ist erforderlich",
+      "emailInvalid": "Ungültige E-Mail",
+      "roleRequired": "Rolle ist erforderlich",
+      "passwordRequired": "Passwort ist erforderlich",
+      "passwordMin": "Passwort muss mindestens 8 Zeichen lang sein",
+      "confirmPasswordRequired": "Passwortbestätigung ist erforderlich",
+      "confirmPasswordMin": "Passwortbestätigung muss mindestens 8 Zeichen lang sein",
+      "passwordsNotMatch": "Passwörter stimmen nicht überein"
+    },
+    "course": {
+      "nameRequired": "Name ist erforderlich",
+      "nameMin": "Namensfeld darf nicht leer sein",
+      "descriptionRequired": "Beschreibung ist erforderlich",
+      "descriptionMin": "Beschreibungsfeld darf nicht leer sein",
+      "capacityRequired": "Kapazität ist erforderlich",
+      "capacityInvalidType": "Kapazität muss eine Zahl sein",
+      "capacityPositive": "Kapazität muss mindestens 1 sein",
+      "accessLevelRequired": "Zugriffsstufe ist erforderlich"
+    }
+  },
+  "actions": {
+    "instructor": {
+      "delete": "Den Kurs löschen"
+    },
+    "student": {
+      "acceptInvitation": "Die Einladung annehmen",
+      "declineInvitation": "Die Einladung ablehnen",
+      "enrollCourse": "In den Kurs einschreiben",
+      "deenrollCourse": "Aus dem Kurs austragen",
+      "applyCourse": "Für den Kurs bewerben",
+      "withdrawCourse": "Vom Kurs zurückziehen"
+    }
+  },
+  "warnings": {
+    "loading": "Laden...",
+    "mustLogin": {
+      "text1": "Sie müssen sich",
+      "text2": "wenn Sie diesen Inhalt sehen möchten!",
+      "button": "anmelden"
+    },
+    "onlyInstructor": "Nur Lehrer können diesen Inhalt sehen"
+  },
+  "api": {
+    "errors": {
+      "transactionError": "Bei der Verarbeitung Ihrer Anfrage ist ein Fehler aufgetreten!",
+      "failedParseResponse": "Fehler beim Parsen der Antwort!",
+      "internalError": "Interner Serverfehler!",
+      "missingFieldsError": "Erforderliche Felder fehlen!",
+      "noContentError": "Kein Inhalt mit dieser ID gefunden!",
+      "wrongEmail": "Kein Benutzer mit dieser E-Mail-Adresse gefunden!",
+      "wrongPassword": "Das eingegebene Passwort ist falsch!",
+      "alreadyUsedEmail": "Mit dieser E-Mail-Adresse ist bereits ein Konto registriert!",
+      "notEnoughCourseCapacityError": "Neue Kapazität kann nicht geringer sein als die Anzahl der eingeschriebenen Studenten!",
+      "coursePositiveCapacityError": "Kapazität muss eine positive Zahl sein!"
+    },
+    "success": {
+      "login": "Sie sind angemeldet!",
+      "logout": "Sie sind abgemeldet!",
+      "signup": "Sie haben sich erfolgreich registriert!",
+      "userDelete": "Benutzer erfolgreich gelöscht!",
+      "contentFound": "Inhalt erfolgreich gefunden!",
+      "courseCreate": "Kurs erfolgreich erstellt!",
+      "courseUpdate": "Kurs erfolgreich aktualisiert!",
+      "courseDelete": "Kurs erfolgreich gelöscht!",
+      "inviteCourse": "Erfolgreich zum Kurs eingeladen!",
+      "acceptInvitation": "Einladung erfolgreich angenommen!",
+      "declineInvitation": "Einladung erfolgreich abgelehnt!",
+      "enrollCourse": "Erfolgreich in den Kurs eingeschrieben!",
+      "deenrollCourse": "Erfolgreich aus dem Kurs ausgetragen!",
+      "applyCourse": "Erfolgreich für den Kurs beworben!",
+      "withdrawCourse": "Erfolgreich vom Kurs zurückgezogen!"
+    }
+  }
+}

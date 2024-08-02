@@ -1,7 +1,8 @@
+"use client";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { InvitationProps } from "@/types/InvitationTypes";
 import { UserProps } from "@/types/UserTypes";
-import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
+import { SuccessResponse } from "@/types/ResponseTypes";
 import { useUserContext } from "@/context/UserContext";
 import { useAlertContext } from "@/context/AlertContext";
 import { useInvitationContext } from "@/context/InviteContext";
@@ -10,7 +11,7 @@ const useAcceptCourseInvitationHook = (
   setInvitations?: Dispatch<SetStateAction<InvitationProps[]>>,
   setEnrolledUsers?: Dispatch<SetStateAction<UserProps[]>>
 ) => {
-  const { showAlert } = useAlertContext();
+  const { showAlert, showErrorAlert } = useAlertContext();
   const { state, dispatch } = useUserContext();
   const { acceptCourseInvitation } = useInvitationContext();
   const [loading, setLoading] = useState<boolean>(false);
@@ -36,10 +37,10 @@ const useAcceptCourseInvitationHook = (
   };
 
   const handleAcceptCourseInvitationResult = (
-    result: SuccessResponse<boolean> | ErrorResponse,
+    result: SuccessResponse<boolean> | APIErrorsKeys,
     invitation: InvitationProps
   ) => {
-    if ("data" in result) {
+    if (typeof result !== "string") {
       if (result.data) {
         updateInvitations(invitation);
         updateEnrolledUsers();
@@ -47,12 +48,12 @@ const useAcceptCourseInvitationHook = (
           type: "ACCEPT_COURSE_INVITATION",
           payload: invitation,
         });
-        showAlert("Success", result.message);
+        showAlert(result.message);
       } else {
-        showAlert("Error", result.message);
+        showAlert(result.message);
       }
     } else {
-      showAlert("Error", result.error);
+      showErrorAlert(result);
     }
   };
 
@@ -65,15 +66,12 @@ const useAcceptCourseInvitationHook = (
         const result = await acceptCourseInvitation(state.user.id, invitation);
         handleAcceptCourseInvitationResult(result, invitation);
       } catch (error) {
-        showAlert(
-          "Error",
-          error instanceof Error ? error.message : String(error)
-        );
+        showErrorAlert("transactionError");
       } finally {
         setLoading(false);
       }
     },
-    [acceptCourseInvitation, showAlert]
+    [acceptCourseInvitation, showErrorAlert]
   );
 
   return { handleAcceptCourseInvitation, loading };

@@ -1,0 +1,212 @@
+{
+  "pages": {
+    "home": {
+      "title": "Home Page",
+      "content": "This is the main page of our application."
+    },
+    "courses": {
+      "title": "Courses"
+    },
+    "manageCourses": {
+      "title": "Manage Courses"
+    },
+    "users": {
+      "title": "Users"
+    },
+    "notifications": {
+      "title": "Your Notifications",
+      "noFound": "You have no notification at the moment"
+    }
+  },
+  "models": {
+    "course": {
+      "instructor": "Instructor",
+      "accessLevel": "Access Level",
+      "capacity": "Capacity",
+      "noFound": "Course not found!"
+    },
+    "user": {
+      "role": "Role",
+      "email": "Email",
+      "inviteCourse": "Invite to course",
+      "noFound": "User not found!"
+    },
+    "courseInvitation": {
+      "inviter": "Inviter",
+      "inviteText1": "invites you to join the",
+      "inviteText2": "course",
+      "accept": "Accept",
+      "decline": "Decline"
+    },
+    "joinInvitation": {
+      "requestor": "Requestor",
+      "inviteText1": "wants to attend the",
+      "inviteText2": "course",
+      "accept": "Accept",
+      "decline": "Decline"
+    }
+  },
+  "components": {
+    "userCourses": {
+      "studentTitle": "Enrolled Courses",
+      "instructorTitle": "Created Courses",
+      "noCourses": "There are no courses!"
+    },
+    "manageCourse": {
+      "noFound": "Course not found!"
+    },
+    "enrolledStudents": {
+      "title": "Enrolled Students",
+      "noFound": "There are no students enrolled in this course!"
+    },
+    "appliedStudents": {
+      "title": "Applied Students",
+      "noFound": "There are no students applied in this course!"
+    },
+    "sideBar": {
+      "newCourse": "Add New Course",
+      "availableCourses": "Available Courses",
+      "manageCourses": "Manage Courses",
+      "myCourses": "My Courses",
+      "allUsers": "All Users"
+    },
+    "inviteCoursePanel": {
+      "title": "Invite to Course",
+      "noFound": "No available courses to invite",
+      "invite": "Invite",
+      "cancel": "Cancel"
+    },
+    "searchBar": {
+      "placeholder": "Search..."
+    },
+    "searchPanel": {
+      "noFound": "No results found"
+    },
+    "alert": {
+      "errorTitle": "Error",
+      "successTitle": "Success"
+    }
+  },
+  "forms": {
+    "login": {
+      "title": "Login",
+      "otherWay": "Don't have an account?",
+      "otherWayButton": "Register",
+      "email": "Email",
+      "password": "Password"
+    },
+    "signup": {
+      "title": "Register",
+      "otherWay": "Already have an account?",
+      "otherWayButton": "Login",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "rolePlaceholder": "Select a role",
+      "password": "Password",
+      "confirmPassword": "Confirm Password"
+    },
+    "course": {
+      "createCourse": "Create Course",
+      "editCourse": "Edit Course",
+      "name": "Course Name",
+      "description": "Course Description",
+      "capacity": "Course Capacity",
+      "accessLevel": "Access Level",
+      "accessLevelPlaceholder": "Select an access level"
+    }
+  },
+  "options": {
+    "roles": {
+      "student": "Student",
+      "instructor": "Instructor"
+    },
+    "accessLevels": {
+      "invitedOnly": "Invited Only",
+      "acceptedOnly": "Accepted Only",
+      "everyone": "Everyone"
+    }
+  },
+  "schemas": {
+    "login": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email",
+      "passwordRequired": "Password is required",
+      "passwordMin": "Password must be at least 8 characters"
+    },
+    "signup": {
+      "nameRequired": "Name is required",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email",
+      "roleRequired": "Role is required",
+      "passwordRequired": "Password is required",
+      "passwordMin": "Password must be at least 8 characters",
+      "confirmPasswordRequired": "Confirm password is required",
+      "confirmPasswordMin": "Confirm password must be at least 8 characters",
+      "passwordsNotMatch": "Passwords don't match"
+    },
+    "course": {
+      "nameRequired": "Name is required",
+      "nameMin": "Name field cannot be left empty",
+      "descriptionRequired": "Description is required",
+      "descriptionMin": "Description field cannot be left empty",
+      "capacityRequired": "Capacity is required",
+      "capacityInvalidType": "Capacity must be a number",
+      "capacityPositive": "Capacity must be at least 1",
+      "accessLevelRequired": "Access level is required"
+    }
+  },
+  "actions": {
+    "instructor": {
+      "delete": "Delete the course"
+    },
+    "student": {
+      "acceptInvitation": "Accept the invitation",
+      "declineInvitation": "Decline the invitation",
+      "enrollCourse": "Enroll in the course",
+      "deenrollCourse": "De-enroll from the course",
+      "applyCourse": "Apply to the course",
+      "withdrawCourse": "Withdraw from the course"
+    }
+  },
+  "warnings": {
+    "loading": "Loading...",
+    "mustLogin": {
+      "text1": "You must",
+      "text2": "if you want to see this content!",
+      "button": "login"
+    },
+    "onlyInstructor": "Only instructor's can see this content"
+  },
+  "api": {
+    "errors": {
+      "transactionError": "An error occurred while processing the transaction you requested!",
+      "failedParseResponse": "Failed to parse response!",
+      "internalError": "Internal server error!",
+      "missingFieldsError": "Missing required fields!",
+      "noContentError": "No content found with this ID!",
+      "wrongEmail": "No user found with this email address!",
+      "wrongPassword": "The password you entered is incorrect!",
+      "alreadyUsedEmail": "An account is already registered with this email address!",
+      "notEnoughCourseCapacityError": "New capacity cannot be less than the number of enrolled students!",
+      "coursePositiveCapacityError": "Capacity must be a positive number!"
+    },
+    "success": {
+      "login": "You are logged in!",
+      "logout": "You are logged out!",
+      "signup": "You registered succesfully!",
+      "userDelete": "User deleted succesfully!",
+      "contentFound": "Content found succesfully!",
+      "courseCreate": "Course created succesfully!",
+      "courseUpdate": "Course updated successfully!",
+      "courseDelete": "Course deleted succesfully!",
+      "inviteCourse": "Successfully invited from the course!",
+      "acceptInvitation": "Successfully accepted the invitation!",
+      "declineInvitation": "Successfully declined the invitation!",
+      "enrollCourse": "Successfully enrolled in the course!",
+      "deenrollCourse": "Successfully de-enrolled from the course!",
+      "applyCourse": "Successfully applied to the course!",
+      "withdrawCourse": "Successfully withdrew from the course!"
+    }
+  }
+}

@@ -1,73 +1,53 @@
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
-import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
+import { SuccessResponse } from "@/types/ResponseTypes";
 import { InvitationProps } from "@/types/InvitationTypes";
 import usersUtils from "@/utils/fileUtils/usersFileUtils";
 import coursesUtils from "@/utils/fileUtils/coursesFileUtils";
+import {
+  internalResponse,
+  missingFieldsResponse,
+  noContentResponse,
+} from "@/components/shared/apiErrorResponses";
 
 export async function POST(
   request: Request
-): Promise<NextResponse<SuccessResponse<InvitationProps[]> | ErrorResponse>> {
+): Promise<NextResponse<SuccessResponse<InvitationProps[]> | APIErrorsKeys>> {
   try {
     const userID = await request.json();
 
     if (!userID) {
-      return NextResponse.json(
-        {
-          message: "Missing required fields!",
-          error: "UserID is required",
-        },
-        { status: 400 }
-      );
+      return missingFieldsResponse;
     }
 
     const users = usersUtils.readData();
     const user = users.find((userData) => userData.id === userID);
 
     if (!user) {
-      return NextResponse.json(
-        {
-          message: "No user found with this ID!",
-          error: "No user found with this ID",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     return NextResponse.json(
       {
-        message: "Invitations found!",
+        message: "contentFound",
         data: user.invitations,
       },
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json(
-      {
-        message: "Internal server error!",
-        error: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 }
-    );
+    return internalResponse;
   }
 }
 
 export async function PUT(
   request: Request
-): Promise<NextResponse<SuccessResponse<boolean> | ErrorResponse>> {
+): Promise<NextResponse<SuccessResponse<boolean> | APIErrorsKeys>> {
   try {
     const { invitingUserID, invitedUserID, invitedCourseID } =
       await request.json();
 
     if (!invitingUserID || !invitedUserID || !invitedCourseID) {
-      return NextResponse.json(
-        {
-          message: "Missing required fields!",
-          error:
-            "InvitingUserID, invitedUserID and invitedCourseID are required",
-        },
-        { status: 400 }
-      );
+      return missingFieldsResponse;
     }
 
     const users = usersUtils.readData();
@@ -76,13 +56,7 @@ export async function PUT(
     );
 
     if (invitingUserIndex === -1) {
-      return NextResponse.json(
-        {
-          message: "No user found with this ID! (invitingUserID)",
-          error: "No user found with this ID (invitingUserID)",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     const invitedUserIndex = users.findIndex(
@@ -90,13 +64,7 @@ export async function PUT(
     );
 
     if (invitedUserIndex === -1) {
-      return NextResponse.json(
-        {
-          message: "No user found with this ID! (invitedUserID)",
-          error: "No user found with this ID (invitedUserID)",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     const courses = coursesUtils.readData();
@@ -105,13 +73,7 @@ export async function PUT(
     );
 
     if (invitedCourseIndex === -1) {
-      return NextResponse.json(
-        {
-          message: "No course found with this ID!",
-          error: "No course found with this ID",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     users[invitedUserIndex].invitations.push({
@@ -125,18 +87,12 @@ export async function PUT(
 
     return NextResponse.json(
       {
-        message: "Successfully invited from the course!",
+        message: "inviteCourse",
         data: true,
       },
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json(
-      {
-        message: "Internal server error!",
-        error: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 }
-    );
+    return internalResponse;
   }
 }

@@ -8,6 +8,7 @@ import useLogoutHook from "@/hooks/userHooks/logoutHook";
 import { useUserContext } from "@/context/UserContext";
 import { Button } from "@/components/ui/button";
 import Loading from "@/components/shared/Loading";
+import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 
 const NavBar = () => {
   const { state } = useUserContext();
@@ -54,6 +55,7 @@ const NavBar = () => {
         <Button variant="ghost" onClick={handleProfileClick} className="p-2">
           <CircleUserRound size={25} />
         </Button>
+        <LanguageSwitcher />
         <Button
           variant="ghost"
           onClick={logout}

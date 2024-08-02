@@ -7,7 +7,7 @@ interface LoginProps {
 
 interface SignupProps extends LoginProps {
   name: string;
-  role: "student" | "instructor";
+  role: RoleKeys;
 }
 
 interface UserProps extends SignupProps {

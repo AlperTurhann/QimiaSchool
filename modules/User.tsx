@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { UserProps } from "@/types/UserTypes";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +16,8 @@ interface Props {
 }
 
 const UserCard = ({ user }: Props) => {
+  const t = useTranslations("models.user");
+  const rolesT = useTranslations("options.roles");
   const navigate = useRouter();
 
   return (
@@ -27,8 +30,8 @@ const UserCard = ({ user }: Props) => {
         <CardHeader className="w-full">
           <CardTitle className="truncateContent w-full">{user.name}</CardTitle>
           <CardDescription className="truncateContent capitalize">
-            <strong>Role: </strong>
-            {user.role}
+            <strong>{t("role")}: </strong>
+            {rolesT(user.role)}
           </CardDescription>
         </CardHeader>
         <CardContent className="truncateContent w-full">

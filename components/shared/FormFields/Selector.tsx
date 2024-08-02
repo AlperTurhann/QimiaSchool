@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 import { Control } from "react-hook-form";
-import { RegisterData } from "@/utils/validations/RegisterSchema";
+import { useTranslations } from "next-intl";
+import { SignupData } from "@/utils/validations/SignupSchema";
 import { CourseData } from "@/utils/validations/CourseSchema";
 import {
   FormControl,
@@ -19,12 +20,20 @@ import {
 } from "@/components/ui/select";
 
 interface Props {
-  control?: Control<RegisterData | CourseData>;
+  control?: Control<SignupData | CourseData>;
   name: "role" | "accessLevel";
-  placeholder: string;
+  type: "signup" | "course";
 }
 
-const Selector = ({ control, name, placeholder }: Props) => {
+const Selector = ({ control, name, type }: Props) => {
+  const t = useTranslations(`forms.${type}`);
+  const optionsT = useTranslations(`options.${name}s`);
+
+  const options: (RoleKeys | AccessLevelKeys)[] =
+    name === "role"
+      ? (["student", "instructor"] as const)
+      : (["invitedOnly", "acceptedOnly", "everyone"] as const);
+
   return (
     <FormField
       control={control}
@@ -32,29 +41,18 @@ const Selector = ({ control, name, placeholder }: Props) => {
       render={({ field: { onChange, value } }) => (
         <div className="relative">
           <FormItem>
-            <FormLabel htmlFor={name}>
-              {name === "role" ? "Role" : "Access Level"}
-            </FormLabel>
+            <FormLabel htmlFor={name}>{t(name)}</FormLabel>
             <FormControl>
-              <Select
-                name={name}
-                onValueChange={onChange}
-                value={value ?? ""}
-                autoComplete="on"
-              >
+              <Select name={name} onValueChange={onChange} value={value}>
                 <SelectTrigger id={name} className="w-full">
-                  <SelectValue placeholder={placeholder} />
+                  <SelectValue placeholder={t(`${name}Placeholder`)} />
                 </SelectTrigger>
                 <SelectContent>
-                  <div className={`${name !== "role" && "hidden"}`}>
-                    <SelectItem value="student">Student</SelectItem>
-                    <SelectItem value="instructor">Instructor</SelectItem>
-                  </div>
-                  <div className={`${name !== "accessLevel" && "hidden"}`}>
-                    <SelectItem value="invited only">Invited Only</SelectItem>
-                    <SelectItem value="accepted only">Accepted Only</SelectItem>
-                    <SelectItem value="everyone">Everyone</SelectItem>
-                  </div>
+                  {options.map((key) => (
+                    <SelectItem key={key} value={key}>
+                      {optionsT(key)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </FormControl>

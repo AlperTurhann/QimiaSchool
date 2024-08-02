@@ -1,0 +1,212 @@
+{
+  "pages": {
+    "home": {
+      "title": "Ana Sayfa",
+      "content": "Bu, uygulamamızın ana sayfasıdır."
+    },
+    "courses": {
+      "title": "Kurslar"
+    },
+    "manageCourses": {
+      "title": "Kursları Yönet"
+    },
+    "users": {
+      "title": "Kullanıcılar"
+    },
+    "notifications": {
+      "title": "Bildirimleriniz",
+      "noFound": "Şu anda herhangi bir bildiriminiz yok"
+    }
+  },
+  "models": {
+    "course": {
+      "instructor": "Eğitmen",
+      "accessLevel": "Erişim Seviyesi",
+      "capacity": "Kapasite",
+      "noFound": "Kurs bulunamadı!"
+    },
+    "user": {
+      "role": "Rol",
+      "email": "E-posta",
+      "inviteCourse": "Kursa Davet Et",
+      "noFound": "Kullanıcı bulunamadı!"
+    },
+    "courseInvitation": {
+      "inviter": "Davet Sahibi",
+      "inviteText1": "sizi",
+      "inviteText2": "kursuna katılmaya davet ediyor",
+      "accept": "Kabul Et",
+      "decline": "Reddet"
+    },
+    "joinInvitation": {
+      "requestor": "İstek Sahibi",
+      "inviteText1": "",
+      "inviteText2": "kursuna katılmak istiyor",
+      "accept": "Kabul Et",
+      "decline": "Reddet"
+    }
+  },
+  "components": {
+    "userCourses": {
+      "studentTitle": "Kayıtlı Kurslar",
+      "instructorTitle": "Oluşturulan Kurslar",
+      "noCourses": "Kurs yok!"
+    },
+    "manageCourse": {
+      "noFound": "Kurs bulunamadı!"
+    },
+    "enrolledStudents": {
+      "title": "Kayıtlı Öğrenciler",
+      "noFound": "Bu kursa kayıtlı öğrenci yok!"
+    },
+    "appliedStudents": {
+      "title": "Başvuran Öğrenciler",
+      "noFound": "Bu kursa başvuran öğrenci yok!"
+    },
+    "sideBar": {
+      "newCourse": "Yeni Kurs Ekle",
+      "availableCourses": "Mevcut Kurslar",
+      "manageCourses": "Kursları Yönet",
+      "myCourses": "Kurslarım",
+      "allUsers": "Tüm Kullanıcılar"
+    },
+    "inviteCoursePanel": {
+      "title": "Kursa Davet Et",
+      "noFound": "Davet edilecek mevcut kurs yok",
+      "invite": "Davet et",
+      "cancel": "İptal"
+    },
+    "searchBar": {
+      "placeholder": "Ara..."
+    },
+    "searchPanel": {
+      "noFound": "Sonuç bulunamadı"
+    },
+    "alert": {
+      "errorTitle": "Hata",
+      "successTitle": "Başarılı"
+    }
+  },
+  "forms": {
+    "login": {
+      "title": "Giriş Yap",
+      "otherWay": "Hesabınız yok mu?",
+      "otherWayButton": "Üye Ol",
+      "email": "E-posta",
+      "password": "Şifre"
+    },
+    "signup": {
+      "title": "Üye Ol",
+      "otherWay": "Zaten bir hesabınız var mı?",
+      "otherWayButton": "Giriş Yap",
+      "name": "Ad",
+      "email": "E-posta",
+      "role": "Rol",
+      "rolePlaceholder": "Bir rol seçin",
+      "password": "Şifre",
+      "confirmPassword": "Tekrar Şifre"
+    },
+    "course": {
+      "createCourse": "Kurs Oluştur",
+      "editCourse": "Kursu Düzenle",
+      "name": "Kurs Adı",
+      "description": "Kurs Açıklaması",
+      "capacity": "Kurs Kapasitesi",
+      "accessLevel": "Erişim Seviyesi",
+      "accessLevelPlaceholder": "Bir erişim düzeyi seçin"
+    }
+  },
+  "options": {
+    "roles": {
+      "student": "Öğrenci",
+      "instructor": "Eğitmen"
+    },
+    "accessLevels": {
+      "invitedOnly": "Davet Edilenler",
+      "acceptedOnly": "Kabul Edilenler",
+      "everyone": "Herkes"
+    }
+  },
+  "schemas": {
+    "login": {
+      "emailRequired": "E-posta gereklidir",
+      "emailInvalid": "Geçersiz e-posta",
+      "passwordRequired": "Şifre gereklidir",
+      "passwordMin": "Şifre en az 8 karakter olmalıdır"
+    },
+    "signup": {
+      "nameRequired": "Ad gereklidir",
+      "emailRequired": "E-posta gereklidir",
+      "emailInvalid": "Geçersiz e-posta",
+      "roleRequired": "Rol gereklidir",
+      "passwordRequired": "Şifre gereklidir",
+      "passwordMin": "Şifre en az 8 karakter olmalıdır",
+      "confirmPasswordRequired": "Şifre tekrarı gereklidir",
+      "confirmPasswordMin": "Şifre tekrarı en az 8 karakter olmalıdır",
+      "passwordsNotMatch": "Parolalar eşleşmiyor"
+    },
+    "course": {
+      "nameRequired": "Ad gereklidir",
+      "nameMin": "Ad alanı boş bırakılamaz",
+      "descriptionRequired": "Açıklama gereklidir",
+      "descriptionMin": "Açıklama alanı boş bırakılamaz",
+      "capacityRequired": "Kapasite gereklidir",
+      "capacityInvalidType": "Kapasite bir sayı olmalıdır",
+      "capacityPositive": "Kapasite en az 1 olmalıdır",
+      "accessLevelRequired": "Erişim seviyesi gereklidir"
+    }
+  },
+  "actions": {
+    "instructor": {
+      "delete": "Kursu sil"
+    },
+    "student": {
+      "acceptInvitation": "Daveti kabul et",
+      "declineInvitation": "Daveti reddet",
+      "enrollCourse": "Kursa kaydol",
+      "deenrollCourse": "Kurstan kaydını sil",
+      "applyCourse": "Kursa başvur",
+      "withdrawCourse": "Kurstan başvurunu çek"
+    }
+  },
+  "warnings": {
+    "loading": "Yükleniyor...",
+    "mustLogin": {
+      "text1": "Bu içeriği görmek istiyorsanız",
+      "text2": "yapmalısınız!",
+      "button": "giriş"
+    },
+    "onlyInstructor": "Bu içeriği yalnızca eğitmenler görebilir"
+  },
+  "api": {
+    "errors": {
+      "transactionError": "Talep ettiğiniz işlem işlenirken bir hata oluştu",
+      "failedParseResponse": "Yanıt ayrıştırılamadı!",
+      "internalError": "Dahili sunucu hatası!",
+      "missingFieldsError": "Gerekli alanlar eksik!",
+      "noContentError": "Bu ID ile içerik bulunamadı!",
+      "wrongEmail": "Bu e-posta adresine sahip kullanıcı bulunamadı!",
+      "wrongPassword": "Girdiğiniz şifre yanlış!",
+      "alreadyUsedEmail": "Bu e-posta adresiyle zaten bir hesap kayıtlı!",
+      "notEnoughCourseCapacityError": "Yeni kapasite kayıtlı öğrenci sayısından az olamaz!",
+      "coursePositiveCapacityError": "Kapasite pozitif bir sayı olmalıdır!"
+    },
+    "success": {
+      "login": "Giriş yaptınız!",
+      "logout": "Çıkış yaptınız!",
+      "signup": "Başarıyla kayıt oldunuz!",
+      "userDelete": "Kullanıcı başarıyla silindi!",
+      "contentFound": "İçerik başarıyla bulundu!",
+      "courseCreate": "Kurs başarıyla oluşturuldu!",
+      "courseUpdate": "Kurs başarıyla güncellendi!",
+      "courseDelete": "Kurs başarıyla silindi!",
+      "inviteCourse": "Kursa başarıyla davet edildi!",
+      "acceptInvitation": "Davet başarıyla kabul edildi!",
+      "declineInvitation": "Davet başarıyla reddedildi!",
+      "enrollCourse": "Kursa başarıyla kayıt olundu!",
+      "deenrollCourse": "Kurstan kaydınız başarıyla silindi!",
+      "applyCourse": "Kursa başarıyla başvuruldu!",
+      "withdrawCourse": "Kurstan başarıyla başvuru çekildi!"
+    }
+  }
+}

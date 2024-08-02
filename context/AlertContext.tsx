@@ -6,7 +6,8 @@ interface AlertInfo {
 }
 
 type AlertContextType = {
-  showAlert: (title: string, description: string) => void;
+  showAlert: (description: APISuccessKeys) => void;
+  showErrorAlert: (description: APIErrorsKeys) => void;
   hideAlert: () => void;
   alertInfo: AlertInfo | null;
 };

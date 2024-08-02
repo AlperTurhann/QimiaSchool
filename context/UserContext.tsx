@@ -6,7 +6,9 @@ import * as userUtils from "@/utils/usersUtils";
 type UserAction =
   | { type: "SET_USER"; payload: UserProps | null }
   | { type: "CLEAR_USER" }
+  | { type: "CREATE_COURSE"; payload: string }
   | { type: "ENROLL_COURSE"; payload: string }
+  | { type: "DELETE_COURSE"; payload: string }
   | { type: "LEAVE_COURSE"; payload: string }
   | { type: "APPLY_COURSE"; payload: string }
   | { type: "WITHDRAW_COURSE"; payload: string }

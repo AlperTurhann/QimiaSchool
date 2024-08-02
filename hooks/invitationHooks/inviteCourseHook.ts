@@ -1,10 +1,11 @@
+"use client";
 import { useCallback, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
 import { useAlertContext } from "@/context/AlertContext";
 import { useInvitationContext } from "@/context/InviteContext";
 
 const useInviteCourseHook = () => {
-  const { showAlert } = useAlertContext();
+  const { showAlert, showErrorAlert } = useAlertContext();
   const { inviteCourse } = useInvitationContext();
   const { state } = useUserContext();
   const [loading, setLoading] = useState<boolean>(false);
@@ -23,29 +24,26 @@ const useInviteCourseHook = () => {
             invitedUserID,
             invitedCourseID
           );
-          if ("data" in isSuccesfull) {
+          if (typeof isSuccesfull !== "string") {
             if (isSuccesfull.data) {
-              showAlert("Success", isSuccesfull.message);
+              showAlert(isSuccesfull.message);
               result = isSuccesfull.data;
             } else {
-              showAlert("Error", isSuccesfull.message);
+              showAlert(isSuccesfull.message);
             }
           } else {
-            showAlert("Error", isSuccesfull.error);
+            showErrorAlert(isSuccesfull);
           }
         }
       } catch (error) {
-        showAlert(
-          "Error",
-          error instanceof Error ? error.message : String(error)
-        );
+        showErrorAlert("transactionError");
       } finally {
         setLoading(false);
       }
 
       return result;
     },
-    [inviteCourse, showAlert]
+    [inviteCourse, showAlert, showErrorAlert]
   );
 
   return { handleInviteCourse, loading };

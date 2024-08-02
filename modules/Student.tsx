@@ -1,5 +1,7 @@
 "use client";
+import React from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Check, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserProps } from "@/types/UserTypes";
@@ -19,9 +21,10 @@ const StudentCard = ({
   handleAcceptStudent,
   handleDeclineStudent,
 }: Props) => {
+  const t = useTranslations("models.user");
   const navigate = useRouter();
 
-  if (!student) return <p>User not found!</p>;
+  if (!student) return <p>{t("noFound")}</p>;
   return (
     <div
       className={`size-full relative border rounded-lg overflow-hidden ${

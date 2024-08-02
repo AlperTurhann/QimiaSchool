@@ -1,6 +1,7 @@
 "use client";
 import { Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Eye, User } from "lucide-react";
 import useGetInvitationHook from "@/hooks/invitationHooks/getInvitationHook";
 import useAcceptJoinInvitationHook from "@/hooks/invitationHooks/acceptJoinInvitationHook";
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const JoinInvitationCard = ({ invitation, setInvitations }: Props) => {
+  const t = useTranslations("models.joinInvitation");
   const navigate = useRouter();
 
   const {
@@ -68,14 +70,14 @@ const JoinInvitationCard = ({ invitation, setInvitations }: Props) => {
             onClick={() => navigate.push(`/users/${user.id}`)}
             className="h-full p-0 text-gray-500"
           >
-            <strong className="marginRight1">Requestor: </strong>
+            <strong className="marginRight1">{t("requestor")}: </strong>
             {user.name}
           </Button>
         </CardDescription>
       </CardHeader>
       <CardContent className="text-xs text-gray-700 sm:text-sm">
-        <strong>{user.name}</strong> wants to attend the{" "}
-        <strong>{course.name}</strong> course
+        <strong>{user.name}</strong> {t("inviteText1")}{" "}
+        <strong>{course.name}</strong> {t("inviteText2")}
       </CardContent>
       <CardFooter className="flex justify-center">
         <div className="w-full grid grid-cols-2 gap-2 md:w-2/3">
@@ -83,14 +85,14 @@ const JoinInvitationCard = ({ invitation, setInvitations }: Props) => {
             type="button"
             onClick={() => handleAcceptJoinInvitation(invitation)}
           >
-            Accept
+            {t("accept")}
           </Button>
           <Button
             type="button"
             variant="destructive"
             onClick={() => handleDeclineJoinInvitation(invitation)}
           >
-            Decline
+            {t("decline")}
           </Button>
         </div>
       </CardFooter>

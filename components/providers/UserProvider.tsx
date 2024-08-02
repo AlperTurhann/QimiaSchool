@@ -13,6 +13,7 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
       return { ...state, user: action.payload };
     case "CLEAR_USER":
       return { ...state, user: null };
+    case "CREATE_COURSE":
     case "ENROLL_COURSE":
       return state.user
         ? {
@@ -20,6 +21,21 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
             user: {
               ...state.user,
               courses: [...state.user.courses, action.payload],
+            },
+          }
+        : state;
+    case "DELETE_COURSE":
+      return state.user
+        ? {
+            ...state,
+            user: {
+              ...state.user,
+              courses: state.user.courses.filter(
+                (courseID) => courseID !== action.payload
+              ),
+              invitations: state.user.invitations.filter(
+                (invitation) => invitation.courseID !== action.payload
+              ),
             },
           }
         : state;

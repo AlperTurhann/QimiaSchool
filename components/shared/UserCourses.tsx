@@ -1,27 +1,34 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import getUserCoursesHook from "@/hooks/userHooks/getUserCoursesHook";
 import { UserProps } from "@/types/UserTypes";
+import { useUserContext } from "@/context/UserContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Loading from "@/components/shared/Loading";
 
 interface Props {
-  user: UserProps;
+  user?: UserProps;
 }
 
 const UserCourses = ({ user }: Props) => {
+  const { state } = useUserContext();
+  const [userState] = useState<UserProps | null>(user ?? state.user);
+  const t = useTranslations("components.userCourses");
   const navigate = useRouter();
 
-  const { courses, loading } = getUserCoursesHook(user);
+  const { courses, loading } = getUserCoursesHook(userState);
 
   if (loading) return <Loading />;
   return (
     <Card className="w-2/3 shadow-md">
       <CardHeader className="text-center border-b">
         <CardTitle>
-          {user.role === "instructor" ? "Created Courses" : "Enrolled Courses"}
+          {userState?.role === "instructor"
+            ? t("instructorTitle")
+            : t("studentTitle")}
         </CardTitle>
       </CardHeader>
       <CardContent
@@ -34,7 +41,7 @@ const UserCourses = ({ user }: Props) => {
             courses.length === 0 ? "block" : "hidden "
           }`}
         >
-          There are no courses!
+          {t("noCourses")}
         </span>
         {courses.map((course) => (
           <div key={course.id} className="size-full">

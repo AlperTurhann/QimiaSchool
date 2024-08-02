@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { UserProps } from "@/types/UserTypes";
 import { useUserContext } from "@/context/UserContext";
 import StudentCard from "@/modules/Student";
@@ -20,6 +21,7 @@ const EnrolledStudents = ({
   handleKickStudent = () => {},
 }: Props) => {
   const { state } = useUserContext();
+  const t = useTranslations("components.enrolledStudents");
   const navigate = useRouter();
 
   const getGridClass = (): string => {
@@ -35,11 +37,7 @@ const EnrolledStudents = ({
     }
 
     if (enrolledUsers.length === 0) {
-      return (
-        <span className="text-gray-500">
-          There are no students enrolled in this course!
-        </span>
-      );
+      return <span className="text-gray-500">{t("noFound")}</span>;
     }
 
     if (type === "view") {
@@ -79,7 +77,7 @@ const EnrolledStudents = ({
   return (
     <Card className={`shadow-md ${type === "edit" ? "w-full" : "w-2/3"}`}>
       <CardHeader className="text-center border-b">
-        <CardTitle>Enrolled Students</CardTitle>
+        <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent className="text-center p-5">{renderContent()}</CardContent>
     </Card>

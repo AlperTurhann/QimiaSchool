@@ -2,58 +2,49 @@ import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import { CourseProps } from "@/types/CourseTypes";
 import { UserProps } from "@/types/UserTypes";
-import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
+import { SuccessResponse } from "@/types/ResponseTypes";
 import coursesUtils from "@/utils/fileUtils/coursesFileUtils";
 import usersUtils from "@/utils/fileUtils/usersFileUtils";
+import {
+  internalResponse,
+  missingFieldsResponse,
+} from "@/components/shared/apiErrorResponses";
 
 export async function GET(): Promise<
-  NextResponse<SuccessResponse<CourseProps[]> | ErrorResponse>
+  NextResponse<SuccessResponse<CourseProps[]> | APIErrorsKeys>
 > {
   try {
     const courses = coursesUtils.readData();
     return NextResponse.json(
       {
-        message: "Courses found!",
+        message: "contentFound",
         data: courses,
       },
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json(
-      {
-        message: "Internal server error!",
-        error: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 }
-    );
+    return internalResponse;
   }
 }
 
 export async function POST(
   request: Request
-): Promise<NextResponse<SuccessResponse<string> | ErrorResponse>> {
+): Promise<NextResponse<SuccessResponse<string> | APIErrorsKeys>> {
   try {
     const { name, description, instructor, capacity, accessLevel } =
       await request.json();
 
-    if (!name || !description || !instructor || !capacity || !accessLevel) {
-      return NextResponse.json(
-        {
-          message: "Missing required fields!",
-          error:
-            "Name, descriptipn, instructor, capacity and accessLevel are required",
-        },
-        { status: 400 }
-      );
+    if (
+      !name ||
+      !description ||
+      !instructor ||
+      !capacity ||
+      accessLevel === null
+    ) {
+      return missingFieldsResponse;
     }
     if (typeof capacity !== "number" || capacity <= 0) {
-      return NextResponse.json(
-        {
-          message: "Capacity must be a positive number!",
-          error: "Capacity must be a positive number",
-        },
-        { status: 400 }
-      );
+      return NextResponse.json("coursePositiveCapacityError", { status: 400 });
     }
 
     const courses: CourseProps[] = coursesUtils.readData();
@@ -83,18 +74,12 @@ export async function POST(
 
     return NextResponse.json(
       {
-        message: "Course created succesfully!",
+        message: "courseCreate",
         data: newCourse.id,
       },
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json(
-      {
-        message: "Internal server error!",
-        error: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 }
-    );
+    return internalResponse;
   }
 }

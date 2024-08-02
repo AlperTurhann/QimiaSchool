@@ -1,5 +1,7 @@
 "use client";
+import React, { Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Eye, User } from "lucide-react";
 import useGetInvitationHook from "@/hooks/invitationHooks/getInvitationHook";
 import useAcceptCourseInvitationHook from "@/hooks/invitationHooks/acceptCourseInvitationHook";
@@ -15,7 +17,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Dispatch, SetStateAction } from "react";
 
 interface Props {
   invitation: InvitationProps;
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const CourseInvitationCard = ({ invitation, setInvitations }: Props) => {
+  const t = useTranslations("models.courseInvitation");
   const navigate = useRouter();
 
   const {
@@ -68,14 +70,14 @@ const CourseInvitationCard = ({ invitation, setInvitations }: Props) => {
             onClick={() => navigate.push(`/users/${user.id}`)}
             className="h-full p-0 text-gray-500"
           >
-            <strong className="marginRight1">Inviter:</strong>
+            <strong className="marginRight1">{t("inviter")}:</strong>
             {user.name}
           </Button>
         </CardDescription>
       </CardHeader>
       <CardContent className="text-xs text-gray-700 sm:text-sm">
-        <strong>{user.name}</strong> invites you to join the{" "}
-        <strong>{course.name}</strong> course
+        <strong>{user.name}</strong> {t("inviteText1")}{" "}
+        <strong>{course.name}</strong> {t("inviteText2")}
       </CardContent>
       <CardFooter className="flex justify-center">
         <div className="w-full grid grid-cols-2 gap-2 md:w-2/3">
@@ -83,14 +85,14 @@ const CourseInvitationCard = ({ invitation, setInvitations }: Props) => {
             type="button"
             onClick={() => handleAcceptCourseInvitation(invitation)}
           >
-            Accept
+            {t("accept")}
           </Button>
           <Button
             type="button"
             variant="destructive"
             onClick={() => handleDeclineCourseInvitation(invitation)}
           >
-            Decline
+            {t("decline")}
           </Button>
         </div>
       </CardFooter>

@@ -1,10 +1,11 @@
+"use client";
 import { useState, useEffect, useCallback } from "react";
 import { CourseProps } from "@/types/CourseTypes";
 import { useCourseContext } from "@/context/CourseContext";
 import { useAlertContext } from "@/context/AlertContext";
 
 const useGetCoursesHook = () => {
-  const { showAlert } = useAlertContext();
+  const { showErrorAlert } = useAlertContext();
   const { getCourses } = useCourseContext();
   const [courses, setCourses] = useState<CourseProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -13,18 +14,15 @@ const useGetCoursesHook = () => {
     try {
       setLoading(true);
       const fetchedCourses = await getCourses();
-      if ("data" in fetchedCourses) {
+      if (typeof fetchedCourses !== "string") {
         setCourses(fetchedCourses.data ?? []);
       }
     } catch (error) {
-      showAlert(
-        "Error",
-        error instanceof Error ? error.message : String(error)
-      );
+      showErrorAlert("transactionError");
     } finally {
       setLoading(false);
     }
-  }, [getCourses, showAlert]);
+  }, [getCourses, showErrorAlert]);
 
   useEffect(() => {
     fetchCourses();

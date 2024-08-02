@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
 import { CourseProps } from "@/types/CourseTypes";
 import { UserProps } from "@/types/UserTypes";
-import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
+import { SuccessResponse } from "@/types/ResponseTypes";
 import coursesUtils from "@/utils/fileUtils/coursesFileUtils";
 import usersUtils from "@/utils/fileUtils/usersFileUtils";
+import {
+  internalResponse,
+  missingFieldsResponse,
+  noContentResponse,
+} from "@/components/shared/apiErrorResponses";
 
 const getStudentChanges = (
   originalCourse: CourseProps,
@@ -28,14 +33,11 @@ const updateUserData = (
   enrolledStudents: string[],
   removedStudents: string[],
   respondedStudents: string[]
-): UserProps[] | ErrorResponse => {
+): UserProps[] | APIErrorsKeys => {
   const users = usersUtils.readData();
   const currentUserIndex = users.findIndex((user) => user.id === currentUserID);
   if (currentUserIndex === -1) {
-    return {
-      message: "No course found with this ID!",
-      error: "No course found with this ID",
-    };
+    return "noContentError";
   }
 
   users.forEach((user) => {
@@ -60,92 +62,50 @@ const updateUserData = (
 
 export async function POST(
   request: Request
-): Promise<NextResponse<SuccessResponse<CourseProps> | ErrorResponse>> {
+): Promise<NextResponse<SuccessResponse<CourseProps> | APIErrorsKeys>> {
   try {
     const courseID = await request.json();
 
-    if (!courseID) {
-      return NextResponse.json(
-        {
-          message: "Missing required fields!",
-          error: "CourseID is required",
-        },
-        { status: 400 }
-      );
-    }
+    if (!courseID) return missingFieldsResponse;
 
     const courses = coursesUtils.readData();
     const course = courses.find((courseData) => courseData.id === courseID);
 
-    if (!course) {
-      return NextResponse.json(
-        {
-          message: "No course found with this ID!",
-          error: "Course not found",
-        },
-        { status: 404 }
-      );
-    }
+    if (!course) return noContentResponse;
 
     return NextResponse.json(
       {
-        message: "Course found!",
+        message: "contentFound",
         data: course,
       },
       { status: 200 }
     );
-  } catch (error) {
-    return NextResponse.json(
-      {
-        message: "Internal server error!",
-        error: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 }
-    );
+  } catch {
+    return internalResponse;
   }
 }
 
 export async function PUT(
   request: Request
-): Promise<NextResponse<SuccessResponse<CourseProps> | ErrorResponse>> {
+): Promise<NextResponse<SuccessResponse<CourseProps> | APIErrorsKeys>> {
   try {
     const { id, currentUserID, ...updatedCourseData } = await request.json();
 
     if (!id || !currentUserID || Object.keys(updatedCourseData).length === 0) {
-      return NextResponse.json(
-        {
-          message: "Missing required fields!",
-          error: "ID, currentUserID and updated data are required",
-        },
-        { status: 400 }
-      );
+      return missingFieldsResponse;
     }
 
     const courses = coursesUtils.readData();
     const courseIndex = courses.findIndex((course) => course.id === id);
 
     if (courseIndex === -1) {
-      return NextResponse.json(
-        {
-          message: "No course found with this ID!",
-          error: "No course found with this ID",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     if (
       updatedCourseData.capacity < updatedCourseData.enrolledStudents.length
     ) {
-      return NextResponse.json(
-        {
-          message:
-            "New capacity cannot be less than the number of enrolled students!",
-          error:
-            "New capacity cannot be less than the number of enrolled students",
-        },
-        { status: 400 }
-      );
+      return NextResponse.json("notEnoughCourseCapacityError", { status: 400 });
     }
 
     const { enrolledStudents, removedStudents, respondedStudents } =
@@ -164,7 +124,9 @@ export async function PUT(
         removedStudents,
         respondedStudents
       );
-      if ("error" in updatedUsers) return NextResponse.json(updatedUsers);
+
+      if (typeof updatedUsers === "string")
+        return NextResponse.json(updatedUsers);
       usersUtils.writeData(updatedUsers);
     }
 
@@ -173,49 +135,31 @@ export async function PUT(
 
     return NextResponse.json(
       {
-        message: "Course updated successfully!",
+        message: "courseUpdate",
         data: courses[courseIndex],
       },
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json(
-      {
-        message: "Internal server error!",
-        error: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 }
-    );
+    return internalResponse;
   }
 }
 
 export async function DELETE(
   request: Request
-): Promise<NextResponse<SuccessResponse<boolean> | ErrorResponse>> {
+): Promise<NextResponse<SuccessResponse<boolean> | APIErrorsKeys>> {
   try {
     const courseID = await request.json();
 
     if (!courseID) {
-      return NextResponse.json(
-        {
-          message: "Missing required fields!",
-          error: "CourseID is required",
-        },
-        { status: 400 }
-      );
+      return missingFieldsResponse;
     }
 
     const courses: CourseProps[] = coursesUtils.readData();
     const courseIndex = courses.findIndex((course) => course.id === courseID);
 
     if (courseIndex === -1) {
-      return NextResponse.json(
-        {
-          message: "No course found with this ID!",
-          error: "No course found with this ID",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     const users: UserProps[] = usersUtils.readData();
@@ -226,6 +170,9 @@ export async function DELETE(
       user.invitations = user.invitations.filter(
         (invitation) => invitation.courseID !== courseID
       );
+      user.appliedCourses = user.appliedCourses.filter(
+        (appliedCourse) => appliedCourse !== courseID
+      );
     });
 
     coursesUtils.writeData(courses);
@@ -233,18 +180,12 @@ export async function DELETE(
 
     return NextResponse.json(
       {
-        message: "Course deleted succesfully!",
+        message: "courseDelete",
         data: true,
       },
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json(
-      {
-        message: "Internal server error!",
-        error: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 }
-    );
+    return internalResponse;
   }
 }

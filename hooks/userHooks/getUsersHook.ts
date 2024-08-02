@@ -1,10 +1,11 @@
+"use client";
 import { useState, useEffect, useCallback } from "react";
 import { UserProps } from "@/types/UserTypes";
 import { useUserContext } from "@/context/UserContext";
 import { useAlertContext } from "@/context/AlertContext";
 
 const useGetUsersHook = () => {
-  const { showAlert } = useAlertContext();
+  const { showErrorAlert } = useAlertContext();
   const { getUsers } = useUserContext();
   const [users, setUsers] = useState<UserProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -13,20 +14,17 @@ const useGetUsersHook = () => {
     try {
       setLoading(true);
       const fetchedUsers = await getUsers();
-      if ("data" in fetchedUsers) {
+      if (typeof fetchedUsers !== "string") {
         setUsers(fetchedUsers.data ?? []);
       } else {
-        showAlert("Error", fetchedUsers.error);
+        showErrorAlert(fetchedUsers);
       }
     } catch (error) {
-      showAlert(
-        "Error",
-        error instanceof Error ? error.message : String(error)
-      );
+      showErrorAlert("transactionError");
     } finally {
       setLoading(false);
     }
-  }, [getUsers, showAlert]);
+  }, [getUsers, showErrorAlert]);
 
   useEffect(() => {
     fetchUsers();

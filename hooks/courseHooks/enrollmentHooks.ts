@@ -1,3 +1,4 @@
+"use client";
 import { Dispatch, SetStateAction } from "react";
 import useLeaveCourseHook from "@/hooks/userHooks/leaveCourseHook";
 import useEnrollCourseHook from "@/hooks/userHooks/enrollCourseHook";

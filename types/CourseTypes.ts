@@ -10,7 +10,7 @@ interface CreateCourseProps {
   description: string;
   instructor: string;
   capacity: number;
-  accessLevel: "invited only" | "accepted only" | "everyone";
+  accessLevel: AccessLevelKeys;
 }
 
 interface CourseProps extends CreateCourseProps {

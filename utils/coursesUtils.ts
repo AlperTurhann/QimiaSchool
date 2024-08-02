@@ -1,24 +1,21 @@
 import { CourseProps, CreateCourseProps } from "@/types/CourseTypes";
-import { SuccessResponse, ErrorResponse } from "@/types/ResponseTypes";
+import { SuccessResponse } from "@/types/ResponseTypes";
 import { parseJSON } from "@/utils/fileUtils/IFileUtils";
 
 const getCourses = async (): Promise<
-  SuccessResponse<CourseProps[]> | ErrorResponse
+  SuccessResponse<CourseProps[]> | APIErrorsKeys
 > => {
   try {
     const response = await fetch("/api/auth/courses");
     return await parseJSON<CourseProps[]>(response);
   } catch (error) {
-    return {
-      message: "An error occurred during getting courses",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
 const getCourse = async (
   courseID: string
-): Promise<SuccessResponse<CourseProps> | ErrorResponse> => {
+): Promise<SuccessResponse<CourseProps> | APIErrorsKeys> => {
   try {
     const response = await fetch(`/api/auth/courses/${courseID}`, {
       method: "POST",
@@ -27,16 +24,13 @@ const getCourse = async (
     });
     return await parseJSON<CourseProps>(response);
   } catch (error) {
-    return {
-      message: "An error occurred during getting course",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
 const createCourse = async (
   data: CreateCourseProps
-): Promise<SuccessResponse<string> | ErrorResponse> => {
+): Promise<SuccessResponse<string> | APIErrorsKeys> => {
   try {
     const response = await fetch("/api/auth/courses", {
       method: "POST",
@@ -45,17 +39,14 @@ const createCourse = async (
     });
     return await parseJSON<string>(response);
   } catch (error) {
-    return {
-      message: "An error occurred during creating course",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
 const updateCourse = async (
   currentUserID: string,
   data: CourseProps
-): Promise<SuccessResponse<boolean> | ErrorResponse> => {
+): Promise<SuccessResponse<boolean> | APIErrorsKeys> => {
   try {
     const response = await fetch(`/api/auth/courses/${data.id}`, {
       method: "PUT",
@@ -64,16 +55,13 @@ const updateCourse = async (
     });
     return await parseJSON<boolean>(response);
   } catch (error) {
-    return {
-      message: "An error occurred during updating course",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
 const deleteCourse = async (
   courseID: string
-): Promise<SuccessResponse<boolean> | ErrorResponse> => {
+): Promise<SuccessResponse<boolean> | APIErrorsKeys> => {
   try {
     const response = await fetch(`/api/auth/courses/${courseID}`, {
       method: "DELETE",
@@ -82,10 +70,7 @@ const deleteCourse = async (
     });
     return await parseJSON<boolean>(response);
   } catch (error) {
-    return {
-      message: "An error occurred during deleting course",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 

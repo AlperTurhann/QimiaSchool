@@ -1,3 +1,4 @@
+"use client";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { CourseProps } from "@/types/CourseTypes";
 import { useCourseContext } from "@/context/CourseContext";
@@ -7,41 +8,40 @@ import { useAlertContext } from "@/context/AlertContext";
 const useDeleteCourseHook = (
   setCourses?: Dispatch<SetStateAction<CourseProps[]>>
 ) => {
-  const { showAlert } = useAlertContext();
+  const { showAlert, showErrorAlert } = useAlertContext();
   const { deleteCourse } = useCourseContext();
-  const { dispatch, getUser } = useUserContext();
+  const { state, dispatch } = useUserContext();
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleDeleteCourse = useCallback(
     async (courseID: string) => {
       try {
         setLoading(true);
-        const isSuccesfull = await deleteCourse(courseID);
-        if ("data" in isSuccesfull) {
-          if (isSuccesfull.data) {
-            if (setCourses) {
-              setCourses((prevCourses) =>
-                prevCourses.filter((course) => course.id !== courseID)
-              );
+        if (state.user) {
+          const isSuccesfull = await deleteCourse(courseID);
+          if (typeof isSuccesfull !== "string") {
+            if (isSuccesfull.data) {
+              if (setCourses) {
+                setCourses((prevCourses) =>
+                  prevCourses.filter((course) => course.id !== courseID)
+                );
+              }
+              dispatch({ type: "DELETE_COURSE", payload: courseID });
+              showAlert(isSuccesfull.message);
+            } else {
+              showAlert(isSuccesfull.message);
             }
-            dispatch({ type: "LEAVE_COURSE", payload: courseID });
-            showAlert("Success", isSuccesfull.message);
           } else {
-            showAlert("Error", isSuccesfull.message);
+            showErrorAlert(isSuccesfull);
           }
-        } else {
-          showAlert("Error", isSuccesfull.error);
         }
       } catch (error) {
-        showAlert(
-          "Error",
-          error instanceof Error ? error.message : String(error)
-        );
+        showErrorAlert("transactionError");
       } finally {
         setLoading(false);
       }
     },
-    [deleteCourse, getUser, showAlert]
+    [deleteCourse, showAlert, showErrorAlert]
   );
 
   return { handleDeleteCourse, loading };

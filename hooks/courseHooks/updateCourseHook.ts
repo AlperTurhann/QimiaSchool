@@ -1,3 +1,4 @@
+"use client";
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { CourseProps } from "@/types/CourseTypes";
@@ -6,8 +7,8 @@ import { useCourseContext } from "@/context/CourseContext";
 import { useUserContext } from "@/context/UserContext";
 
 const useUpdateCourseHook = () => {
-  const { showAlert } = useAlertContext();
-  const { state } = useUserContext();
+  const { showAlert, showErrorAlert } = useAlertContext();
+  const { state, dispatch, getUser } = useUserContext();
   const { updateCourse } = useCourseContext();
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useRouter();
@@ -21,27 +22,27 @@ const useUpdateCourseHook = () => {
             state.user.id,
             courseData
           );
-          if ("data" in fetchedUpdateCourse) {
+          if (typeof fetchedUpdateCourse !== "string") {
             if (fetchedUpdateCourse.data) {
-              showAlert("Success", fetchedUpdateCourse.message);
+              const updatedUser = await getUser(state.user.id);
+              if (typeof updatedUser !== "string")
+                dispatch({ type: "SET_USER", payload: updatedUser.data });
+              showAlert(fetchedUpdateCourse.message);
               navigate.push(`/courses/${courseData.id}`);
             } else {
-              showAlert("Error", fetchedUpdateCourse.message);
+              showAlert(fetchedUpdateCourse.message);
             }
           } else {
-            showAlert("Error", fetchedUpdateCourse.error);
+            showErrorAlert(fetchedUpdateCourse);
           }
         }
       } catch (error) {
-        showAlert(
-          "Error",
-          error instanceof Error ? error.message : String(error)
-        );
+        showErrorAlert("transactionError");
       } finally {
         setLoading(false);
       }
     },
-    [updateCourse, showAlert]
+    [updateCourse, showAlert, showErrorAlert]
   );
 
   return { updateCourse: fetchUpdateCourse, loading };

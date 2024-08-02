@@ -1,36 +1,29 @@
 import { NextResponse } from "next/server";
-import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
+import { SuccessResponse } from "@/types/ResponseTypes";
 import { InvitationProps } from "@/types/InvitationTypes";
 import usersUtils from "@/utils/fileUtils/usersFileUtils";
 import coursesUtils from "@/utils/fileUtils/coursesFileUtils";
+import {
+  internalResponse,
+  missingFieldsResponse,
+  noContentResponse,
+} from "@/components/shared/apiErrorResponses";
 
 export async function POST(
   request: Request
-): Promise<NextResponse<SuccessResponse<InvitationProps> | ErrorResponse>> {
+): Promise<NextResponse<SuccessResponse<InvitationProps> | APIErrorsKeys>> {
   try {
     const { userID, invitationID } = await request.json();
 
     if (!userID || !invitationID) {
-      return NextResponse.json(
-        {
-          message: "Missing required fields!",
-          error: "UserID and invitationID are required",
-        },
-        { status: 400 }
-      );
+      return missingFieldsResponse;
     }
 
     const users = usersUtils.readData();
     const user = users.find((userData) => userData.id === userID);
 
     if (!user) {
-      return NextResponse.json(
-        {
-          message: "No user found with this ID!",
-          error: "No user found with this ID",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     const invitation = user.invitations.find(
@@ -38,36 +31,24 @@ export async function POST(
     );
 
     if (!invitation) {
-      return NextResponse.json(
-        {
-          message: "No invitation found with this ID!",
-          error: "No invitation found with this ID",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     return NextResponse.json(
       {
-        message: "Invitation found!",
+        message: "contentFound",
         data: invitation,
       },
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json(
-      {
-        message: "Internal server error!",
-        error: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 }
-    );
+    return internalResponse;
   }
 }
 
 export async function PUT(
   request: Request
-): Promise<NextResponse<SuccessResponse<boolean> | ErrorResponse>> {
+): Promise<NextResponse<SuccessResponse<boolean> | APIErrorsKeys>> {
   try {
     const { currentUserID, invitation, isAccepted, isJoin } =
       await request.json();
@@ -78,14 +59,7 @@ export async function PUT(
       isAccepted === null ||
       isJoin === null
     ) {
-      return NextResponse.json(
-        {
-          message: "Missing required fields!",
-          error:
-            "CurrentUserID, invitation, isAccepted and isJoin are required",
-        },
-        { status: 400 }
-      );
+      return missingFieldsResponse;
     }
 
     const users = usersUtils.readData();
@@ -93,36 +67,18 @@ export async function PUT(
       (user) => user.id === currentUserID
     );
     if (currentUserIndex === -1) {
-      return NextResponse.json(
-        {
-          message: "No user found with this ID! (currentUser)",
-          error: "No user found with this ID (currentUser)",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     const userIndex = users.findIndex((user) => user.id === invitation.userID);
     if (userIndex === -1) {
-      return NextResponse.json(
-        {
-          message: "No user found with this ID!",
-          error: "No user found with this ID",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
     const invitationIndex = users[currentUserIndex].invitations.findIndex(
       (inv) => inv.invitationID === invitation.invitationID
     );
     if (invitationIndex === -1) {
-      return NextResponse.json(
-        {
-          message: "No invitation found with this ID!",
-          error: "No invitation found with this ID",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     const courses = coursesUtils.readData();
@@ -130,13 +86,7 @@ export async function PUT(
       (course) => course.id === invitation.courseID
     );
     if (courseIndex === -1) {
-      return NextResponse.json(
-        {
-          message: "No course found with this ID!",
-          error: "No course found with this ID",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     users[currentUserIndex].invitations.splice(invitationIndex, 1);
@@ -162,7 +112,7 @@ export async function PUT(
 
       return NextResponse.json(
         {
-          message: "Successfully accepted the invitation!",
+          message: "acceptInvitation",
           data: true,
         },
         { status: 200 }
@@ -173,18 +123,12 @@ export async function PUT(
 
     return NextResponse.json(
       {
-        message: "Successfully declined the invitation!",
+        message: "declineInvitation",
         data: true,
       },
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json(
-      {
-        message: "Internal server error!",
-        error: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 }
-    );
+    return internalResponse;
   }
 }

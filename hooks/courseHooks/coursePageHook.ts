@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, useCallback } from "react";
 import { CourseProps } from "@/types/CourseTypes";
 import { UserProps } from "@/types/UserTypes";
@@ -6,7 +7,7 @@ import { useUserContext } from "@/context/UserContext";
 import { useAlertContext } from "@/context/AlertContext";
 
 const useCoursePageHook = (courseID: string) => {
-  const { showAlert } = useAlertContext();
+  const { showAlert, showErrorAlert } = useAlertContext();
   const { getCourse } = useCourseContext();
   const { state, getUser } = useUserContext();
   const [course, setCourse] = useState<CourseProps | null>(null);
@@ -17,13 +18,11 @@ const useCoursePageHook = (courseID: string) => {
   const fetchInstructor = useCallback(
     async (instructorID: string) => {
       const fetchedInstructor = await getUser(instructorID);
-      if ("data" in fetchedInstructor) {
+      if (typeof fetchedInstructor !== "string") {
         setInstructor(fetchedInstructor.data);
-      } else {
-        showAlert("Error", fetchedInstructor.error);
-      }
+      } else showErrorAlert(fetchedInstructor);
     },
-    [getUser, showAlert]
+    [getUser, showErrorAlert]
   );
 
   const fetchEnrolledUsers = useCallback(
@@ -32,7 +31,7 @@ const useCoursePageHook = (courseID: string) => {
         const fetchedEnrolledUsers = await Promise.all(
           studentIDs.map(async (studentID) => {
             const response = await getUser(studentID);
-            return "data" in response ? response.data : null;
+            return typeof response !== "string" ? response.data : null;
           })
         );
         setEnrolledUsers(fetchedEnrolledUsers.filter((user) => user !== null));
@@ -43,32 +42,35 @@ const useCoursePageHook = (courseID: string) => {
 
   const fetchCourse = useCallback(async () => {
     const fetchedCourse = await getCourse(courseID);
-    if ("data" in fetchedCourse) {
+    if (typeof fetchedCourse !== "string") {
       if (fetchedCourse.data) {
         setCourse(fetchedCourse.data);
         await fetchInstructor(fetchedCourse.data.instructor);
         await fetchEnrolledUsers(fetchedCourse.data.enrolledStudents);
       } else {
-        showAlert("Error", fetchedCourse.message);
+        showAlert(fetchedCourse.message);
       }
     } else {
-      showAlert("Error", fetchedCourse.error);
+      showErrorAlert(fetchedCourse);
     }
-  }, [getCourse, fetchInstructor, fetchEnrolledUsers, showAlert]);
+  }, [
+    getCourse,
+    fetchInstructor,
+    fetchEnrolledUsers,
+    showAlert,
+    showErrorAlert,
+  ]);
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       await fetchCourse();
     } catch (error) {
-      showAlert(
-        "Error",
-        error instanceof Error ? error.message : String(error)
-      );
+      showErrorAlert("transactionError");
     } finally {
       setLoading(false);
     }
-  }, [fetchCourse, showAlert]);
+  }, [fetchCourse, showErrorAlert]);
 
   useEffect(() => {
     fetchData();

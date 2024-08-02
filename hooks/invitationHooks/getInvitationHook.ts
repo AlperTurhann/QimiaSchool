@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, useCallback } from "react";
 import { InvitationProps } from "@/types/InvitationTypes";
 import { UserProps } from "@/types/UserTypes";
@@ -7,7 +8,7 @@ import { CourseProps } from "@/types/CourseTypes";
 import { useCourseContext } from "@/context/CourseContext";
 
 const useGetInvitationHook = (invitation: InvitationProps) => {
-  const { showAlert } = useAlertContext();
+  const { showAlert, showErrorAlert } = useAlertContext();
   const { state, getUser } = useUserContext();
   const { getCourse } = useCourseContext();
   const [user, setUser] = useState<UserProps | null>(null);
@@ -17,33 +18,33 @@ const useGetInvitationHook = (invitation: InvitationProps) => {
   const fetchUser = useCallback(
     async (userID: string) => {
       const fetchedUser = await getUser(userID);
-      if ("data" in fetchedUser) {
+      if (typeof fetchedUser !== "string") {
         if (fetchedUser.data) {
           setUser(fetchedUser.data);
         } else {
-          showAlert("Error", fetchedUser.message);
+          showAlert(fetchedUser.message);
         }
       } else {
-        showAlert("Error", fetchedUser.error);
+        showErrorAlert(fetchedUser);
       }
     },
-    [getUser, showAlert]
+    [getUser, showAlert, showErrorAlert]
   );
 
   const fetchCourse = useCallback(
     async (courseID: string) => {
       const fetchedCourse = await getCourse(courseID);
-      if ("data" in fetchedCourse) {
+      if (typeof fetchedCourse !== "string") {
         if (fetchedCourse.data) {
           setCourse(fetchedCourse.data);
         } else {
-          showAlert("Error", fetchedCourse.message);
+          showAlert(fetchedCourse.message);
         }
       } else {
-        showAlert("Error", fetchedCourse.error);
+        showErrorAlert(fetchedCourse);
       }
     },
-    [getCourse, showAlert]
+    [getCourse, showAlert, showErrorAlert]
   );
 
   const fetchInvitation = useCallback(async () => {
@@ -53,14 +54,11 @@ const useGetInvitationHook = (invitation: InvitationProps) => {
         await fetchCourse(invitation.courseID);
       }
     } catch (error) {
-      showAlert(
-        "Error",
-        error instanceof Error ? error.message : String(error)
-      );
+      showErrorAlert("transactionError");
     } finally {
       setLoading(false);
     }
-  }, [fetchUser, fetchCourse, showAlert]);
+  }, [fetchUser, fetchCourse, showAlert, showErrorAlert]);
 
   useEffect(() => {
     if (state.user) fetchInvitation();

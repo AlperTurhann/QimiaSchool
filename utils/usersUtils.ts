@@ -1,24 +1,21 @@
 import { LoginProps, SignupProps, UserProps } from "@/types/UserTypes";
-import { SuccessResponse, ErrorResponse } from "@/types/ResponseTypes";
+import { SuccessResponse } from "@/types/ResponseTypes";
 import { parseJSON } from "@/utils/fileUtils/IFileUtils";
 
 const getUsers = async (): Promise<
-  SuccessResponse<UserProps[]> | ErrorResponse
+  SuccessResponse<UserProps[]> | APIErrorsKeys
 > => {
   try {
     const response = await fetch("/api/auth/users");
     return await parseJSON<UserProps[]>(response);
   } catch (error) {
-    return {
-      message: "An error occurred during getting users",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
 const getUser = async (
   userID: string
-): Promise<SuccessResponse<UserProps> | ErrorResponse> => {
+): Promise<SuccessResponse<UserProps> | APIErrorsKeys> => {
   try {
     const response = await fetch(`/api/auth/users/${userID}`, {
       method: "POST",
@@ -27,16 +24,13 @@ const getUser = async (
     });
     return await parseJSON<UserProps>(response);
   } catch (error) {
-    return {
-      message: "An error occurred during getting user",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
 const login = async (
   data: LoginProps
-): Promise<SuccessResponse<UserProps> | ErrorResponse> => {
+): Promise<SuccessResponse<UserProps> | APIErrorsKeys> => {
   try {
     const response = await fetch("/api/auth/login", {
       method: "POST",
@@ -45,23 +39,20 @@ const login = async (
     });
     return await parseJSON<UserProps>(response);
   } catch (error) {
-    return {
-      message: "An error occurred during login",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
-const logout = (): SuccessResponse<boolean> | ErrorResponse => {
+const logout = (): SuccessResponse<boolean> | APIErrorsKeys => {
   return {
-    message: "You are logged out!",
+    message: "logout",
     data: true,
   };
 };
 
 const signup = async (
   data: SignupProps
-): Promise<SuccessResponse<UserProps> | ErrorResponse> => {
+): Promise<SuccessResponse<UserProps> | APIErrorsKeys> => {
   try {
     const response = await fetch("/api/auth/register", {
       method: "POST",
@@ -70,17 +61,14 @@ const signup = async (
     });
     return await parseJSON<UserProps>(response);
   } catch (error) {
-    return {
-      message: "An error occurred during signup",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
 const enrollCourse = async (
   userID: string,
   courseID: string
-): Promise<SuccessResponse<boolean> | ErrorResponse> => {
+): Promise<SuccessResponse<boolean> | APIErrorsKeys> => {
   try {
     const response = await fetch(`/api/auth/users/${userID}`, {
       method: "PUT",
@@ -94,17 +82,14 @@ const enrollCourse = async (
     });
     return await parseJSON<boolean>(response);
   } catch (error) {
-    return {
-      message: "An error occurred during enroll course",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
 const leaveCourse = async (
   userID: string,
   courseID: string
-): Promise<SuccessResponse<boolean> | ErrorResponse> => {
+): Promise<SuccessResponse<boolean> | APIErrorsKeys> => {
   try {
     const response = await fetch(`/api/auth/users/${userID}`, {
       method: "PUT",
@@ -118,10 +103,7 @@ const leaveCourse = async (
     });
     return await parseJSON<boolean>(response);
   } catch (error) {
-    return {
-      message: "An error occurred while leaving the course",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
@@ -129,7 +111,7 @@ const applyCourse = async (
   userID: string,
   instructorID: string,
   courseID: string
-): Promise<SuccessResponse<boolean> | ErrorResponse> => {
+): Promise<SuccessResponse<boolean> | APIErrorsKeys> => {
   try {
     const response = await fetch(`/api/auth/users/${userID}`, {
       method: "PUT",
@@ -144,10 +126,7 @@ const applyCourse = async (
     });
     return await parseJSON<boolean>(response);
   } catch (error) {
-    return {
-      message: "An error occurred during enroll course",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 
@@ -155,7 +134,7 @@ const withdrawCourse = async (
   userID: string,
   instructorID: string,
   courseID: string
-): Promise<SuccessResponse<boolean> | ErrorResponse> => {
+): Promise<SuccessResponse<boolean> | APIErrorsKeys> => {
   try {
     const response = await fetch(`/api/auth/users/${userID}`, {
       method: "PUT",
@@ -170,10 +149,7 @@ const withdrawCourse = async (
     });
     return await parseJSON<boolean>(response);
   } catch (error) {
-    return {
-      message: "An error occurred during enroll course",
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return "transactionError";
   }
 };
 

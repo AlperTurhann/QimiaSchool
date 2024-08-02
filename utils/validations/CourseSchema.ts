@@ -1,23 +1,28 @@
 import { z } from "zod";
+import { useTranslations } from "next-intl";
 
-const schema = z.object({
-  name: z
-    .string({ required_error: "Name is required" })
-    .min(1, "Name field cannot be left empty"),
-  description: z
-    .string({ required_error: "Description is required" })
-    .min(1, "Description field cannot be left empty"),
-  capacity: z
-    .number({
-      required_error: "Capacity is required",
-      invalid_type_error: "Capacity must be a number",
-    })
-    .int()
-    .positive("Capacity must be at least 1"),
-  accessLevel: z.enum(["invited only", "accepted only", "everyone"], {
-    required_error: "Access level is required",
-  }),
-});
+const useCourseSchema = () => {
+  const t = useTranslations("schemas.course");
 
-export { schema as CourseSchema };
-export type CourseData = z.infer<typeof schema>;
+  const schema = z.object({
+    name: z.string({ required_error: t("nameRequired") }).min(1, t("nameMin")),
+    description: z
+      .string({ required_error: t("descriptionRequired") })
+      .min(1, t("descriptionMin")),
+    capacity: z
+      .number({
+        required_error: t("capacityRequired"),
+        invalid_type_error: t("capacityInvalidType"),
+      })
+      .int()
+      .positive(t("capacityPositive")),
+    accessLevel: z.enum(["invitedOnly", "acceptedOnly", "everyone"], {
+      required_error: t("accessLevelRequired"),
+    }),
+  });
+
+  return schema;
+};
+
+export { useCourseSchema };
+export type CourseData = z.infer<ReturnType<typeof useCourseSchema>>;

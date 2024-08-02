@@ -5,6 +5,7 @@ import {
   AlertContextType,
   AlertInfo,
 } from "@/context/AlertContext";
+import { useTranslations } from "next-intl";
 
 interface Props {
   children: ReactNode;
@@ -12,14 +13,32 @@ interface Props {
 
 const AlertProvider = ({ children }: Props) => {
   const [alertInfo, setAlertInfo] = useState<AlertInfo | null>(null);
+  const t = useTranslations("components.alert");
+  const apiT = useTranslations("api");
 
   const hideAlert = useCallback(() => {
     setAlertInfo(null);
   }, []);
 
   const showAlert = useCallback(
-    (title: string, description: string) => {
-      setAlertInfo({ title, description });
+    (descriptionT: APISuccessKeys) => {
+      setAlertInfo({
+        title: t("successTitle"),
+        description: apiT(`success.${descriptionT}`),
+      });
+      setTimeout(() => {
+        hideAlert();
+      }, 5000);
+    },
+    [hideAlert]
+  );
+
+  const showErrorAlert = useCallback(
+    (descriptionT: APIErrorsKeys) => {
+      setAlertInfo({
+        title: t("errorTitle"),
+        description: apiT(`errors.${descriptionT}`),
+      });
       setTimeout(() => {
         hideAlert();
       }, 5000);
@@ -30,10 +49,11 @@ const AlertProvider = ({ children }: Props) => {
   const value = useMemo<AlertContextType>(
     () => ({
       showAlert,
+      showErrorAlert,
       hideAlert,
       alertInfo,
     }),
-    [showAlert, hideAlert, alertInfo]
+    [showAlert, showErrorAlert, hideAlert, alertInfo]
   );
 
   return (

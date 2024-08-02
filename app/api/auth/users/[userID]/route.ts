@@ -2,10 +2,15 @@ import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import { CourseProps } from "@/types/CourseTypes";
 import { UserProps } from "@/types/UserTypes";
-import { ErrorResponse, SuccessResponse } from "@/types/ResponseTypes";
+import { SuccessResponse } from "@/types/ResponseTypes";
 import { InvitationProps } from "@/types/InvitationTypes";
 import coursesUtils from "@/utils/fileUtils/coursesFileUtils";
 import usersUtils from "@/utils/fileUtils/usersFileUtils";
+import {
+  internalResponse,
+  missingFieldsResponse,
+  noContentResponse,
+} from "@/components/shared/apiErrorResponses";
 
 const checkPutParams = (
   userID: string,
@@ -13,7 +18,7 @@ const checkPutParams = (
   courseID: string,
   isApply: boolean,
   isEnroll: boolean
-): NextResponse<ErrorResponse> | null => {
+): NextResponse<APIErrorsKeys> | null => {
   if (isApply) {
     if (
       !userID ||
@@ -22,22 +27,10 @@ const checkPutParams = (
       isApply === null ||
       isEnroll === null
     ) {
-      return NextResponse.json(
-        {
-          message: "Missing required fields!",
-          error: "UserID, instructorID and courseID are required",
-        },
-        { status: 400 }
-      );
+      return missingFieldsResponse;
     } else return null;
   } else if (!userID || !courseID || isApply === null || isEnroll === null) {
-    return NextResponse.json(
-      {
-        message: "Missing required fields!",
-        error: "UserID and courseID are required",
-      },
-      { status: 400 }
-    );
+    return missingFieldsResponse;
   } else return null;
 };
 
@@ -45,43 +38,27 @@ const createSuccessPutResponse = (
   isApply: boolean,
   isEnroll: boolean
 ): NextResponse<SuccessResponse<boolean>> => {
-  let message: string;
+  let message: APISuccessKeys;
   if (isApply) {
-    message = isEnroll
-      ? "Successfully applied to the course!"
-      : "Successfully withdrew from the course!";
+    message = isEnroll ? "applyCourse" : "withdrawCourse";
   } else {
-    message = isEnroll
-      ? "Successfully enrolled in the course!"
-      : "Successfully de-enrolled from the course!";
+    message = isEnroll ? "enrollCourse" : "deenrollCourse";
   }
   return NextResponse.json({ message, data: true }, { status: 200 });
 };
 
-const createErrorResponse = (error: unknown): NextResponse<ErrorResponse> => {
-  return NextResponse.json(
-    {
-      message: "Internal server error!",
-      error: error instanceof Error ? error.message : String(error),
-    },
-    { status: 500 }
-  );
+const createErrorResponse = (): NextResponse<APIErrorsKeys> => {
+  return internalResponse;
 };
 
 export async function POST(
   request: Request
-): Promise<NextResponse<SuccessResponse<UserProps> | ErrorResponse>> {
+): Promise<NextResponse<SuccessResponse<UserProps> | APIErrorsKeys>> {
   try {
     const userID = await request.json();
 
     if (!userID) {
-      return NextResponse.json(
-        {
-          message: "Missing required fields!",
-          error: "UserID is required",
-        },
-        { status: 400 }
-      );
+      return missingFieldsResponse;
     }
 
     const users = usersUtils.readData();
@@ -89,30 +66,24 @@ export async function POST(
     const user = users.find((userData) => userData.id === userID);
 
     if (!user) {
-      return NextResponse.json(
-        {
-          message: "No user found with this ID!",
-          error: "No user found with this ID",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     return NextResponse.json(
       {
-        message: "User found!",
+        message: "contentFound",
         data: user,
       },
       { status: 200 }
     );
   } catch (error) {
-    return createErrorResponse(error);
+    return createErrorResponse();
   }
 }
 
 export async function PUT(
   request: Request
-): Promise<NextResponse<SuccessResponse<boolean> | ErrorResponse>> {
+): Promise<NextResponse<SuccessResponse<boolean> | APIErrorsKeys>> {
   try {
     const { userID, instructorID, courseID, isApply, isEnroll } =
       await request.json();
@@ -130,26 +101,14 @@ export async function PUT(
     const userIndex = users.findIndex((user) => user.id === userID);
 
     if (userIndex === -1) {
-      return NextResponse.json(
-        {
-          message: "No user found with this ID! (student)",
-          error: "No user found with this ID (student)",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     const courses = coursesUtils.readData();
     const courseIndex = courses.findIndex((course) => course.id === courseID);
 
     if (courseIndex === -1) {
-      return NextResponse.json(
-        {
-          message: "No course found with this ID!",
-          error: "No course found with this ID",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     if (isApply) {
@@ -157,13 +116,7 @@ export async function PUT(
         (user) => user.id === instructorID
       );
       if (instructorIndex === -1) {
-        return NextResponse.json(
-          {
-            message: "No user found with this ID! (instructor)",
-            error: "No user found with this ID (instructor)",
-          },
-          { status: 404 }
-        );
+        return noContentResponse;
       }
 
       if (!isEnroll) {
@@ -206,37 +159,25 @@ export async function PUT(
 
     return createSuccessPutResponse(isApply, isEnroll);
   } catch (error) {
-    return createErrorResponse(error);
+    return createErrorResponse();
   }
 }
 
 export async function DELETE(
   request: Request
-): Promise<NextResponse<SuccessResponse<boolean> | ErrorResponse>> {
+): Promise<NextResponse<SuccessResponse<boolean> | APIErrorsKeys>> {
   try {
     const userID = await request.json();
 
     if (!userID) {
-      return NextResponse.json(
-        {
-          message: "Missing required fields!",
-          error: "UserID is required",
-        },
-        { status: 400 }
-      );
+      return missingFieldsResponse;
     }
 
     const users: UserProps[] = usersUtils.readData();
     const userIndex = users.findIndex((user) => user.id === userID);
 
     if (userIndex === -1) {
-      return NextResponse.json(
-        {
-          message: "No user found with this ID!",
-          error: "No user found with this ID",
-        },
-        { status: 404 }
-      );
+      return noContentResponse;
     }
 
     const courses: CourseProps[] = coursesUtils.readData();
@@ -255,12 +196,12 @@ export async function DELETE(
 
     return NextResponse.json(
       {
-        message: "User deleted succesfully!",
+        message: "userDelete",
         data: true,
       },
       { status: 200 }
     );
   } catch (error) {
-    return createErrorResponse(error);
+    return createErrorResponse();
   }
 }

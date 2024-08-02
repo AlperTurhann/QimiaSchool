@@ -1,9 +1,20 @@
 import { z } from "zod";
+import { useTranslations } from "next-intl";
 
-const schema = z.object({
-  email: z.string({ required_error: "Email is required" }).email("Invalid email"),
-  password: z.string({ required_error: "Password is required"}).min(8, "Password must be at least 8 characters"),
-});
+const useLoginSchema = () => {
+  const t = useTranslations("schemas.login");
 
-export { schema as LoginSchema };
-export type LoginData = z.infer<typeof schema>;
+  const schema = z.object({
+    email: z
+      .string({ required_error: t("emailRequired") })
+      .email(t("emailInvalid")),
+    password: z
+      .string({ required_error: t("passwordRequired") })
+      .min(8, t("passwordMin")),
+  });
+
+  return schema;
+};
+
+export { useLoginSchema };
+export type LoginData = z.infer<ReturnType<typeof useLoginSchema>>;
