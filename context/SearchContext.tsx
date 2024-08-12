@@ -5,6 +5,7 @@ import { UserProps } from "@/types/UserTypes";
 type SearchAction =
   | { type: "SET_QUERY"; payload: string }
   | { type: "SET_RESULTS"; payload: CourseProps[] | UserProps[] }
+  | { type: "CLEAR_SEARCH" }
   | { type: "CLEAR_RESULTS" }
   | { type: "SEARCH" };
 

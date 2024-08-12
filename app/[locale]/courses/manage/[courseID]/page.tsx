@@ -5,7 +5,7 @@ import ManageCourse from "@/components/dynamic/ManageCourse";
 const ManageCoursePage = () => {
   return (
     <CheckInstructor>
-      <main className="w-full h-full flex flex-col items-center">
+      <main className="size-full flex flex-col items-center">
         <ManageCourse />
       </main>
     </CheckInstructor>

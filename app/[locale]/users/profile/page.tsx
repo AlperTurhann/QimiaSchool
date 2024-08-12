@@ -3,7 +3,7 @@ import UserInfos from "@/components/dynamic/UserInfos";
 
 const ProfilePage = () => {
   return (
-    <main className="w-full h-full flex flex-col items-center gap-5">
+    <main className="size-full flex flex-col items-center gap-5">
       <UserInfos />
     </main>
   );

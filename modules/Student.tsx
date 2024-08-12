@@ -3,8 +3,8 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Check, User, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { UserProps } from "@/types/UserTypes";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   type: "applied" | "enrolled";

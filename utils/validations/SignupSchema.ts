@@ -8,7 +8,7 @@ const useSignupSchema = () => {
     .object({
       name: z
         .string({ required_error: t("nameRequired") })
-        .min(1, "Name is required"),
+        .min(1, t("nameMin")),
       email: z
         .string({ required_error: t("emailRequired") })
         .email(t("emailInvalid")),

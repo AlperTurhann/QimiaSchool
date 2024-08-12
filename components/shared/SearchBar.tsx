@@ -36,26 +36,23 @@ const SearchBar = ({ items }: Props) => {
 
   const handleSearch = (event: FormEvent) => {
     event.preventDefault();
-    dispatch({ type: "SEARCH" });
+    if (searchState.query !== "") dispatch({ type: "SEARCH" });
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
-    dispatch({ type: "SET_QUERY", payload: query });
+    if (query !== "") dispatch({ type: "SET_QUERY", payload: query });
+    else dispatch({ type: "CLEAR_SEARCH" });
     setDebouncedQuery(query);
   };
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (debouncedQuery === "") {
-        dispatch({ type: "CLEAR_RESULTS" });
-      } else {
-        const result = filterItems(debouncedQuery);
-        dispatch({
-          type: "SET_RESULTS",
-          payload: result as CourseProps[] | UserProps[],
-        });
-      }
+      const result = filterItems(debouncedQuery);
+      dispatch({
+        type: "SET_RESULTS",
+        payload: result as CourseProps[] | UserProps[],
+      });
     }, 300);
 
     return () => clearTimeout(timer);

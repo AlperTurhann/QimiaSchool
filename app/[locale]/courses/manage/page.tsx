@@ -8,7 +8,7 @@ const ManageCoursePage = () => {
 
   return (
     <CheckInstructor>
-      <main className="w-full h-full flex flex-col items-center">
+      <main className="size-full flex flex-col items-center">
         <h1 className="text-center text-2xl font-bold p-5">{t("title")}</h1>
         <ManageCoursesList />
       </main>

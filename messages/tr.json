@@ -136,6 +136,7 @@
     },
     "signup": {
       "nameRequired": "Ad gereklidir",
+      "nameMin": "Ad alanı boş bırakılamaz",
       "emailRequired": "E-posta gereklidir",
       "emailInvalid": "Geçersiz e-posta",
       "roleRequired": "Rol gereklidir",

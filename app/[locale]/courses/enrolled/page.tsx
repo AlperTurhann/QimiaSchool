@@ -5,7 +5,7 @@ import CheckUser from "@/components/dynamic/CheckUser";
 const EnrolledPage = () => {
   return (
     <CheckUser>
-      <main className="w-full h-full flex flex-col items-center">
+      <main className="size-full flex flex-col items-center">
         <UserCourses />
       </main>
     </CheckUser>

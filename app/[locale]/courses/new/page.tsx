@@ -7,7 +7,7 @@ import Selector from "@/components/shared/FormFields/Selector";
 const CreateCoursePage = () => {
   return (
     <CheckInstructor>
-      <main className="w-full h-full flex flex-col items-center">
+      <main className="size-full flex flex-col items-center">
         <CourseFormComponent>
           <FormInput name="name" type="course" />
           <FormInput name="description" textarea={true} type="course" />

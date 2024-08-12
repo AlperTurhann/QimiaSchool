@@ -8,7 +8,7 @@ const Users = () => {
 
   return (
     <CheckInstructor>
-      <main className="w-full h-full">
+      <main className="size-full">
         <h1 className="text-center text-2xl font-bold p-5">{t("title")}</h1>
         <UsersList />
       </main>

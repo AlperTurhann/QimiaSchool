@@ -136,6 +136,7 @@
     },
     "signup": {
       "nameRequired": "Name is required",
+      "nameMin": "Name field cannot be left empty",
       "emailRequired": "Email is required",
       "emailInvalid": "Invalid email",
       "roleRequired": "Role is required",

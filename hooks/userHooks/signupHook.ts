@@ -1,9 +1,9 @@
 "use client";
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { SignupProps } from "@/types/UserTypes";
 import { useUserContext } from "@/context/UserContext";
 import { useAlertContext } from "@/context/AlertContext";
-import { useRouter } from "next/navigation";
 
 const useSignupHook = () => {
   const { showAlert, showErrorAlert } = useAlertContext();

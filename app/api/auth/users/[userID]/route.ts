@@ -47,10 +47,6 @@ const createSuccessPutResponse = (
   return NextResponse.json({ message, data: true }, { status: 200 });
 };
 
-const createErrorResponse = (): NextResponse<APIErrorsKeys> => {
-  return internalResponse;
-};
-
 export async function POST(
   request: Request
 ): Promise<NextResponse<SuccessResponse<UserProps> | APIErrorsKeys>> {
@@ -77,7 +73,7 @@ export async function POST(
       { status: 200 }
     );
   } catch (error) {
-    return createErrorResponse();
+    return internalResponse;
   }
 }
 
@@ -159,7 +155,7 @@ export async function PUT(
 
     return createSuccessPutResponse(isApply, isEnroll);
   } catch (error) {
-    return createErrorResponse();
+    return internalResponse;
   }
 }
 
@@ -202,6 +198,6 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
-    return createErrorResponse();
+    return internalResponse;
   }
 }
